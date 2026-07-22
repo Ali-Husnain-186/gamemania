@@ -19,27 +19,31 @@ export async function quoteShipping(
   subtotalPence: number,
   country = DEFAULT_SHIPPING.country,
 ): Promise<ShippingQuote> {
-  const rules = await prisma.shippingRule.findMany({
-    where: {
-      isActive: true,
-      country,
-      minOrderAmount: { lte: subtotalPence },
-      OR: [{ maxOrderAmount: null }, { maxOrderAmount: { gte: subtotalPence } }],
-    },
-    orderBy: [{ priority: 'desc' }, { rate: 'asc' }],
-  });
+  try {
+    const rules = await prisma.shippingRule.findMany({
+      where: {
+        isActive: true,
+        country,
+        minOrderAmount: { lte: subtotalPence },
+        OR: [{ maxOrderAmount: null }, { maxOrderAmount: { gte: subtotalPence } }],
+      },
+      orderBy: [{ priority: 'desc' }, { rate: 'asc' }],
+    });
 
-  if (rules.length > 0) {
-    const rule = rules[0];
-    return {
-      ratePence: rule.rate,
-      freeShipping: rule.rate === 0,
-      ruleId: rule.id,
-      ruleName: rule.name,
-      thresholdPence: DEFAULT_SHIPPING.freeThresholdPence,
-      subtotalPence,
-      country,
-    };
+    if (rules.length > 0) {
+      const rule = rules[0];
+      return {
+        ratePence: rule.rate,
+        freeShipping: rule.rate === 0,
+        ruleId: rule.id,
+        ruleName: rule.name,
+        thresholdPence: DEFAULT_SHIPPING.freeThresholdPence,
+        subtotalPence,
+        country,
+      };
+    }
+  } catch {
+    // DB unavailable during early local bootstrap — use configured defaults
   }
 
   const free = subtotalPence >= DEFAULT_SHIPPING.freeThresholdPence;

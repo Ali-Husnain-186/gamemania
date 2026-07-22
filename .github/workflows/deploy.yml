@@ -1,0 +1,16 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment reminder
+        run: |
+          echo "Build images on the VPS with scripts/deploy/update.sh"
+          echo "Targets: gamemania.com, admin.gamemania.com, api.gamemania.com"

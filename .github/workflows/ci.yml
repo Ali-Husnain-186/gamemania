@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm install
+      - name: Generate Prisma Client
+        run: npm run prisma:generate --workspace=backend
+        env:
+          DATABASE_URL: postgresql://gamemania:gamemania@localhost:5432/gamemania
+          JWT_ACCESS_SECRET: ci_access_secret_must_be_at_least_32_chars
+          JWT_REFRESH_SECRET: ci_refresh_secret_must_be_at_least_32_chars
+      - name: Lint backend
+        run: npm run lint --workspace=backend
+      - name: Typecheck backend
+        run: npm run typecheck --workspace=backend
+        env:
+          DATABASE_URL: postgresql://gamemania:gamemania@localhost:5432/gamemania
+          JWT_ACCESS_SECRET: ci_access_secret_must_be_at_least_32_chars
+          JWT_REFRESH_SECRET: ci_refresh_secret_must_be_at_least_32_chars
+      - name: Typecheck frontend
+        run: npm run typecheck --workspace=frontend
+      - name: Typecheck admin
+        run: npm run typecheck --workspace=admin

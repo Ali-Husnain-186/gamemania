@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
+# Production update on Hostinger Ubuntu VPS (no Docker).
+# Run from repo root on the server as the deploy user.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
 git pull --ff-only
-docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile full build
-docker compose -f docker-compose.yml -f docker-compose.prod.yml --profile full up -d
-docker compose exec backend npx prisma migrate deploy --schema ./database/prisma/schema.prisma
-echo "Deploy update complete."
+
+npm ci
+npm run db:generate
+npm run build --workspace=backend
+npm run build --workspace=frontend
+npm run build --workspace=admin
+
+npm run prisma:deploy --workspace=backend
+
+mkdir -p logs
+pm2 startOrReload deploy/pm2/ecosystem.config.js --env production
+pm2 save
+
+echo "Deploy update complete (PM2 + Prisma)."

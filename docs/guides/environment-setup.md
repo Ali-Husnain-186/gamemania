@@ -1,48 +1,35 @@
-# Environment Setup
+# GAME-MANIA — Environment Setup
 
-## Windows 11 checklist
+## Tooling (Windows 11)
 
-1. Node.js LTS (≥ 20) — verified via `node -v`
-2. npm (≥ 10)
-3. Git
-4. Docker Desktop with WSL2 backend enabled
+1. Node.js LTS from https://nodejs.org/
+2. PostgreSQL from https://www.postgresql.org/download/windows/
+3. Git for Windows
+4. Optional: Redis (Memurai or Windows port) — not required for initial scaffold
 5. Cursor / VS Code
 
-Ensure Docker Desktop is running before `docker compose` commands. If `docker` is not in PATH, start Docker Desktop and reopen the terminal.
-
-## Environment files
-
-| File | Purpose |
-|------|---------|
-| `.env` | Root / compose shared vars |
-| `backend/.env` | API secrets |
-| `frontend/.env.local` | Storefront public + API URL |
-| `admin/.env.local` | Admin public + API URL |
-
-Copy from each `.env.example`.
-
-## Required secrets for local MVP
-
-Minimum to boot API + DB:
-
-- `DATABASE_URL`
-- `JWT_ACCESS_SECRET` / `JWT_REFRESH_SECRET` (≥ 32 chars)
-
-Optional until feature work:
-
-- Stripe / PayPal / Google / Cloudinary / Resend keys
+**Docker is not used** for local development or production.
 
 ## Ports
 
 | Service | Port |
 |---------|------|
-| Frontend | 3000 |
+| Storefront | 3000 |
 | Admin | 3001 |
-| API | 4000 |
-| Postgres | 5432 |
-| Redis | 6379 |
-| Nginx (prod compose) | 80 / 443 |
+| API | 5000 |
+| PostgreSQL | 5432 |
 
-## IDE
+## Environment files
 
-Recommended VS Code extensions: ESLint, Prettier, Prisma, Tailwind CSS IntelliSense, Docker.
+| File | Purpose |
+|------|---------|
+| `.env` | Shared root template values |
+| `backend/.env` | API secrets + `DATABASE_URL` |
+| `frontend/.env.local` | `NEXT_PUBLIC_*` |
+| `admin/.env.local` | `NEXT_PUBLIC_*` |
+
+Never commit real `.env` files. Use `.env.example` as the source of truth for variable names.
+
+## Recommended VS Code extensions
+
+ESLint, Prettier, Prisma, Tailwind CSS IntelliSense, PostgreSQL client.

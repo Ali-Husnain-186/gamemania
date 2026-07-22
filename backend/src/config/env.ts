@@ -7,7 +7,7 @@ dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().default(4000),
+  PORT: z.coerce.number().default(5000),
   APP_NAME: z.string().default('GAME-MANIA API'),
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().optional(),
@@ -37,7 +37,7 @@ const data = parsed.success
   ? parsed.data
   : ({
       NODE_ENV: 'development',
-      PORT: 4000,
+      PORT: 5000,
       APP_NAME: 'GAME-MANIA API',
       DATABASE_URL: process.env.DATABASE_URL ?? '',
       JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET ?? 'dev_access_secret_change_me_32chars',

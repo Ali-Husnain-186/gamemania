@@ -53,7 +53,7 @@ flowchart LR
 |-----|----------------|------------|
 | `frontend` | Public catalog, cart, checkout, trade-in, account, blog, SEO | 3000 |
 | `admin` | Catalog ops, orders, trade approval, CMS, RBAC, reports | 3001 |
-| `backend` | Auth, business logic, payments, webhooks, notifications | 4000 |
+| `backend` | Auth, business logic, payments, webhooks, notifications | 5000 |
 
 Apps communicate **only** via the versioned REST API (`/api/v1`). No direct DB access from Next.js apps.
 
@@ -144,14 +144,14 @@ Quote from pricing rules (console → device → model → storage → condition
 
 ## 9. Deployment topology
 
-Docker Compose on Ubuntu VPS (Hostinger):
+Node.js + PM2 + Nginx on Ubuntu VPS (Hostinger — **no Docker**):
 
-- `nginx` (TLS termination, reverse proxy)
-- `frontend`, `admin`, `backend`
-- `postgres`, `redis`
-- Certbot / Let's Encrypt for SSL
+- Nginx (TLS termination, reverse proxy) — configs in `deploy/nginx/`
+- PM2 processes: frontend (:3000), admin (:3001), backend (:5000)
+- Native PostgreSQL (+ optional Redis)
+- Certbot / Let's Encrypt for SSL — `scripts/ssl/`
 
-Local: Docker for Postgres (+ Redis); apps via `npm run dev` on Windows host for fast DX.
+Local (Windows 11): native PostgreSQL; apps via `npm run dev` (ports 3000 / 3001 / 5000).
 
 ## 10. Non-goals (v1)
 

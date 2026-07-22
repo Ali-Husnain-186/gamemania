@@ -14,8 +14,8 @@ export default function AdminHomePage() {
       </p>
       <dl className="mt-10 grid gap-4 sm:grid-cols-3">
         {[
-          ['API', process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api/v1'],
-          ['Phase', 'Foundation (M1)'],
+          ['API', process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1'],
+          ['Phase', 'Folder structure (P2)'],
           ['Access', 'Staff roles only'],
         ].map(([label, value]) => (
           <div

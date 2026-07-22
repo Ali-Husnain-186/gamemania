@@ -2,11 +2,14 @@
 
 Express.js + TypeScript + Prisma Clean Architecture REST API.
 
+**Dev URL:** http://localhost:5000  
+**Health:** `GET /api/v1/health`
+
 ## Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start API with hot reload |
+| `npm run dev` | Start API with hot reload (:5000) |
 | `npm run build` | Compile to `dist/` |
 | `npm start` | Run compiled server |
 | `npm run prisma:generate` | Generate Prisma client |
@@ -25,6 +28,7 @@ src/
   routes/         # route registration
   validators/     # Zod schemas
   dto/            # response mappers
+  modules/        # feature modules
   types/
   exceptions/
   utils/
@@ -33,8 +37,4 @@ src/
   server.ts
 ```
 
-## Health
-
-`GET /api/v1/health`
-
-See [docs/api/rest-api.md](../docs/api/rest-api.md).
+Requires local PostgreSQL (see root `.env.example`). See [docs/api/rest-api.md](../docs/api/rest-api.md).

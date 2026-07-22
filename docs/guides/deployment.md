@@ -1,80 +1,61 @@
-# Deployment Guide (Ubuntu VPS / Hostinger)
+# GAME-MANIA — Production Deployment (Hostinger Ubuntu VPS)
 
-## Target URLs
+**No Docker.** Stack: Node.js LTS, PM2, Nginx, PostgreSQL, Let's Encrypt.
 
-- https://gamemania.com → frontend  
-- https://admin.gamemania.com → admin  
-- https://api.gamemania.com → backend  
+## Targets
 
-## Prerequisites
+| Host | Process |
+|------|---------|
+| gamemania.com | Next.js storefront (PM2 → :3000) |
+| admin.gamemania.com | Next.js admin (PM2 → :3001) |
+| api.gamemania.com | Express API (PM2 → :5000) |
 
-- Ubuntu 22.04+ VPS
-- Domain DNS A records for `@`, `admin`, `api`
-- Docker Engine + Compose plugin
-- Ports 80/443 open
-
-## 1. Server bootstrap
+## Server prerequisites
 
 ```bash
-sudo apt update && sudo apt upgrade -y
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER
-# re-login
+# Node 20 LTS via nodesource or nvm
+sudo apt update
+sudo apt install -y nginx postgresql postgresql-contrib certbot python3-certbot-nginx
+sudo npm i -g pm2
 ```
 
-## 2. Clone & configure
+Create PostgreSQL role/database and set production env files on the VPS (never commit secrets).
+
+## Nginx
+
+Copy configs from `deploy/nginx/` into `/etc/nginx/` (or symlink `conf.d/gamemania.conf`). Upstream targets are `127.0.0.1:3000|3001|5000`.
+
+## SSL
 
 ```bash
-git clone <YOUR_REPO_URL> /opt/game-mania
-cd /opt/game-mania
-cp .env.example .env
-# fill production secrets
-cp backend/.env.example backend/.env
-# etc.
+sudo mkdir -p /var/www/certbot
+# Point DNS A records first, then:
+bash scripts/ssl/init-letsencrypt.sh
 ```
 
-## 3. SSL certificates
+## App deploy
 
 ```bash
-chmod +x scripts/ssl/init-letsencrypt.sh
-./scripts/ssl/init-letsencrypt.sh
+git clone <repo> /var/www/gamemania
+cd /var/www/gamemania
+# configure production .env files
+bash scripts/deploy/update.sh
+pm2 startup
+pm2 save
 ```
-
-Uses Certbot with webroot/nginx as documented in the script.
-
-## 4. Launch
-
-```bash
-docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-```
-
-## 5. Migrations
-
-```bash
-docker compose exec backend npx prisma migrate deploy --schema ./database/prisma/schema.prisma
-docker compose exec backend npm run prisma:seed
-```
-
-## 6. Cloudflare (recommended)
-
-- Proxied orange-cloud for web hosts
-- SSL/TLS mode: Full (strict)
-- Cache static assets; bypass `/api/*`
-
-## 7. Updates
-
-```bash
-./scripts/deploy/update.sh
-```
-
-## Rollback
-
-Keep previous images tagged; `docker compose` can pin image digests. Database rollbacks require migration planning — backup with `pg_dump` before migrate.
 
 ## Backups
 
 ```bash
-./scripts/deploy/backup-db.sh
+bash scripts/deploy/backup-db.sh
 ```
 
-Schedule via cron daily.
+Schedule via cron (daily). Store off-box copies.
+
+## Monitoring
+
+- `pm2 status` / `pm2 logs`
+- Nginx access/error logs
+- Optional: Uptime robot on `/api/v1/health`
+
+Full ops notes will expand under `docs/deployment/` in later phases.

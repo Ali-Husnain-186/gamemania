@@ -1,4 +1,4 @@
-# Architecture review checklist — Phase 1 exit
+# Architecture review checklist — Phase 2 exit (folder structure)
 
 ## Confirmed decisions
 
@@ -7,20 +7,22 @@
 - [x] Clean Architecture on API
 - [x] Shipping rules data-driven (£60 free default)
 - [x] Trade-in as bounded context with pricing rules
-- [x] Docker Compose for local Postgres/Redis and production stack
+- [x] **No Docker** — native PostgreSQL locally; PM2 + Nginx in production
+- [x] API port **5000** (frontend 3000, admin 3001)
+- [x] Complete feature-based folder structure with module placeholders
+- [x] GitHub issue + PR templates
 - [x] Docs suite under docs/
 
-## Ready for Phase 2 when
+## Ready for Phase 3 (system architecture design) when
 
-- [ ] `docker compose up -d postgres redis` healthy
-- [ ] `npm install` at root succeeds
-- [ ] Prisma migrate + seed succeeds
-- [ ] `GET /api/v1/health` returns ok
-- [ ] Frontend and admin `npm run dev` serve foundation pages
+- [x] Folder structure committed and documented
+- [ ] Architecture diagrams / ADRs refined in Phase 3
+- [ ] Prisma schema review in Phases 4–5
+- [ ] REST contract freeze in Phase 6
 
 ## Deferred (by design)
 
 - Full storefront page set
-- Auth implementation details beyond types/docs
+- Auth implementation
 - Payment provider live keys
-- shadcn component generation (Phase 11 / Phase 3 UI)
+- shadcn component generation

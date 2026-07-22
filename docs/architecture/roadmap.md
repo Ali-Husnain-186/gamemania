@@ -8,17 +8,17 @@
 - [x] Choose market defaults (UK / GBP)
 - [x] Define system context and app boundaries
 
-## Phase 1 — Foundation (current)
+## Phase 1 — Foundation (complete)
 
 - [x] Monorepo folder structure
 - [x] Root Git, LICENSE, CONTRIBUTING, .gitignore, .env.example
 - [x] Professional documentation suite under `docs/`
 - [x] Prisma schema for all core entities
-- [x] Docker Compose (Postgres, Redis, app services)
-- [x] Nginx + SSL + deploy scripts (templates)
+- [x] Windows-first local setup (native PostgreSQL — no Docker)
+- [x] Nginx + PM2 + SSL deploy templates (`deploy/`)
 - [x] Backend Clean Architecture scaffold
 - [x] Frontend & Admin Next.js scaffolds (no full page builds yet)
-- [x] GitHub Actions CI skeleton
+- [x] GitHub Actions CI skeleton + issue/PR templates
 - [x] Architecture review checkpoint
 
 ## Phase 2 — Auth & platform core
@@ -87,7 +87,7 @@
 
 | Milestone | Exit criteria |
 |-----------|---------------|
-| M1 Foundation | `docker compose up` brings Postgres; docs complete; scaffolds build |
+| M1 Foundation | Native Postgres + docs complete; scaffolds build on Windows |
 | M2 Auth | Register/login/refresh/RBAC/Google work via API |
 | M3 Catalog | Browse & admin CRUD for products live |
 | M4 Commerce | End-to-end paid order with Stripe sandbox |

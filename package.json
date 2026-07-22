@@ -20,9 +20,7 @@
     "db:generate": "npm run prisma:generate --workspace=backend",
     "db:migrate": "npm run prisma:migrate --workspace=backend",
     "db:seed": "npm run prisma:seed --workspace=backend",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:logs": "docker compose logs -f"
+    "db:check": "powershell -ExecutionPolicy Bypass -File scripts/dev/start-infra.ps1"
   },
   "devDependencies": {
     "husky": "^9.1.7",

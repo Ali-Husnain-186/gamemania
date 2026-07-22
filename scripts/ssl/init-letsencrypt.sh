@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
+# Let's Encrypt init for GAME-MANIA (native Nginx — no Docker).
+# Prerequisites: DNS pointing to this VPS, Nginx installed, ports 80/443 open.
 set -euo pipefail
-# Obtain Let's Encrypt certs for GAME-MANIA hostnames.
-# Run on the Ubuntu VPS with DNS already pointing here.
 
-DOMAIN="${DOMAIN:-gamemania.com}"
-EMAIL="${SSL_EMAIL:-admin@gamemania.com}"
+DOMAINS=(-d gamemania.com -d www.gamemania.com -d admin.gamemania.com -d api.gamemania.com)
+EMAIL="${CERTBOT_EMAIL:-admin@gamemania.com}"
 
-docker compose -f docker-compose.yml -f docker-compose.prod.yml run --rm certbot certonly \
-  --webroot -w /var/www/certbot \
-  -d "$DOMAIN" -d "www.$DOMAIN" -d "admin.$DOMAIN" -d "api.$DOMAIN" \
-  --email "$EMAIL" --agree-tos --no-eff-email
+sudo certbot certonly --webroot -w /var/www/certbot \
+  --email "$EMAIL" --agree-tos --no-eff-email \
+  "${DOMAINS[@]}"
 
-echo "Certificates issued. Reload nginx:"
-echo "  docker compose -f docker-compose.yml -f docker-compose.prod.yml exec nginx nginx -s reload"
+sudo nginx -t
+sudo systemctl reload nginx
+
+echo "Certificates issued. Nginx reloaded."
+echo "Renewal: certbot renew (timer usually installed with certbot)."

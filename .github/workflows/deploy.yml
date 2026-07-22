@@ -12,5 +12,10 @@ jobs:
     steps:
       - name: Deployment reminder
         run: |
-          echo "Build images on the VPS with scripts/deploy/update.sh"
+          echo "Deploy on Hostinger Ubuntu VPS without Docker:"
+          echo "  1. git pull on VPS"
+          echo "  2. npm ci && build each app"
+          echo "  3. prisma migrate deploy"
+          echo "  4. pm2 startOrReload deploy/pm2/ecosystem.config.js --env production"
+          echo "  5. nginx reload (deploy/nginx)"
           echo "Targets: gamemania.com, admin.gamemania.com, api.gamemania.com"

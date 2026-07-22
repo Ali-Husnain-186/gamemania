@@ -1,73 +1,68 @@
-# Installation Guide
+# GAME-MANIA — Installation Guide (Windows 11)
 
-## 1. Clone
+**No Docker required.** Use a local PostgreSQL install and npm workspaces.
+
+## Prerequisites
+
+- Node.js LTS (≥ 20) and npm (≥ 10)
+- PostgreSQL 16+ (Windows installer)
+- Git
+- Optional: Redis for cache / rate-limit store
+
+## 1. Clone and env files
 
 ```powershell
 cd D:\upwork-projects\GAME-MANIA
-```
-
-## 2. Environment
-
-```powershell
 Copy-Item .env.example .env
 Copy-Item backend\.env.example backend\.env
 Copy-Item frontend\.env.example frontend\.env.local
 Copy-Item admin\.env.example admin\.env.local
 ```
 
-Edit secrets in those files.
+## 2. Create database
 
-## 3. Start databases
+In `psql` (or pgAdmin):
 
-```powershell
-docker compose up -d postgres redis
+```sql
+CREATE USER gamemania WITH PASSWORD 'gamemania_dev_change_me';
+CREATE DATABASE gamemania OWNER gamemania;
 ```
 
-## 4. Install dependencies
+Align credentials with `DATABASE_URL` in `.env` / `backend/.env`.
 
-From repo root (npm workspaces):
+Verify:
+
+```powershell
+npm run db:check
+```
+
+## 3. Install and migrate
 
 ```powershell
 npm install
-```
-
-## 5. Database migrate & seed
-
-```powershell
 cd backend
-npx prisma generate --schema ..\database\prisma\schema.prisma
-npx prisma migrate dev --schema ..\database\prisma\schema.prisma --name init
+npm run prisma:generate
+npm run prisma:migrate
 npm run prisma:seed
 cd ..
 ```
 
-## 6. Run apps (three terminals)
+## 4. Run apps (three terminals)
 
 ```powershell
-npm run dev:backend
-npm run dev:frontend
-npm run dev:admin
+cd backend; npm run dev      # http://localhost:5000
+cd frontend; npm run dev     # http://localhost:3000
+cd admin; npm run dev        # http://localhost:3001
 ```
 
-- Storefront: http://localhost:3000  
-- Admin: http://localhost:3001  
-- API health: http://localhost:4000/api/v1/health  
-
-## 7. Default seed accounts
-
-Documented in seed output. Typical:
-
-| Email | Role | Password |
-|-------|------|----------|
-| admin@gamemania.com | SUPER_ADMIN | ChangeMe123! |
-| demo@gamemania.com | CUSTOMER | ChangeMe123! |
-
-Change immediately after first login in non-local environments.
+Health check: http://localhost:5000/api/v1/health
 
 ## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
-| `docker` not found | Start Docker Desktop; add CLI to PATH |
-| Port in use | Stop conflicting process or change compose ports |
-| Prisma P1001 | Postgres not healthy yet — wait / check `docker compose ps` |
+| `psql` not found | Add PostgreSQL `bin` to PATH; reopen terminal |
+| Prisma P1001 | Postgres not running or wrong `DATABASE_URL` |
+| Port in use | Stop the process on 3000 / 3001 / 5000 |
+
+See also: [environment-setup.md](./environment-setup.md), [deployment.md](./deployment.md).

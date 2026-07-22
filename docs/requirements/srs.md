@@ -33,7 +33,7 @@ Inspiration only: Gamerium, The Game Collection. UI and code must be original.
 - Trade-in quote → approval → payout
 - Blog / CMS / FAQ / contact
 - Admin dashboard with RBAC
-- Dockerized deploy to Ubuntu VPS
+- PM2 + Nginx deploy to Ubuntu VPS (no Docker)
 
 ### Out of scope (v1)
 
@@ -62,7 +62,7 @@ See [non-functional-requirements.md](./non-functional-requirements.md).
 ## 7. Assumptions
 
 - Single merchant legal entity (UK)
-- Docker Desktop available for local Postgres
+- Native PostgreSQL available for local development (Windows)
 - Domain DNS pointed to VPS for production SSL
 
 ## 8. Constraints

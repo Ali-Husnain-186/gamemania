@@ -47,8 +47,8 @@ uploads/
 tmp/
 .temp/
 
-# Docker volumes
-docker/data/
+# Local DB dumps / backups
+backups/
 postgres-data/
 
 # Certs / secrets

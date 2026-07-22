@@ -1,59 +1,44 @@
 # Contributing to GAME-MANIA
 
-Thank you for contributing. This document describes how we work in this monorepo.
-
 ## Prerequisites
 
-- Windows 11 or Linux (Ubuntu) with Node.js LTS, npm, Docker Desktop / Docker Engine, Git
-- Read [docs/guides/coding-standards.md](docs/guides/coding-standards.md)
+- Windows 11 or Linux (Ubuntu) with Node.js LTS, npm, native PostgreSQL, Git
+- **No Docker required**
 
-## Branching
+## Workflow
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Production-ready |
-| `develop` | Integration |
-| `feature/*` | New features |
-| `fix/*` | Bug fixes |
-| `chore/*` | Tooling / docs |
+1. Create a feature branch from `master`
+2. Keep changes scoped to one concern
+3. Run lint/typecheck before opening a PR
+4. Use the PR template
+
+## Local apps
+
+| App | Port |
+|-----|------|
+| frontend | 3000 |
+| admin | 3001 |
+| backend | 5000 |
+
+```powershell
+cd backend; npm run dev
+cd frontend; npm run dev
+cd admin; npm run dev
+```
 
 ## Commit messages
 
-Use Conventional Commits:
+Use Conventional Commits style:
 
 ```
-feat(backend): add trade-in quote endpoint
-fix(frontend): correct cart shipping threshold
-docs: update deployment guide for Hostinger
-chore(docker): pin postgres to 16-alpine
+feat(auth): add refresh token rotation
+fix(cart): correct VAT on shipping
+docs(api): document trade-in quote endpoint
+chore(repo): align folder structure for Windows-first DX
 ```
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `ci`.
 
 ## Pull requests
 
-1. Branch from `develop`.
-2. Keep PRs focused and small.
-3. Ensure lint and typecheck pass.
-4. Update docs when behaviour or APIs change.
-5. Request review before merge.
-
-## Code standards
-
-- TypeScript strict mode in all apps
-- Clean Architecture on the backend (controllers → services → repositories)
-- Feature-based folders on frontend/admin
-- No secrets in Git — use `.env.example` only
-- Prefer Zod for validation at API and form boundaries
-
-## Local checks
-
-```powershell
-cd backend; npm run lint; npm run typecheck
-cd frontend; npm run lint; npm run typecheck
-cd admin; npm run lint; npm run typecheck
-```
-
-## Security
-
-Never commit API keys, JWT secrets, or database passwords. Report vulnerabilities privately to the maintainers.
+- Link related issues
+- Include a short test plan
+- Do not commit secrets or local `.env` files

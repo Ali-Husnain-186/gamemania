@@ -63,8 +63,8 @@
 
 | ID | Requirement |
 |----|-------------|
-| NFR-OPS-001 | `docker compose up -d` starts production stack |
-| NFR-OPS-002 | Works on Windows 11 (Docker Desktop) for local services |
+| NFR-OPS-001 | PM2 + Nginx start production stack on Ubuntu VPS |
+| NFR-OPS-002 | Works on Windows 11 with native PostgreSQL (no Docker) |
 | NFR-OPS-003 | Deployable to Ubuntu VPS with Let's Encrypt |
 | NFR-OPS-004 | CI lint + typecheck on PRs |
 

@@ -1,6 +1,6 @@
 # REST API Documentation
 
-**Base URL (dev):** `http://localhost:4000/api/v1`  
+**Base URL (dev):** `http://localhost:5000/api/v1`  
 **Base URL (prod):** `https://api.gamemania.com/api/v1`  
 **Format:** JSON  
 **Auth:** `Authorization: Bearer <access_token>` unless noted.

@@ -1,8 +1,10 @@
 # GAME-MANIA — Architecture Overview
 
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Market:** United Kingdom (GBP, en-GB)  
-**Status:** Foundation
+**Status:** System architecture baseline (Phase 3)
+
+> Full design: [system-design.md](./system-design.md) · [auth-and-security.md](./auth-and-security.md) · [integrations.md](./integrations.md)
 
 ## 1. System context
 

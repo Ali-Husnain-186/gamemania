@@ -6,6 +6,9 @@
 | Functional requirements | [requirements/functional-requirements.md](./requirements/functional-requirements.md) |
 | Non-functional requirements | [requirements/non-functional-requirements.md](./requirements/non-functional-requirements.md) |
 | Architecture overview | [architecture/overview.md](./architecture/overview.md) |
+| System design (Phase 3) | [architecture/system-design.md](./architecture/system-design.md) |
+| Auth & security flows | [architecture/auth-and-security.md](./architecture/auth-and-security.md) |
+| Integrations | [architecture/integrations.md](./architecture/integrations.md) |
 | Roadmap | [architecture/roadmap.md](./architecture/roadmap.md) |
 | Folder structure | [architecture/folder-structure.md](./architecture/folder-structure.md) |
 | Database design | [database/design.md](./database/design.md) |

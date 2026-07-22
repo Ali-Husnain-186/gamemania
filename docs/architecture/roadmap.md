@@ -1,27 +1,24 @@
-# GAME-MANIA — Project Roadmap
+## Workflow phases (charter)
+
+| Phase | Focus | Status |
+|-------|--------|--------|
+| 1 | Analyze project | Complete |
+| 2 | Folder structure (Windows-first, no Docker) | Complete |
+| 3 | System architecture design | Complete |
+| 4 | Database design | Next |
+| 5 | Prisma schema | Pending |
+| 6 | REST API design | Pending |
+| 7 | Documentation suite polish | Pending |
+| 8 | Git hygiene | Pending |
+| 9–11 | Configure backend / frontend / admin | Pending |
+| 12–15 | UI, modules, admin, integration | Pending |
+| 16–18 | Testing, performance, production | Pending |
+
+## Product delivery roadmap (implementation)
 
 **Defaults:** UK market, GBP, en-GB. Free shipping at £60+ (admin-configurable).
 
-## Phase 0 — Analysis (complete)
-
-- [x] Confirm empty workspace
-- [x] Choose market defaults (UK / GBP)
-- [x] Define system context and app boundaries
-
-## Phase 1 — Foundation (complete)
-
-- [x] Monorepo folder structure
-- [x] Root Git, LICENSE, CONTRIBUTING, .gitignore, .env.example
-- [x] Professional documentation suite under `docs/`
-- [x] Prisma schema for all core entities
-- [x] Windows-first local setup (native PostgreSQL — no Docker)
-- [x] Nginx + PM2 + SSL deploy templates (`deploy/`)
-- [x] Backend Clean Architecture scaffold
-- [x] Frontend & Admin Next.js scaffolds (no full page builds yet)
-- [x] GitHub Actions CI skeleton + issue/PR templates
-- [x] Architecture review checkpoint
-
-## Phase 2 — Auth & platform core
+### Auth & platform core
 
 - [ ] JWT + refresh sessions
 - [ ] RBAC (roles/permissions seed)
@@ -30,7 +27,7 @@
 - [ ] Audit logging middleware
 - [ ] Rate limiting & security headers
 
-## Phase 3 — Catalog & inventory
+### Catalog & inventory
 
 - [ ] Categories, brands, products, images (Cloudinary)
 - [ ] Inventory stock & low-stock alerts
@@ -38,7 +35,7 @@
 - [ ] Storefront: Home, Shop, Category, Product, Search (SSR/ISR)
 - [ ] Admin: Products, Categories, Brands, Inventory
 
-## Phase 4 — Cart, checkout, orders
+### Cart, checkout, orders
 
 - [ ] Cart (guest + authenticated)
 - [ ] Coupons / gift cards application
@@ -48,7 +45,7 @@
 - [ ] Order tracking, invoices, refunds
 - [ ] Admin order management
 
-## Phase 5 — Loyalty & engagement
+### Loyalty & engagement
 
 - [ ] Reward points earn/redeem
 - [ ] Store credit ledger
@@ -56,7 +53,7 @@
 - [ ] Reviews + moderation
 - [ ] Notifications (in-app + Resend email)
 
-## Phase 6 — Trade-in
+### Trade-in
 
 - [ ] Pricing rules admin
 - [ ] Public quote wizard
@@ -64,7 +61,7 @@
 - [ ] Admin grading / approval / payout
 - [ ] Restock path for approved pre-owned (optional inventory link)
 
-## Phase 7 — CMS & content
+### CMS & content
 
 - [ ] Blog (ISR)
 - [ ] CMS pages (About, FAQ, Contact)
@@ -72,7 +69,7 @@
 - [ ] Site settings
 - [ ] SEO (metadata, sitemap, robots, Search Console)
 
-## Phase 8 — Analytics, polish, production
+### Analytics, polish, production
 
 - [ ] Admin dashboard analytics
 - [ ] Reports export
@@ -98,4 +95,4 @@
 
 ## Explicit sequencing rule
 
-Do **not** build customer-facing pages before M1–M2 APIs and design tokens/components exist. Follow workflow steps 1–10 before page implementation (step 11+).
+Do **not** skip charter phases. Build features against [system-design.md](./system-design.md).

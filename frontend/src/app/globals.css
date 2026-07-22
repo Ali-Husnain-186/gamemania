@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --gm-bg: #070b14;
+  --gm-bg-elevated: #0e1524;
+  --gm-fg: #e8eefc;
+  --gm-muted: #8b9bb8;
+  --gm-accent: #00e5a8;
+  --gm-accent-2: #3d7eff;
+  --gm-danger: #ff4d6d;
+  --gm-border: #1c2740;
+  --gm-font-display: "Orbitron", "Segoe UI", sans-serif;
+  --gm-font-body: "Manrope", "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--gm-bg);
+  --color-foreground: var(--gm-fg);
+  --color-accent: var(--gm-accent);
+  --font-display: var(--gm-font-display);
+  --font-sans: var(--gm-font-body);
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(61, 126, 255, 0.18), transparent 55%),
+    radial-gradient(900px 500px at 90% 0%, rgba(0, 229, 168, 0.12), transparent 50%),
+    var(--gm-bg);
+  color: var(--gm-fg);
+  font-family: var(--gm-font-body);
+}
+
+.gm-display {
+  font-family: var(--gm-font-display);
+  letter-spacing: 0.04em;
+}

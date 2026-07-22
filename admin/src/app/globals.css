@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+:root {
+  --admin-bg: #0b1020;
+  --admin-panel: #121a2f;
+  --admin-fg: #eef2ff;
+  --admin-muted: #93a0c0;
+  --admin-accent: #5b8cff;
+  --admin-border: #243056;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--admin-bg);
+  color: var(--admin-fg);
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+}

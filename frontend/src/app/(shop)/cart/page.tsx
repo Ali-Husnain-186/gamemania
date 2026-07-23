@@ -117,9 +117,12 @@ export default function CartPage() {
               {formatGBP(cart.subtotalPence ?? 0)}
             </p>
           </div>
-          <p className="text-sm text-[var(--gm-muted)]">
-            Checkout / payments land in the next build phase.
-          </p>
+          <Link
+            href="/checkout"
+            className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-[var(--gm-accent)] px-4 py-3 text-sm font-semibold text-[#042016]"
+          >
+            Proceed to checkout
+          </Link>
         </div>
       )}
     </div>

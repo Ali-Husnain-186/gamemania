@@ -11,6 +11,7 @@ import { useCartStore } from '@/stores/cart-store';
 const nav = [
   { href: '/shop', label: 'Shop' },
   { href: '/trade-in', label: 'Trade-In' },
+  { href: '/wishlist', label: 'Wishlist' },
   { href: '/account', label: 'Account' },
 ];
 

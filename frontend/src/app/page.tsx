@@ -2,17 +2,22 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { apiGet } from '@/lib/api';
+import { ProductCard } from '@/features/catalog/product-card';
+import type { Product } from '@/types/catalog';
 
 export default function HomePage() {
+  const featuredQuery = useQuery({
+    queryKey: ['products', 'featured'],
+    queryFn: () => apiGet<Product[]>('/products?sort=featured&limit=4'),
+  });
+
   return (
     <main className="relative overflow-hidden">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22%3E%3Cpath d=%22M40 0H0V40%22 fill=%22none%22 stroke=%22%231c2740%22 stroke-width=%221%22/%3E%3C/svg%3E')] opacity-30"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-full max-w-3xl bg-[radial-gradient(ellipse_at_70%_40%,rgba(0,229,168,0.16),transparent_60%)]"
       />
 
       <section className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl flex-col justify-center px-4 pb-20 pt-16 md:px-6">
@@ -72,6 +77,30 @@ export default function HomePage() {
         >
           Free UK shipping on orders £60+
         </motion.p>
+      </section>
+
+      <section className="relative mx-auto max-w-6xl px-4 pb-20 md:px-6">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="gm-display text-2xl font-bold">Featured drops</h2>
+            <p className="mt-2 text-sm text-[var(--gm-muted)]">
+              Hand-picked titles and gear ready to ship.
+            </p>
+          </div>
+          <Link href="/shop" className="text-sm text-[var(--gm-accent)] gm-focus rounded-sm">
+            View all →
+          </Link>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
+          {featuredQuery.isLoading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-[3/4] animate-pulse rounded-lg bg-[var(--gm-bg-elevated)]"
+                />
+              ))
+            : (featuredQuery.data ?? []).map((p) => <ProductCard key={p.id} product={p} />)}
+        </div>
       </section>
     </main>
   );

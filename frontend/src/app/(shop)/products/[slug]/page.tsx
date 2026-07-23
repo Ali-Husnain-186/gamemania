@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { apiGet, apiPost } from '@/lib/api';
+import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
@@ -25,6 +25,10 @@ export default function ProductDetailPage() {
       setCart(cart);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
+  });
+
+  const wishlistMutation = useMutation({
+    mutationFn: (productId: string) => apiPost('/wishlist', { productId }),
   });
 
   if (productQuery.isLoading) {
@@ -70,14 +74,33 @@ export default function ProductDetailPage() {
           <p className="mt-4 text-[var(--gm-muted)]">
             {product.shortDescription ?? product.description ?? 'Premium gaming product.'}
           </p>
-          <button
-            type="button"
-            disabled={addMutation.isPending || (product.stock ?? 0) < 1}
-            onClick={() => addMutation.mutate(product.id)}
-            className="mt-8 rounded-md bg-[var(--gm-accent)] px-6 py-3 text-sm font-semibold text-[#042016] disabled:opacity-50"
-          >
-            {addMutation.isPending ? 'Adding…' : 'Add to cart'}
-          </button>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button
+              type="button"
+              disabled={addMutation.isPending || (product.stock ?? 0) < 1}
+              onClick={() => addMutation.mutate(product.id)}
+              className="rounded-md bg-[var(--gm-accent)] px-6 py-3 text-sm font-semibold text-[#042016] disabled:opacity-50"
+            >
+              {addMutation.isPending ? 'Adding…' : 'Add to cart'}
+            </button>
+            <button
+              type="button"
+              disabled={wishlistMutation.isPending}
+              onClick={() => {
+                if (!getAccessToken()) {
+                  window.location.href = '/login';
+                  return;
+                }
+                wishlistMutation.mutate(product.id);
+              }}
+              className="rounded-md border border-[var(--gm-border)] px-6 py-3 text-sm font-semibold"
+            >
+              {wishlistMutation.isSuccess ? 'Saved' : 'Wishlist'}
+            </button>
+          </div>
+          {addMutation.isSuccess ? (
+            <p className="mt-3 text-sm text-[var(--gm-accent)]">Added to cart.</p>
+          ) : null}
         </div>
       </div>
     </div>

@@ -125,6 +125,18 @@ export default function AccountPage() {
         </div>
       </dl>
 
+      <nav className="mt-8 flex flex-wrap gap-4 text-sm">
+        <Link href="/account/orders" className="underline text-[var(--gm-ink)]">
+          Orders
+        </Link>
+        <Link href="/wishlist" className="underline text-[var(--gm-ink)]">
+          Wishlist
+        </Link>
+        <Link href="/trade-in" className="underline text-[var(--gm-ink)]">
+          Trade-in
+        </Link>
+      </nav>
+
       <button
         type="button"
         className="mt-8 text-sm text-[var(--gm-muted)] underline gm-focus rounded-sm"

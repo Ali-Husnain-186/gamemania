@@ -1,82 +1,152 @@
-import { PageHeader, Panel } from '@/components/ui/page-shell';
+'use client';
+
+import { useEffect, useState, useTransition } from 'react';
+import { apiGet, apiPatch, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
+import { PageHeader, Panel } from '@/components/ui/page-shell';
 
-const FREE_THRESHOLD_PENCE = 6000;
-const FLAT_RATE_PENCE = 395;
-
-const EXAMPLES = [
-  { label: 'Basket £29.99', subtotalPence: 2999 },
-  { label: 'Basket £59.99', subtotalPence: 5999 },
-  { label: 'Basket £60.00', subtotalPence: 6000 },
-  { label: 'Basket £120.00', subtotalPence: 12000 },
-] as const;
-
-function quote(subtotalPence: number) {
-  const free = subtotalPence >= FREE_THRESHOLD_PENCE;
-  return {
-    ratePence: free ? 0 : FLAT_RATE_PENCE,
-    freeShipping: free,
-  };
-}
+type Rule = {
+  id: string;
+  name: string;
+  description?: string | null;
+  minOrderAmount: number;
+  maxOrderAmount?: number | null;
+  rate: number;
+  country: string;
+  isActive: boolean;
+  priority: number;
+};
 
 export default function ShippingPage() {
+  const [rules, setRules] = useState<Rule[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [pending, startTransition] = useTransition();
+
+  async function load() {
+    try {
+      setRules(await apiGet<Rule[]>('/admin/shipping-rules'));
+      setError(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Failed to load shipping rules');
+    }
+  }
+
+  useEffect(() => {
+    void load();
+  }, []);
+
+  function save() {
+    startTransition(async () => {
+      try {
+        setMessage(null);
+        await apiPatch('/admin/shipping-rules', {
+          rules: rules.map((r) => ({
+            id: r.id,
+            name: r.name,
+            description: r.description ?? undefined,
+            minOrderAmount: r.minOrderAmount,
+            maxOrderAmount: r.maxOrderAmount ?? null,
+            rate: r.rate,
+            country: r.country,
+            isActive: r.isActive,
+            priority: r.priority,
+          })),
+        });
+        setMessage('Shipping rules saved.');
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Save failed');
+      }
+    });
+  }
+
+  function updateRule(id: string, patch: Partial<Rule>) {
+    setRules((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  }
+
   return (
     <>
       <PageHeader
         title="Shipping"
-        description="Default UK shipping rules used at checkout. Editable shipping-rule CRUD lands with the admin API."
+        description="UK rates and free-shipping threshold (amounts in pence)."
+        actions={
+          <button
+            type="button"
+            disabled={pending}
+            onClick={save}
+            className="rounded-md bg-[var(--admin-accent)] px-3 py-2 text-sm font-medium text-black disabled:opacity-50"
+          >
+            {pending ? 'Saving…' : 'Save rules'}
+          </button>
+        }
       />
-
-      <Panel className="mb-6 p-5">
-        <h2 className="text-sm font-semibold">£60 free shipping rule</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--admin-muted)]">
-          Orders under{' '}
-          <span className="text-[var(--admin-fg)]">{formatGbp(FREE_THRESHOLD_PENCE)}</span> are
-          charged a flat{' '}
-          <span className="text-[var(--admin-fg)]">{formatGbp(FLAT_RATE_PENCE)}</span>. Orders at or
-          above the threshold ship free. Live quotes come from{' '}
-          <code className="font-mono text-xs text-[var(--admin-accent)]">GET /shipping/quote</code>.
-        </p>
-      </Panel>
-
-      <Panel className="overflow-hidden">
-        <div className="border-b border-[var(--admin-border)] px-4 py-3 text-xs font-medium uppercase tracking-wider text-[var(--admin-muted)]">
-          Quote examples (GB)
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[480px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
-                <th className="px-4 py-3 font-medium">Subtotal</th>
-                <th className="px-4 py-3 font-medium">Shipping</th>
-                <th className="px-4 py-3 font-medium">Result</th>
-              </tr>
-            </thead>
-            <tbody>
-              {EXAMPLES.map((ex) => {
-                const q = quote(ex.subtotalPence);
-                return (
-                  <tr
-                    key={ex.label}
-                    className="border-b border-[var(--admin-border)]/70 last:border-0"
-                  >
-                    <td className="px-4 py-3">
-                      <span className="font-medium">{ex.label}</span>
-                      <span className="ml-2 font-mono text-xs text-[var(--admin-muted)]">
-                        ({ex.subtotalPence}p)
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-mono">{formatGbp(q.ratePence)}</td>
-                    <td className="px-4 py-3 text-[var(--admin-muted)]">
-                      {q.freeShipping ? 'Free shipping' : 'Flat rate applies'}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </Panel>
+      {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
+      {message ? <p className="mb-4 text-sm text-emerald-300">{message}</p> : null}
+      <div className="space-y-4">
+        {rules.map((r) => (
+          <Panel key={r.id} className="p-5">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Name
+                <input
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  value={r.name}
+                  onChange={(e) => updateRule(r.id, { name: e.target.value })}
+                />
+              </label>
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Min order (pence)
+                <input
+                  type="number"
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm font-mono"
+                  value={r.minOrderAmount}
+                  onChange={(e) => updateRule(r.id, { minOrderAmount: Number(e.target.value) })}
+                />
+              </label>
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Max order (pence, blank = none)
+                <input
+                  type="number"
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm font-mono"
+                  value={r.maxOrderAmount ?? ''}
+                  onChange={(e) =>
+                    updateRule(r.id, {
+                      maxOrderAmount: e.target.value === '' ? null : Number(e.target.value),
+                    })
+                  }
+                />
+              </label>
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Rate (pence) — {formatGbp(r.rate)}
+                <input
+                  type="number"
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm font-mono"
+                  value={r.rate}
+                  onChange={(e) => updateRule(r.id, { rate: Number(e.target.value) })}
+                />
+              </label>
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Priority
+                <input
+                  type="number"
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm font-mono"
+                  value={r.priority}
+                  onChange={(e) => updateRule(r.id, { priority: Number(e.target.value) })}
+                />
+              </label>
+              <label className="flex items-end gap-2 pb-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={r.isActive}
+                  onChange={(e) => updateRule(r.id, { isActive: e.target.checked })}
+                />
+                Active
+              </label>
+            </div>
+          </Panel>
+        ))}
+      </div>
     </>
   );
 }

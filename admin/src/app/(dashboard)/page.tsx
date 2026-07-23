@@ -1,26 +1,59 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { apiGet, ApiError } from '@/lib/api';
+import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel, StatCard } from '@/components/ui/page-shell';
+
+type Stats = {
+  products: number;
+  orders: number;
+  customers: number;
+  openTradeRequests: number;
+  revenuePaidPence: number;
+};
 
 const QUICK_LINKS = [
   { href: '/products', label: 'Products', desc: 'Catalog & inventory' },
   { href: '/orders', label: 'Orders', desc: 'Fulfillment queue' },
   { href: '/trade-ins', label: 'Trade-ins', desc: 'Grade & payout' },
-  { href: '/shipping', label: 'Shipping', desc: 'Rates & free threshold' },
+  { href: '/cms', label: 'CMS', desc: 'Pages & content' },
 ] as const;
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        setStats(await apiGet<Stats>('/admin/dashboard/stats'));
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Failed to load stats');
+      }
+    })();
+  }, []);
+
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        description="Operations overview for GAME-MANIA. Live KPIs will wire in once analytics endpoints ship."
-      />
+      <PageHeader title="Dashboard" description="Live operations overview from PostgreSQL." />
+
+      {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Revenue (today)" value="—" hint="Placeholder" />
-        <StatCard label="Orders" value="—" hint="Placeholder" />
-        <StatCard label="Open trade-ins" value="—" hint="Placeholder" />
-        <StatCard label="Low stock" value="—" hint="Placeholder" />
+        <StatCard
+          label="Revenue (paid)"
+          value={stats ? formatGbp(stats.revenuePaidPence) : '…'}
+          hint="Succeeded payments"
+        />
+        <StatCard label="Orders" value={stats ? String(stats.orders) : '…'} />
+        <StatCard label="Open trade-ins" value={stats ? String(stats.openTradeRequests) : '…'} />
+        <StatCard
+          label="Active products"
+          value={stats ? String(stats.products) : '…'}
+          hint={stats ? `${stats.customers} customers` : undefined}
+        />
       </div>
 
       <section className="mt-10">

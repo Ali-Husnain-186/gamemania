@@ -10,6 +10,8 @@ import {
   RefreshCw,
   Truck,
   Settings,
+  FileText,
+  MessageSquare,
   LogOut,
 } from 'lucide-react';
 import { clearTokens } from '@/lib/auth';
@@ -21,6 +23,8 @@ const NAV = [
   { href: '/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/customers', label: 'Customers', icon: Users },
   { href: '/trade-ins', label: 'Trade-ins', icon: RefreshCw },
+  { href: '/reviews', label: 'Reviews', icon: MessageSquare },
+  { href: '/cms', label: 'CMS', icon: FileText },
   { href: '/shipping', label: 'Shipping', icon: Truck },
   { href: '/settings', label: 'Settings', icon: Settings },
 ] as const;

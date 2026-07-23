@@ -103,7 +103,7 @@ async function main() {
     },
   });
 
-  await prisma.user.upsert({
+  const demoUser = await prisma.user.upsert({
     where: { email: 'demo@gamemania.com' },
     update: {},
     create: {
@@ -117,6 +117,26 @@ async function main() {
       storeCredit: 0,
     },
   });
+
+  const existingAddress = await prisma.address.findFirst({
+    where: { userId: demoUser.id, isDefault: true },
+  });
+  if (!existingAddress) {
+    await prisma.address.create({
+      data: {
+        userId: demoUser.id,
+        label: 'Home',
+        fullName: 'Demo Player',
+        line1: '12 High Street',
+        city: 'Manchester',
+        county: 'Greater Manchester',
+        postcode: 'M1 1AE',
+        country: 'GB',
+        phone: '+447700900123',
+        isDefault: true,
+      },
+    });
+  }
 
   // Shipping: under £60 → £3.95; £60+ → free
   await prisma.shippingRule.deleteMany({});
@@ -364,6 +384,47 @@ async function main() {
       content: 'Frequently asked questions will be managed from the admin CMS.',
       status: 'PUBLISHED',
       publishedAt: new Date(),
+    },
+  });
+
+  await prisma.cmsPage.upsert({
+    where: { slug: 'contact' },
+    update: {},
+    create: {
+      title: 'Contact',
+      slug: 'contact',
+      content: 'Email support@gamemania.com or use the trade-in wizard for console valuations.',
+      status: 'PUBLISHED',
+      publishedAt: new Date(),
+    },
+  });
+
+  await prisma.product.upsert({
+    where: { sku: 'GM-CTRL-DUALSENSE-001' },
+    update: {},
+    create: {
+      name: 'DualSense Wireless Controller (Demo)',
+      slug: 'dualsense-wireless-controller-demo',
+      sku: 'GM-CTRL-DUALSENSE-001',
+      shortDescription: 'Accessory SKU for cart and free-shipping tests.',
+      description: 'Seeded accessory product.',
+      price: 6499,
+      categoryId: (await prisma.category.findUnique({ where: { slug: 'accessories' } }))!.id,
+      brandId: sony.id,
+      platform: 'PS5',
+      condition: ProductCondition.NEW,
+      status: ProductStatus.ACTIVE,
+      isFeatured: true,
+      inventory: { create: { quantity: 50, reserved: 0, lowStockThreshold: 5 } },
+      images: {
+        create: [
+          {
+            url: 'https://placehold.co/800x800/1e293b/38bdf8?text=DualSense',
+            altText: 'DualSense controller',
+            isPrimary: true,
+          },
+        ],
+      },
     },
   });
 

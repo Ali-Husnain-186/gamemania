@@ -12,6 +12,10 @@ import {
   productListQuerySchema,
   updateProductSchema,
 } from '../validators/catalog.validators';
+import { adminCmsRouter } from './admin-cms.routes';
+import { adminOpsRouter } from './admin-ops.routes';
+import { adminReviewsRouter } from './admin-reviews.routes';
+import { adminTradeRouter } from './admin-trade.routes';
 
 const productIdParamsSchema = z.object({
   id: z.string().cuid(),
@@ -40,5 +44,10 @@ router.patch(
   validate(updateProductSchema),
   adminUpdateProductController,
 );
+
+router.use('/trade-in', adminTradeRouter);
+router.use('/reviews', adminReviewsRouter);
+router.use('/cms', adminCmsRouter);
+router.use(adminOpsRouter);
 
 export const adminRouter = router;

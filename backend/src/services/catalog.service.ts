@@ -42,6 +42,8 @@ function mapProduct(product: {
     shortDescription: product.shortDescription,
     price: product.price,
     compareAtPrice: product.compareAtPrice,
+    categoryId: product.category?.id ?? null,
+    brandId: product.brand?.id ?? null,
     platform: product.platform,
     condition: product.condition,
     status: product.status,

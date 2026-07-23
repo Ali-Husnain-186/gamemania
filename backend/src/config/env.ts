@@ -21,6 +21,8 @@ const envSchema = z.object({
   COOKIE_DOMAIN: z.string().default('localhost'),
   SHIPPING_FREE_THRESHOLD_PENCE: z.coerce.number().default(6000),
   SHIPPING_FLAT_RATE_PENCE: z.coerce.number().default(395),
+  STRIPE_SECRET_KEY: z.string().optional(),
+  STRIPE_WEBHOOK_SECRET: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -50,10 +52,14 @@ const data = parsed.success
       COOKIE_DOMAIN: 'localhost',
       SHIPPING_FREE_THRESHOLD_PENCE: 6000,
       SHIPPING_FLAT_RATE_PENCE: 395,
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     } as z.infer<typeof envSchema>);
 
 export const env = {
   ...data,
-  corsOrigins: data.CORS_ORIGINS.split(',').map((s) => s.trim()).filter(Boolean),
+  corsOrigins: data.CORS_ORIGINS.split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   isProd: data.NODE_ENV === 'production',
 };

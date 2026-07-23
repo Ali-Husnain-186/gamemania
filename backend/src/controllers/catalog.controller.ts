@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { created, ok } from '../utils/apiResponse';
+import * as auditService from '../services/audit.service';
 import * as catalogService from '../services/catalog.service';
 import type {
   CreateProductInput,
@@ -59,6 +60,13 @@ export async function adminCreateProductController(
 ) {
   try {
     const product = await catalogService.createProduct(req.body as CreateProductInput);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'product.create',
+      entityType: 'Product',
+      entityId: product.id,
+      ipAddress: req.ip,
+    });
     created(res, product);
   } catch (err) {
     next(err);
@@ -75,6 +83,14 @@ export async function adminUpdateProductController(
       req.params.id,
       req.body as UpdateProductInput,
     );
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'product.update',
+      entityType: 'Product',
+      entityId: product.id,
+      metadata: req.body as Record<string, unknown>,
+      ipAddress: req.ip,
+    });
     ok(res, product);
   } catch (err) {
     next(err);

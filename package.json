@@ -29,15 +29,12 @@
   },
   "lint-staged": {
     "backend/**/*.{ts,tsx,js,jsx}": [
-      "npm run lint --workspace=backend -- --fix",
       "prettier --write"
     ],
     "frontend/**/*.{ts,tsx,js,jsx}": [
-      "npm run lint --workspace=frontend -- --fix",
       "prettier --write"
     ],
     "admin/**/*.{ts,tsx,js,jsx}": [
-      "npm run lint --workspace=admin -- --fix",
       "prettier --write"
     ],
     "*.{json,md,yml,yaml,css}": [

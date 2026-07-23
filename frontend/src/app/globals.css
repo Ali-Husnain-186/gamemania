@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --gm-bg: #070b14;
@@ -9,8 +9,19 @@
   --gm-accent-2: #3d7eff;
   --gm-danger: #ff4d6d;
   --gm-border: #1c2740;
-  --gm-font-display: "Orbitron", "Segoe UI", sans-serif;
-  --gm-font-body: "Manrope", "Segoe UI", sans-serif;
+  --gm-font-display: var(--font-orbitron), 'Segoe UI', sans-serif;
+  --gm-font-body: var(--font-manrope), 'Segoe UI', sans-serif;
+}
+
+.light {
+  --gm-bg: #f4f7fb;
+  --gm-bg-elevated: #ffffff;
+  --gm-fg: #0b1220;
+  --gm-muted: #5b6b86;
+  --gm-accent: #00a87a;
+  --gm-accent-2: #2f62e0;
+  --gm-danger: #d7264c;
+  --gm-border: #d5deee;
 }
 
 @theme inline {
@@ -29,8 +40,7 @@ body {
 body {
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(61, 126, 255, 0.18), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(0, 229, 168, 0.12), transparent 50%),
-    var(--gm-bg);
+    radial-gradient(900px 500px at 90% 0%, rgba(0, 229, 168, 0.12), transparent 50%), var(--gm-bg);
   color: var(--gm-fg);
   font-family: var(--gm-font-body);
 }
@@ -38,4 +48,9 @@ body {
 .gm-display {
   font-family: var(--gm-font-display);
   letter-spacing: 0.04em;
+}
+
+.gm-focus:focus-visible {
+  outline: 2px solid var(--gm-accent);
+  outline-offset: 2px;
 }

@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
   --admin-bg: #0b1020;
@@ -7,12 +7,35 @@
   --admin-muted: #93a0c0;
   --admin-accent: #5b8cff;
   --admin-border: #243056;
+  --admin-danger: #f87171;
+}
+
+@theme inline {
+  --color-admin-bg: var(--admin-bg);
+  --color-admin-panel: var(--admin-panel);
+  --color-admin-fg: var(--admin-fg);
+  --color-admin-muted: var(--admin-muted);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-border: var(--admin-border);
+  --font-sans: var(--font-admin-sans), 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  --font-mono: var(--font-admin-mono), 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--admin-bg);
+  background:
+    radial-gradient(1000px 520px at 0% -20%, rgba(91, 140, 255, 0.12), transparent 55%),
+    var(--admin-bg);
   color: var(--admin-fg);
-  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--admin-accent) 35%, transparent);
 }

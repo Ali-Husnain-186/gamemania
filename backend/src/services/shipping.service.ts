@@ -17,7 +17,7 @@ export type ShippingQuote = {
  */
 export async function quoteShipping(
   subtotalPence: number,
-  country = DEFAULT_SHIPPING.country,
+  country: string = DEFAULT_SHIPPING.country,
 ): Promise<ShippingQuote> {
   try {
     const rules = await prisma.shippingRule.findMany({

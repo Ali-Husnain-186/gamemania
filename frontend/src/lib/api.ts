@@ -1,19 +1,150 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
 
-export async function apiGet<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
-    cache: 'no-store',
-  });
+const ACCESS_TOKEN_KEY = 'gm_access_token';
+const GUEST_ID_KEY = 'gm_guest_id';
 
-  if (!res.ok) {
-    throw new Error(`API ${res.status}: ${path}`);
+export type ApiErrorBody = {
+  success: false;
+  error: {
+    code: string;
+    message: string;
+    details?: unknown;
+  };
+};
+
+export type ApiSuccessBody<T> = {
+  success: true;
+  data: T;
+  meta?: unknown;
+};
+
+export class ApiError extends Error {
+  status: number;
+  code?: string;
+  details?: unknown;
+
+  constructor(status: number, message: string, code?: string, details?: unknown) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+    this.code = code;
+    this.details = details;
+  }
+}
+
+function isBrowser(): boolean {
+  return typeof window !== 'undefined';
+}
+
+export function getAccessToken(): string | null {
+  if (!isBrowser()) return null;
+  return localStorage.getItem(ACCESS_TOKEN_KEY);
+}
+
+export function setAccessToken(token: string | null): void {
+  if (!isBrowser()) return;
+  if (token) {
+    localStorage.setItem(ACCESS_TOKEN_KEY, token);
+  } else {
+    localStorage.removeItem(ACCESS_TOKEN_KEY);
+  }
+}
+
+export function getGuestId(): string {
+  if (!isBrowser()) return '';
+  let id = localStorage.getItem(GUEST_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(GUEST_ID_KEY, id);
+  }
+  return id;
+}
+
+type RequestOptions = Omit<RequestInit, 'body'> & {
+  body?: unknown;
+};
+
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { body, headers: initHeaders, ...rest } = options;
+  const headers = new Headers(initHeaders);
+
+  if (!headers.has('Content-Type') && body !== undefined) {
+    headers.set('Content-Type', 'application/json');
   }
 
-  const json = (await res.json()) as { success: boolean; data: T };
-  return json.data;
+  const token = getAccessToken();
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
+
+  const guestId = getGuestId();
+  if (guestId && !headers.has('X-Guest-Id')) {
+    headers.set('X-Guest-Id', guestId);
+  }
+
+  const res = await fetch(`${API_URL}${path}`, {
+    ...rest,
+    headers,
+    credentials: 'include',
+    cache: 'no-store',
+    body: body === undefined ? undefined : JSON.stringify(body),
+  });
+
+  let json: unknown = null;
+  const text = await res.text();
+  if (text) {
+    try {
+      json = JSON.parse(text) as unknown;
+    } catch {
+      json = null;
+    }
+  }
+
+  if (!res.ok) {
+    const err = json as ApiErrorBody | null;
+    throw new ApiError(
+      res.status,
+      err?.error?.message ?? `API ${res.status}: ${path}`,
+      err?.error?.code,
+      err?.error?.details,
+    );
+  }
+
+  if (json && typeof json === 'object' && 'data' in json) {
+    return (json as ApiSuccessBody<T>).data;
+  }
+
+  return json as T;
 }
+
+export function apiGet<T>(
+  path: string,
+  init?: Omit<RequestOptions, 'body' | 'method'>,
+): Promise<T> {
+  return request<T>(path, { ...init, method: 'GET' });
+}
+
+export function apiPost<T>(
+  path: string,
+  body?: unknown,
+  init?: Omit<RequestOptions, 'body' | 'method'>,
+): Promise<T> {
+  return request<T>(path, { ...init, method: 'POST', body });
+}
+
+export function apiPatch<T>(
+  path: string,
+  body?: unknown,
+  init?: Omit<RequestOptions, 'body' | 'method'>,
+): Promise<T> {
+  return request<T>(path, { ...init, method: 'PATCH', body });
+}
+
+export function apiDelete<T>(
+  path: string,
+  init?: Omit<RequestOptions, 'body' | 'method'>,
+): Promise<T> {
+  return request<T>(path, { ...init, method: 'DELETE' });
+}
+
+export { API_URL };

@@ -14,7 +14,7 @@ export async function shippingQuoteController(
 ): Promise<void> {
   try {
     const { subtotal, country } = querySchema.parse(req.query);
-    const quote = await quoteShipping(subtotal, country.toUpperCase());
+    const quote = await quoteShipping(subtotal, country.toUpperCase() || 'GB');
     res.json({ success: true, data: quote });
   } catch (err) {
     next(err);

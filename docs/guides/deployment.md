@@ -1,16 +1,20 @@
 # GAME-MANIA — Production Deployment (Hostinger Ubuntu VPS)
 
-**No Docker.** Stack: Node.js LTS, PM2, Nginx, PostgreSQL, Let's Encrypt.
+**No Docker.** Single site: Node.js LTS, PM2, Nginx, PostgreSQL, Let's Encrypt.
+
+Staff admin is part of the storefront at `/admin` (roles: `STAFF` | `ADMIN` | `SUPER_ADMIN`). Seed user: `Info@gamemaniauk.co.uk` / `Private08!`. Staff accounts are redirected to `/admin` only (no storefront shopping UX).
 
 ## Targets
 
-| Host | Process |
-|------|---------|
-| gamemania.com | Next.js storefront (PM2 → :3000) |
-| admin.gamemania.com | Next.js admin (PM2 → :3001) |
-| api.gamemania.com | Express API (PM2 → :5000) |
+| Path                         | Process                                     |
+| ---------------------------- | ------------------------------------------- |
+| `https://YOUR_DOMAIN/`       | Next.js storefront (PM2 → :3000)            |
+| `https://YOUR_DOMAIN/admin`  | Same Next.js app (role-gated)               |
+| `https://YOUR_DOMAIN/api/v1` | Express API (PM2 → :5000 via Nginx `/api/`) |
 
 ## Server prerequisites
+
+See the full first-boot runbook: [vps-bootstrap.md](./vps-bootstrap.md).
 
 ```bash
 # Node 20 LTS via nodesource or nvm
@@ -23,14 +27,17 @@ Create PostgreSQL role/database and set production env files on the VPS (never c
 
 ## Nginx
 
-Copy configs from `deploy/nginx/` into `/etc/nginx/` (or symlink `conf.d/gamemania.conf`). Upstream targets are `127.0.0.1:3000|3001|5000`.
+1. Replace `YOUR_DOMAIN` in `deploy/nginx/conf.d/gamemania.conf`.
+2. Copy configs into `/etc/nginx/` (or symlink `conf.d/gamemania.conf`).
+3. Upstream: `/` → `127.0.0.1:3000`, `/api/` → `127.0.0.1:5000`.
 
 ## SSL
 
 ```bash
 sudo mkdir -p /var/www/certbot
-# Point DNS A records first, then:
-bash scripts/ssl/init-letsencrypt.sh
+# Point DNS A records for @ and www first, then:
+sudo certbot --nginx -d YOUR_DOMAIN -d www.YOUR_DOMAIN
+# or: bash scripts/ssl/init-letsencrypt.sh
 ```
 
 ## App deploy
@@ -38,11 +45,17 @@ bash scripts/ssl/init-letsencrypt.sh
 ```bash
 git clone <repo> /var/www/gamemania
 cd /var/www/gamemania
-# configure production .env files
+# configure production .env files (backend/.env, frontend/.env.local)
 bash scripts/deploy/update.sh
 pm2 startup
 pm2 save
 ```
+
+## Auto-deploy (GitHub → VPS)
+
+On every push to `main`, [`.github/workflows/deploy.yml`](../../.github/workflows/deploy.yml) SSHs into the VPS and runs `scripts/deploy/update.sh`.
+
+Required GitHub Actions secrets: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_PORT`.
 
 ## Backups
 
@@ -56,6 +69,11 @@ Schedule via cron (daily). Store off-box copies.
 
 - `pm2 status` / `pm2 logs`
 - Nginx access/error logs
-- Optional: Uptime robot on `/api/v1/health`
+- Health: `GET /api/v1/health`
 
-Full ops notes will expand under `docs/deployment/` in later phases.
+## Smoke checks
+
+- Storefront loads
+- `/api/v1/health` returns ok
+- Login as seed admin → `/admin`
+- Login as `demo@gamemania.com` → no admin access

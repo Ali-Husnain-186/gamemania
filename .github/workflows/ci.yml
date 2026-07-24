@@ -33,5 +33,3 @@ jobs:
           JWT_REFRESH_SECRET: ci_refresh_secret_must_be_at_least_32_chars
       - name: Typecheck frontend
         run: npm run typecheck --workspace=frontend
-      - name: Typecheck admin
-        run: npm run typecheck --workspace=admin

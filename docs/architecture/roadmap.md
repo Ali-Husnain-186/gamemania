@@ -77,5 +77,5 @@
 ## Local demo
 
 - Customer: `demo@gamemania.com` / `ChangeMe123!`
-- Admin: `admin@gamemania.com` / `ChangeMe123!`
-- Ports: storefront `:3000`, admin `:3001`, API `:5000`
+- Admin: `Info@gamemaniauk.co.uk` / `Private08!` → `/admin` only
+- Ports: storefront+admin `:3000`, API `:5000`

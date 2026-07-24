@@ -88,19 +88,35 @@ async function main() {
   await syncRolePerms(adminRole.id, 'ALL');
   await syncRolePerms(superAdminRole.id, 'ALL');
 
-  const passwordHash = await bcrypt.hash('ChangeMe123!', 12);
+  const adminPasswordHash = await bcrypt.hash('Private08!', 12);
+  const customerPasswordHash = await bcrypt.hash('ChangeMe123!', 12);
 
+  // Primary staff account (admin panel only — no storefront shopping UX)
   await prisma.user.upsert({
-    where: { email: 'admin@gamemania.com' },
-    update: {},
+    where: { email: 'info@gamemaniauk.co.uk' },
+    update: {
+      passwordHash: adminPasswordHash,
+      firstName: 'Info',
+      lastName: 'Admin',
+      emailVerified: new Date(),
+      roleId: superAdminRole.id,
+      isActive: true,
+      deletedAt: null,
+    },
     create: {
-      email: 'admin@gamemania.com',
-      passwordHash,
-      firstName: 'System',
+      email: 'info@gamemaniauk.co.uk',
+      passwordHash: adminPasswordHash,
+      firstName: 'Info',
       lastName: 'Admin',
       emailVerified: new Date(),
       roleId: superAdminRole.id,
     },
+  });
+
+  // Retire legacy seed admin (soft-delete so related rows stay intact)
+  await prisma.user.updateMany({
+    where: { email: 'admin@gamemania.com' },
+    data: { deletedAt: new Date(), isActive: false },
   });
 
   const demoUser = await prisma.user.upsert({
@@ -108,7 +124,7 @@ async function main() {
     update: {},
     create: {
       email: 'demo@gamemania.com',
-      passwordHash,
+      passwordHash: customerPasswordHash,
       firstName: 'Demo',
       lastName: 'Player',
       emailVerified: new Date(),
@@ -317,6 +333,19 @@ async function main() {
     },
   });
 
+  await prisma.coupon.upsert({
+    where: { code: 'GAMEMANIA10' },
+    update: { isActive: true, value: 10, type: CouponType.PERCENTAGE },
+    create: {
+      code: 'GAMEMANIA10',
+      type: CouponType.PERCENTAGE,
+      value: 10,
+      minOrderAmount: 0,
+      usageLimit: 10000,
+      isActive: true,
+    },
+  });
+
   // Trade-in sample tree
   const ps = await prisma.tradeConsole.upsert({
     where: { slug: 'playstation' },
@@ -429,7 +458,7 @@ async function main() {
   });
 
   console.log('Seed complete.');
-  console.log('Admin: admin@gamemania.com / ChangeMe123!');
+  console.log('Admin (panel only): Info@gamemaniauk.co.uk / Private08!');
   console.log('Customer: demo@gamemania.com / ChangeMe123!');
   console.log(`Sample product slug: ${sampleProduct.slug}`);
 }

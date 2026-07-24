@@ -52,7 +52,8 @@ async function createSession(userId: string, meta?: SessionMeta) {
 }
 
 export async function register(input: RegisterInput, meta?: SessionMeta) {
-  const existing = await prisma.user.findUnique({ where: { email: input.email } });
+  const email = input.email.trim().toLowerCase();
+  const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
     throw new ConflictError('Email is already registered');
   }
@@ -62,7 +63,7 @@ export async function register(input: RegisterInput, meta?: SessionMeta) {
 
   const user = await prisma.user.create({
     data: {
-      email: input.email,
+      email,
       passwordHash,
       firstName: input.firstName,
       lastName: input.lastName,
@@ -82,8 +83,9 @@ export async function register(input: RegisterInput, meta?: SessionMeta) {
 }
 
 export async function login(input: LoginInput, meta?: SessionMeta) {
+  const email = input.email.trim().toLowerCase();
   const user = await prisma.user.findFirst({
-    where: { email: input.email, deletedAt: null },
+    where: { email, deletedAt: null },
     include: userRoleInclude,
   });
 

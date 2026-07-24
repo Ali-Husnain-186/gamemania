@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { apiGet, apiPost, getAccessToken } from '@/lib/api';
+import { apiGet, apiPost } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { ErrorState } from '@/components/shared/error-state';
+import { ProtectedLayout } from '@/components/auth/protected-layout';
 
 type CheckoutPreview = {
   items: Array<{
@@ -30,15 +31,13 @@ type CheckoutResult = {
   checkoutUrl?: string | null;
 };
 
-export default function CheckoutPage() {
-  const token = typeof window !== 'undefined' ? getAccessToken() : null;
+function CheckoutContent() {
   const [couponCode, setCouponCode] = useState('');
   const [useStoreCredit, setUseStoreCredit] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   const addressesQuery = useQuery({
     queryKey: ['addresses'],
-    enabled: Boolean(token),
     queryFn: () =>
       apiGet<
         Array<{
@@ -55,7 +54,6 @@ export default function CheckoutPage() {
 
   const previewQuery = useQuery({
     queryKey: ['checkout-preview', couponCode, useStoreCredit],
-    enabled: Boolean(token),
     queryFn: () =>
       apiPost<CheckoutPreview>('/checkout/preview', {
         couponCode: couponCode || undefined,
@@ -70,7 +68,7 @@ export default function CheckoutPage() {
       const addresses = addressesQuery.data ?? [];
       const shippingAddressId = addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id;
       if (!shippingAddressId) {
-        throw new Error('Add a shipping address in Account first (or create one via API).');
+        throw new Error('Add a shipping address in Account before placing an order.');
       }
       return apiPost<CheckoutResult>('/checkout', {
         shippingAddressId,
@@ -87,18 +85,6 @@ export default function CheckoutPage() {
     },
     onError: (err) => setMessage(err instanceof Error ? err.message : 'Checkout failed'),
   });
-
-  if (!token) {
-    return (
-      <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <h1 className="gm-display text-3xl font-bold">Checkout</h1>
-        <p className="mt-3 text-[var(--gm-muted)]">Sign in to checkout.</p>
-        <Link href="/login" className="mt-6 inline-flex text-[var(--gm-accent)]">
-          Sign in →
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 md:px-6">
@@ -156,9 +142,15 @@ export default function CheckoutPage() {
 
       <p className="mt-4 text-xs text-[var(--gm-muted)]">
         Addresses: {addressesQuery.data?.length ?? 0} on file.
-        {!addressesQuery.data?.length
-          ? ' Demo tip: place order after adding an address (seed creates none — checkout API will guide).'
-          : null}
+        {!addressesQuery.data?.length ? (
+          <>
+            {' '}
+            <Link href="/account/addresses" className="font-bold text-[var(--gm-cyan)] underline">
+              Add an address
+            </Link>{' '}
+            before placing an order.
+          </>
+        ) : null}
       </p>
 
       <button
@@ -175,5 +167,13 @@ export default function CheckoutPage() {
         ← Back to cart
       </Link>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <ProtectedLayout>
+      <CheckoutContent />
+    </ProtectedLayout>
   );
 }

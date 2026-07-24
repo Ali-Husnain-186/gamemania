@@ -13,25 +13,6 @@ GAME-MANIA/
 │   └── workflows/
 │       ├── ci.yml
 │       └── deploy.yml
-├── admin/                              # Admin dashboard (Next.js 15) :3001
-│   ├── public/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── (auth)/
-│   │   │   └── (dashboard)/
-│   │   ├── components/                 # ui, layout, shared
-│   │   ├── features/                   # dashboard, products, orders, …
-│   │   ├── hooks/
-│   │   ├── lib/
-│   │   ├── providers/
-│   │   ├── stores/
-│   │   └── types/
-│   ├── .env.example
-│   ├── package.json
-│   ├── README.md
-│   ├── tsconfig.json
-│   ├── eslint.config.mjs
-│   └── prettier.config.mjs
 ├── backend/                            # REST API (Express + Prisma) :5000
 │   ├── src/
 │   │   ├── config/
@@ -77,16 +58,17 @@ GAME-MANIA/
 │   ├── deployment/
 │   ├── guides/
 │   └── requirements/
-├── frontend/                           # Customer storefront (Next.js 15) :3000
+├── frontend/                           # Storefront + /admin staff panel (Next.js 15) :3000
 │   ├── public/
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── (shop)/
 │   │   │   ├── (auth)/
 │   │   │   ├── (account)/
+│   │   │   ├── (admin)/admin/        # Staff-only panel
 │   │   │   └── (marketing)/
 │   │   ├── components/                 # ui, layout, shared
-│   │   ├── features/                   # auth, catalog, cart, trade-in, …
+│   │   ├── features/                   # auth, catalog, cart, admin, …
 │   │   ├── hooks/
 │   │   ├── lib/
 │   │   ├── providers/
@@ -116,20 +98,18 @@ GAME-MANIA/
 
 ## Dev ports
 
-| App | Port | Command |
-|-----|------|---------|
-| Storefront | 3000 | `cd frontend && npm run dev` |
-| Admin | 3001 | `cd admin && npm run dev` |
-| API | 5000 | `cd backend && npm run dev` |
+| App                   | Port | Command                      |
+| --------------------- | ---- | ---------------------------- |
+| Storefront + `/admin` | 3000 | `cd frontend && npm run dev` |
+| API                   | 5000 | `cd backend && npm run dev`  |
 
 ## Ownership rules
 
-| Path | Owns |
-|------|------|
-| `frontend/` | Public UX, SEO, cart UI |
-| `admin/` | Internal ops UI |
-| `backend/` | Business rules & persistence API |
-| `database/` | Single source of truth for schema |
-| `docs/` | Specs — update when behaviour changes |
-| `deploy/` | Nginx + PM2 production configs |
-| `scripts/` | Automation only — no business logic |
+| Path        | Owns                                          |
+| ----------- | --------------------------------------------- |
+| `frontend/` | Public UX, SEO, cart UI, staff `/admin` panel |
+| `backend/`  | Business rules & persistence API              |
+| `database/` | Single source of truth for schema             |
+| `docs/`     | Specs — update when behaviour changes         |
+| `deploy/`   | Nginx + PM2 production configs                |
+| `scripts/`  | Automation only — no business logic           |

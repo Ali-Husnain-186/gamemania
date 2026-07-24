@@ -8,7 +8,7 @@
 
 ## 1. System context
 
-GAME-MANIA is a UK gaming marketplace with three deployable applications and shared PostgreSQL data.
+GAME-MANIA is a UK gaming marketplace with one Next.js site (storefront + `/admin`) and a shared Express API on PostgreSQL.
 
 ```mermaid
 flowchart LR
@@ -17,7 +17,6 @@ flowchart LR
   CF[Cloudflare CDN/WAF]
   Nginx[Nginx Reverse Proxy]
   FE[frontend Next.js]
-  AD[admin Next.js]
   API[backend Express]
   DB[(PostgreSQL)]
   Redis[(Redis)]
@@ -29,10 +28,8 @@ flowchart LR
   Customer --> CF --> Nginx
   AdminUser --> CF --> Nginx
   Nginx --> FE
-  Nginx --> AD
   Nginx --> API
   FE --> API
-  AD --> API
   API --> DB
   API --> Redis
   API --> Stripe
@@ -43,21 +40,19 @@ flowchart LR
 
 ### Production hostnames
 
-| Host | Service |
-|------|---------|
-| `gamemania.com` | Storefront |
-| `admin.gamemania.com` | Admin dashboard |
-| `api.gamemania.com` | REST API |
+| Host                 | Service                           |
+| -------------------- | --------------------------------- |
+| `YOUR_DOMAIN`        | Storefront + `/admin` staff panel |
+| `YOUR_DOMAIN/api/v1` | REST API (Nginx → Express)        |
 
 ## 2. Application boundaries
 
-| App | Responsibility | Port (dev) |
-|-----|----------------|------------|
-| `frontend` | Public catalog, cart, checkout, trade-in, account, blog, SEO | 3000 |
-| `admin` | Catalog ops, orders, trade approval, CMS, RBAC, reports | 3001 |
-| `backend` | Auth, business logic, payments, webhooks, notifications | 5000 |
+| App        | Responsibility                                                               | Port (dev) |
+| ---------- | ---------------------------------------------------------------------------- | ---------- |
+| `frontend` | Public catalog, cart, checkout, trade-in, account, blog, SEO, staff `/admin` | 3000       |
+| `backend`  | Auth, business logic, payments, webhooks, notifications                      | 5000       |
 
-Apps communicate **only** via the versioned REST API (`/api/v1`). No direct DB access from Next.js apps.
+Apps communicate **only** via the versioned REST API (`/api/v1`). No direct DB access from Next.js.
 
 ## 3. Backend clean architecture
 
@@ -75,23 +70,23 @@ Cross-cutting: `config`, `dto`, `validators` (Zod), `exceptions`, `utils`, struc
 
 ### Module map
 
-| Module | Domain |
-|--------|--------|
-| `auth` | Register, login, refresh, Google OAuth, password reset |
-| `users` | Profiles, addresses, RBAC assignment |
-| `catalog` | Products, categories, brands, images |
-| `inventory` | Stock levels, reservations |
-| `cart` / `orders` | Cart → checkout → fulfilment |
-| `payments` | Stripe / PayPal, refunds, invoices, webhooks |
-| `shipping` | Configurable rules (default free ≥ £60) |
-| `trade-in` | Quote engine, requests, admin grading |
-| `loyalty` | Reward points, store credit ledgers |
-| `marketing` | Coupons, gift cards, offers |
-| `reviews` | Product reviews moderation |
-| `cms` | Pages, blogs, settings |
-| `notifications` | In-app + email |
-| `analytics` | Dashboard aggregates |
-| `audit` | Admin action logs |
+| Module            | Domain                                                 |
+| ----------------- | ------------------------------------------------------ |
+| `auth`            | Register, login, refresh, Google OAuth, password reset |
+| `users`           | Profiles, addresses, RBAC assignment                   |
+| `catalog`         | Products, categories, brands, images                   |
+| `inventory`       | Stock levels, reservations                             |
+| `cart` / `orders` | Cart → checkout → fulfilment                           |
+| `payments`        | Stripe / PayPal, refunds, invoices, webhooks           |
+| `shipping`        | Configurable rules (default free ≥ £60)                |
+| `trade-in`        | Quote engine, requests, admin grading                  |
+| `loyalty`         | Reward points, store credit ledgers                    |
+| `marketing`       | Coupons, gift cards, offers                            |
+| `reviews`         | Product reviews moderation                             |
+| `cms`             | Pages, blogs, settings                                 |
+| `notifications`   | In-app + email                                         |
+| `analytics`       | Dashboard aggregates                                   |
+| `audit`           | Admin action logs                                      |
 
 ## 4. Frontend architecture
 
@@ -107,7 +102,7 @@ Feature folders under `src/features/*` plus shared `components/`, `hooks/`, `lib
 
 ## 5. Admin architecture
 
-Separate Next.js app (same stack). Route groups for dashboard sections. All mutations require roles/permissions from JWT claims. No public SEO requirement.
+Staff UI is a route group inside `frontend` at `/admin` (same Next.js app). Access is limited to `STAFF` | `ADMIN` | `SUPER_ADMIN`; middleware keeps staff on `/admin` only. All mutations require roles/permissions from JWT claims. No public SEO (`robots: noindex`).
 
 ## 6. Data & money
 
@@ -149,11 +144,11 @@ Quote from pricing rules (console → device → model → storage → condition
 Node.js + PM2 + Nginx on Ubuntu VPS (Hostinger — **no Docker**):
 
 - Nginx (TLS termination, reverse proxy) — configs in `deploy/nginx/`
-- PM2 processes: frontend (:3000), admin (:3001), backend (:5000)
+- PM2 processes: frontend (:3000, includes `/admin`), backend (:5000)
 - Native PostgreSQL (+ optional Redis)
 - Certbot / Let's Encrypt for SSL — `scripts/ssl/`
 
-Local (Windows 11): native PostgreSQL; apps via `npm run dev` (ports 3000 / 3001 / 5000).
+Local (Windows 11): native PostgreSQL; apps via `npm run dev` (ports 3000 / 5000).
 
 ## 10. Non-goals (v1)
 

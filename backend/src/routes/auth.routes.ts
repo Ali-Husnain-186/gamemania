@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import {
+  googleCallbackController,
+  googleStartController,
   loginController,
   logoutController,
   meController,
@@ -29,5 +31,7 @@ router.post('/login', authLimiter, validate(loginSchema), loginController);
 router.post('/refresh', authLimiter, refreshController);
 router.post('/logout', authenticate, logoutController);
 router.get('/me', authenticate, meController);
+router.get('/google', authLimiter, googleStartController);
+router.get('/google/callback', authLimiter, googleCallbackController);
 
 export const authRouter = router;

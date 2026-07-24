@@ -153,7 +153,7 @@ export function CheckoutClient() {
             className="mt-1 w-full rounded-xl border border-[var(--gm-line)] bg-white px-3 py-2.5 uppercase"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-            placeholder="WELCOME10"
+            placeholder="GAMEMANIA10"
           />
         </label>
 

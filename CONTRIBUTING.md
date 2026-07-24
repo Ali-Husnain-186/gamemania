@@ -14,17 +14,17 @@
 
 ## Local apps
 
-| App | Port |
-|-----|------|
-| frontend | 3000 |
-| admin | 3001 |
-| backend | 5000 |
+| App                         | Port |
+| --------------------------- | ---- |
+| frontend (store + `/admin`) | 3000 |
+| backend                     | 5000 |
 
 ```powershell
 cd backend; npm run dev
 cd frontend; npm run dev
-cd admin; npm run dev
 ```
+
+Staff login: `Info@gamemaniauk.co.uk` / `Private08!` → http://localhost:3000/admin
 
 ## Commit messages
 

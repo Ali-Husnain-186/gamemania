@@ -2,8 +2,13 @@ import dotenv from 'dotenv';
 import { z } from 'zod';
 import path from 'path';
 
+// Resolve from this file so `npm run dev --workspace=backend` (cwd = repo root)
+// still loads backend/.env instead of the empty Google placeholders in root .env.
+const backendEnvPath = path.resolve(__dirname, '../../.env');
+const repoRootEnvPath = path.resolve(__dirname, '../../../.env');
+dotenv.config({ path: repoRootEnvPath });
+dotenv.config({ path: backendEnvPath, override: true });
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
@@ -19,10 +24,19 @@ const envSchema = z.object({
   ADMIN_URL: z.string().default('http://localhost:3001'),
   CORS_ORIGINS: z.string().default('http://localhost:3000,http://localhost:3001'),
   COOKIE_DOMAIN: z.string().default('localhost'),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_CALLBACK_URL: z.string().optional(),
   SHIPPING_FREE_THRESHOLD_PENCE: z.coerce.number().default(6000),
   SHIPPING_FLAT_RATE_PENCE: z.coerce.number().default(395),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // Gmail SMTP (no custom domain needed). Use a Google App Password.
+  SMTP_HOST: z.string().default('smtp.gmail.com'),
+  SMTP_PORT: z.coerce.number().default(587),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional(),
+  EMAIL_FROM: z.string().default('GAME MANIA <beth.t@example.com>'),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -50,10 +64,18 @@ const data = parsed.success
       ADMIN_URL: 'http://localhost:3001',
       CORS_ORIGINS: 'http://localhost:3000,http://localhost:3001',
       COOKIE_DOMAIN: 'localhost',
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+      GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
       SHIPPING_FREE_THRESHOLD_PENCE: 6000,
       SHIPPING_FLAT_RATE_PENCE: 395,
       STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
       STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+      SMTP_HOST: process.env.SMTP_HOST ?? 'smtp.gmail.com',
+      SMTP_PORT: Number(process.env.SMTP_PORT ?? 587),
+      SMTP_USER: process.env.SMTP_USER,
+      SMTP_PASS: process.env.SMTP_PASS,
+      EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <beth.t@example.com>',
     } as z.infer<typeof envSchema>);
 
 export const env = {

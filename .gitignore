@@ -66,3 +66,8 @@ test-results/
 *.local
 .turbo/
 .cache/
+
+# Standalone admin app removed — staff UI is frontend/src/app/(admin)/admin
+# Ignore leftover empty folder if Windows still locks the path
+/admin/
+/_trash_admin_empty/

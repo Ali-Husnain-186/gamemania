@@ -1,27 +1,51 @@
 @import 'tailwindcss';
 
 :root {
-  --gm-bg: #070b14;
-  --gm-bg-elevated: #0e1524;
-  --gm-fg: #e8eefc;
-  --gm-muted: #8b9bb8;
-  --gm-accent: #00e5a8;
-  --gm-accent-2: #3d7eff;
+  /* GAME MANIA brand — comic pop: cyan / yellow / magenta on black */
+  --gm-cyan: #00b5e2;
+  --gm-yellow: #ffd100;
+  --gm-magenta: #e51a63;
+  --gm-black: #000000;
+  --gm-white: #ffffff;
+
+  --gm-bg: #050505;
+  --gm-bg-elevated: #121212;
+  --gm-fg: #ffffff;
+  --gm-muted: #a8a8a8;
+  --gm-accent: var(--gm-cyan);
+  --gm-accent-2: var(--gm-yellow);
+  --gm-accent-3: var(--gm-magenta);
   --gm-danger: #ff4d6d;
-  --gm-border: #1c2740;
-  --gm-font-display: var(--font-orbitron), 'Segoe UI', sans-serif;
-  --gm-font-body: var(--font-manrope), 'Segoe UI', sans-serif;
+  --gm-border: #2a2a2a;
+  --gm-ink: #ffffff;
+  --gm-line: #2a2a2a;
+  --gm-on-accent: #000000;
+  --gm-font-display: var(--font-bangers), 'Impact', sans-serif;
+  --gm-font-body: var(--font-nunito), 'Segoe UI', sans-serif;
+
+  /* Staff admin panel (same site, /admin) */
+  --admin-bg: #0b1020;
+  --admin-panel: #121a2f;
+  --admin-fg: #eef2ff;
+  --admin-muted: #93a0c0;
+  --admin-accent: #5b8cff;
+  --admin-border: #243056;
+  --admin-danger: #f87171;
 }
 
 .light {
-  --gm-bg: #f4f7fb;
+  --gm-bg: #f7fafc;
   --gm-bg-elevated: #ffffff;
-  --gm-fg: #0b1220;
-  --gm-muted: #5b6b86;
-  --gm-accent: #00a87a;
-  --gm-accent-2: #2f62e0;
+  --gm-fg: #0a0a0a;
+  --gm-muted: #4b5563;
+  --gm-accent: #0090b5;
+  --gm-accent-2: #d4a800;
+  --gm-accent-3: #c41252;
   --gm-danger: #d7264c;
-  --gm-border: #d5deee;
+  --gm-border: #d1d5db;
+  --gm-ink: #0a0a0a;
+  --gm-line: #d1d5db;
+  --gm-on-accent: #000000;
 }
 
 @theme inline {
@@ -39,18 +63,108 @@ body {
 
 body {
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(61, 126, 255, 0.18), transparent 55%),
-    radial-gradient(900px 500px at 90% 0%, rgba(0, 229, 168, 0.12), transparent 50%), var(--gm-bg);
+    radial-gradient(900px 500px at 8% -5%, rgba(0, 181, 226, 0.22), transparent 55%),
+    radial-gradient(800px 480px at 92% 0%, rgba(229, 26, 99, 0.16), transparent 50%),
+    radial-gradient(700px 400px at 50% 100%, rgba(255, 209, 0, 0.08), transparent 45%), var(--gm-bg);
   color: var(--gm-fg);
   font-family: var(--gm-font-body);
 }
 
 .gm-display {
   font-family: var(--gm-font-display);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .gm-focus:focus-visible {
-  outline: 2px solid var(--gm-accent);
+  outline: 2px solid var(--gm-yellow);
   outline-offset: 2px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--gm-yellow);
+  color: #000;
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.btn-magenta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--gm-magenta);
+  color: #fff;
+  font-weight: 800;
+  padding: 0.75rem 1.5rem;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease;
+}
+
+.btn-magenta:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-cyan-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 2px solid var(--gm-cyan);
+  color: var(--gm-cyan);
+  font-weight: 800;
+  padding: 0.7rem 1.4rem;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.btn-cyan-outline:hover {
+  background: var(--gm-cyan);
+  color: #000;
+}
+
+.gm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  padding: 0.65rem 1.1rem;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.gm-starburst {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 209, 0, 0.35), transparent 55%),
+    var(--gm-bg-elevated);
+}
+
+.gm-halftone {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 6px 6px;
+}
+
+.gm-banner {
+  background: var(--gm-magenta);
+  color: #fff;
+  font-family: var(--gm-font-display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: rotate(-1.5deg);
 }

@@ -2,39 +2,41 @@
 
 ## Access
 
-Production: https://admin.gamemania.com  
-Local: http://localhost:3001  
+Production: `https://YOUR_DOMAIN/admin`  
+Local: http://localhost:3000/admin
 
-Requires staff role (`STAFF`, `ADMIN`, or `SUPER_ADMIN`).
+Requires staff role (`STAFF`, `ADMIN`, or `SUPER_ADMIN`). Seed: `Info@gamemaniauk.co.uk` / `Private08!`.
+
+Staff accounts only see the admin panel — visiting the storefront redirects them to `/admin`.
 
 ## Modules
 
-| Module | Purpose |
-|--------|---------|
-| Dashboard | Sales, orders, trade queue KPIs |
-| Products | CRUD, images, SEO fields |
-| Categories / Brands | Taxonomy |
-| Inventory | Stock adjustments, low-stock |
-| Orders | Status, refunds, invoices |
-| Customers | Profiles, credit/points adjust |
-| Trade Requests | Grade, approve, payout |
-| Trade Pricing | Console/device/model/option rules |
-| Coupons | Discount codes |
-| Reviews | Moderate |
-| Blogs / CMS | Content publishing |
-| Users / Roles / Permissions | RBAC |
-| Shipping Rules | Edit £60 free threshold & rates |
-| Notifications | Broadcast / templates |
-| Logs | Audit trail |
-| Settings | Store name, email, loyalty rates |
-| Reports | Exports |
+| Module                      | Purpose                           |
+| --------------------------- | --------------------------------- |
+| Dashboard                   | Sales, orders, trade queue KPIs   |
+| Products                    | CRUD, images, SEO fields          |
+| Categories / Brands         | Taxonomy                          |
+| Inventory                   | Stock adjustments, low-stock      |
+| Orders                      | Status, refunds, invoices         |
+| Customers                   | Profiles, credit/points adjust    |
+| Trade Requests              | Grade, approve, payout            |
+| Trade Pricing               | Console/device/model/option rules |
+| Coupons                     | Discount codes                    |
+| Reviews                     | Moderate                          |
+| Blogs / CMS                 | Content publishing                |
+| Users / Roles / Permissions | RBAC                              |
+| Shipping Rules              | Edit £60 free threshold & rates   |
+| Notifications               | Broadcast / templates             |
+| Logs                        | Audit trail                       |
+| Settings                    | Store name, email, loyalty rates  |
+| Reports                     | Exports                           |
 
 ## Shipping rules
 
 Default seed:
 
-1. Orders under £60 → charge £3.95  
-2. Orders £60+ → free  
+1. Orders under £60 → charge £3.95
+2. Orders £60+ → free
 
 Change rates/thresholds under **Shipping Rules** — no deploy required.
 

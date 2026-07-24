@@ -24,7 +24,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         className="group block gm-focus rounded-lg"
         aria-label={`View ${product.name}`}
       >
-        <div className="relative aspect-square overflow-hidden rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]">
+        <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] transition group-hover:border-[var(--gm-cyan)]">
           {image?.url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -39,15 +39,13 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
           )}
         </div>
         <div className="mt-3 space-y-1">
-          <p className="text-[11px] uppercase tracking-[0.14em] text-[var(--gm-muted)]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--gm-cyan)]">
             {product.platform ?? product.brand?.name ?? 'Game'}
           </p>
-          <h3 className="line-clamp-2 text-sm font-semibold text-foreground transition group-hover:text-[var(--gm-accent)]">
+          <h3 className="line-clamp-2 text-sm font-bold text-foreground transition group-hover:text-[var(--gm-yellow)]">
             {product.name}
           </h3>
-          <p className="text-sm font-semibold text-[var(--gm-accent)]">
-            {formatGBP(product.price)}
-          </p>
+          <p className="gm-display text-lg text-[var(--gm-magenta)]">{formatGBP(product.price)}</p>
         </div>
       </Link>
     </motion.article>

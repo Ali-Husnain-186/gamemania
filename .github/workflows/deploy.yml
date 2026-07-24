@@ -1,21 +1,24 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
   push:
-    tags:
-      - 'v*'
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  notify:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deployment reminder
-        run: |
-          echo "Deploy on Hostinger Ubuntu VPS without Docker:"
-          echo "  1. git pull on VPS"
-          echo "  2. npm ci && build each app"
-          echo "  3. prisma migrate deploy"
-          echo "  4. pm2 startOrReload deploy/pm2/ecosystem.config.js --env production"
-          echo "  5. nginx reload (deploy/nginx)"
-          echo "Targets: gamemania.com, admin.gamemania.com, api.gamemania.com"
+      - name: Deploy to Hostinger VPS over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT != '' && secrets.VPS_PORT || 22 }}
+          script_stop: true
+          command_timeout: 30m
+          script: |
+            set -euo pipefail
+            cd /var/www/gamemania
+            bash scripts/deploy/update.sh

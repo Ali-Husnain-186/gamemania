@@ -16,7 +16,8 @@ cd D:\upwork-projects\GAME-MANIA
 Copy-Item .env.example .env
 Copy-Item backend\.env.example backend\.env
 Copy-Item frontend\.env.example frontend\.env.local
-Copy-Item admin\.env.example admin\.env.local
+# Optional (legacy standalone admin only):
+# Copy-Item admin\.env.example admin\.env.local
 ```
 
 ## 2. Create database
@@ -47,22 +48,22 @@ npm run prisma:seed
 cd ..
 ```
 
-## 4. Run apps (three terminals)
+## 4. Run apps (two terminals — single site)
 
 ```powershell
 cd backend; npm run dev      # http://localhost:5000
-cd frontend; npm run dev     # http://localhost:3000
-cd admin; npm run dev        # http://localhost:3001
+cd frontend; npm run dev     # http://localhost:3000 (store + /admin)
 ```
 
-Health check: http://localhost:5000/api/v1/health
+Health check: http://localhost:5000/api/v1/health  
+Staff UI: http://localhost:3000/admin (`Info@gamemaniauk.co.uk` / `Private08!`)
 
 ## Troubleshooting
 
-| Issue | Fix |
-|-------|-----|
+| Issue            | Fix                                           |
+| ---------------- | --------------------------------------------- |
 | `psql` not found | Add PostgreSQL `bin` to PATH; reopen terminal |
-| Prisma P1001 | Postgres not running or wrong `DATABASE_URL` |
-| Port in use | Stop the process on 3000 / 3001 / 5000 |
+| Prisma P1001     | Postgres not running or wrong `DATABASE_URL`  |
+| Port in use      | Stop the process on 3000 / 5000               |
 
 See also: [environment-setup.md](./environment-setup.md), [deployment.md](./deployment.md).

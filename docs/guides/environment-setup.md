@@ -12,21 +12,19 @@
 
 ## Ports
 
-| Service | Port |
-|---------|------|
-| Storefront | 3000 |
-| Admin | 3001 |
-| API | 5000 |
-| PostgreSQL | 5432 |
+| Service               | Port |
+| --------------------- | ---- |
+| Storefront + `/admin` | 3000 |
+| API                   | 5000 |
+| PostgreSQL            | 5432 |
 
 ## Environment files
 
-| File | Purpose |
-|------|---------|
-| `.env` | Shared root template values |
-| `backend/.env` | API secrets + `DATABASE_URL` |
-| `frontend/.env.local` | `NEXT_PUBLIC_*` |
-| `admin/.env.local` | `NEXT_PUBLIC_*` |
+| File                  | Purpose                      |
+| --------------------- | ---------------------------- |
+| `.env`                | Shared root template values  |
+| `backend/.env`        | API secrets + `DATABASE_URL` |
+| `frontend/.env.local` | `NEXT_PUBLIC_*`              |
 
 Never commit real `.env` files. Use `.env.example` as the source of truth for variable names.
 

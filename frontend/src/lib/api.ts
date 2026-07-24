@@ -1,7 +1,28 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
-
 const ACCESS_TOKEN_KEY = 'gm_access_token';
 const GUEST_ID_KEY = 'gm_guest_id';
+
+/**
+ * Resolve API base URL at call time.
+ *
+ * Behind Nginx (`/api` → :5000), the browser must use same-origin `/api/v1`.
+ * A baked-in `http://localhost:5000/...` breaks remote users (request never hits the VPS).
+ */
+export function getApiUrl(): string {
+  const configured = (process.env.NEXT_PUBLIC_API_URL ?? '').trim().replace(/\/$/, '');
+
+  if (typeof window !== 'undefined') {
+    if (!configured || /localhost|127\.0\.0\.1/i.test(configured)) {
+      return '/api/v1';
+    }
+    return configured;
+  }
+
+  if (configured && !configured.startsWith('/')) {
+    return configured;
+  }
+
+  return (process.env.INTERNAL_API_URL ?? 'http://127.0.0.1:5000/api/v1').replace(/\/$/, '');
+}
 
 export type ApiErrorBody = {
   success: false;
@@ -82,7 +103,7 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
     headers.set('X-Guest-Id', guestId);
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const res = await fetch(`${getApiUrl()}${path}`, {
     ...rest,
     headers,
     credentials: 'include',
@@ -146,5 +167,3 @@ export function apiDelete<T>(
 ): Promise<T> {
   return request<T>(path, { ...init, method: 'DELETE' });
 }
-
-export { API_URL };

@@ -131,7 +131,7 @@ export function ShopClient() {
             ))}
           </div>
         ) : productsQuery.isError ? (
-          <ErrorState message="Could not load products. Is the API running on :5000?" />
+          <ErrorState message="Could not load products. Check that /api/v1 is reachable." />
         ) : !productsQuery.data?.length ? (
           <EmptyState title="No products found" description="Try another search or category." />
         ) : (

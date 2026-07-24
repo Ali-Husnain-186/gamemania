@@ -1,6 +1,6 @@
 'use client';
 
-import { API_URL } from '@/lib/api';
+import { getApiUrl } from '@/lib/api';
 import { safeReturnUrl } from '@/features/auth/components/require-auth';
 
 type GoogleAuthButtonProps = {
@@ -12,7 +12,7 @@ export function GoogleAuthButton({
   label = 'Continue with Google',
   returnUrl,
 }: GoogleAuthButtonProps) {
-  const href = `${API_URL}/auth/google?returnUrl=${encodeURIComponent(safeReturnUrl(returnUrl))}`;
+  const href = `${getApiUrl()}/auth/google?returnUrl=${encodeURIComponent(safeReturnUrl(returnUrl))}`;
 
   return (
     <a

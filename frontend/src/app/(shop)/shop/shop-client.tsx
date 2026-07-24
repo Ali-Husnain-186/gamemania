@@ -131,7 +131,13 @@ export function ShopClient() {
             ))}
           </div>
         ) : productsQuery.isError ? (
-          <ErrorState message="Could not load products. Check that /api/v1 is reachable." />
+          <ErrorState
+            message={
+              productsQuery.error instanceof Error
+                ? productsQuery.error.message
+                : 'Could not load products (build needs /api/v1).'
+            }
+          />
         ) : !productsQuery.data?.length ? (
           <EmptyState title="No products found" description="Try another search or category." />
         ) : (

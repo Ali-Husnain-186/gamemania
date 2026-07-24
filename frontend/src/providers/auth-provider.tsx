@@ -97,7 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (input: LoginInput) => {
       const data = await apiPost<AuthResponse>('/auth/login', input);
       establishSession(data.accessToken, data.user);
-      await mergeCart();
+      // Do not block login UX on cart merge (can feel like a stuck spinner)
+      void mergeCart();
       return data.user;
     },
     [establishSession],
@@ -107,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (input: RegisterInput) => {
       const data = await apiPost<AuthResponse>('/auth/register', input);
       establishSession(data.accessToken, data.user);
-      await mergeCart();
+      void mergeCart();
       return data.user;
     },
     [establishSession],

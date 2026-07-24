@@ -9,6 +9,7 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
   const { status, isAuthenticated, user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const staff = isStaffRole(user?.role);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -19,15 +20,31 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    if (!isStaffRole(user?.role)) {
+    if (!staff) {
       router.replace('/account');
     }
-  }, [status, isAuthenticated, user?.role, router, pathname]);
+  }, [status, isAuthenticated, staff, router, pathname]);
 
-  if (status === 'loading' || !isAuthenticated || !isStaffRole(user?.role)) {
+  if (status === 'loading') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
         Checking staff access…
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
+        Redirecting to sign in…
+      </div>
+    );
+  }
+
+  if (!staff) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
+        Staff access required. Redirecting…
       </div>
     );
   }

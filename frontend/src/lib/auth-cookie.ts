@@ -11,6 +11,9 @@ export function setLoggedInCookie(role?: string | null): void {
   writeCookie(LOGGED_IN_COOKIE, '1', MAX_AGE_SECONDS);
   if (role) {
     writeCookie(ROLE_COOKIE, role.toUpperCase(), MAX_AGE_SECONDS);
+  } else {
+    // Avoid stale staff role from a previous session
+    writeCookie(ROLE_COOKIE, '', 0);
   }
 }
 

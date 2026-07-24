@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
@@ -10,7 +10,6 @@ import { safeReturnUrl } from '@/features/auth/components/require-auth';
 import { loginSchema, type LoginFormValues } from '../schemas';
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
   const returnUrl = searchParams.get('returnUrl');
@@ -28,7 +27,8 @@ export function LoginForm() {
   async function onSubmit(values: LoginFormValues) {
     try {
       const user = await login(values);
-      router.push(safeReturnUrl(returnUrl, user.role));
+      const target = safeReturnUrl(returnUrl, user.role);
+      window.location.assign(target);
     } catch (err) {
       setError('root', {
         message: err instanceof ApiError ? err.message : 'Login failed',

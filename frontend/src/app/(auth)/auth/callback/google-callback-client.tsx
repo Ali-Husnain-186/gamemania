@@ -1,13 +1,12 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { apiPost, setAccessToken } from '@/lib/api';
 import { safeReturnUrl } from '@/features/auth/components/require-auth';
 import { useAuth } from '@/providers/auth-provider';
 
 export function GoogleCallbackClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { refreshUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
@@ -26,11 +25,11 @@ export function GoogleCallbackClient() {
     void (async () => {
       try {
         setAccessToken(token);
-        await apiPost('/cart/merge').catch(() => undefined);
+        void apiPost('/cart/merge').catch(() => undefined);
         const user = await refreshUser();
         const returnUrl = safeReturnUrl(requestedReturn, user?.role);
         if (!cancelled) {
-          router.replace(returnUrl);
+          window.location.replace(returnUrl);
         }
       } catch {
         if (!cancelled) {
@@ -42,7 +41,7 @@ export function GoogleCallbackClient() {
     return () => {
       cancelled = true;
     };
-  }, [searchParams, router, refreshUser]);
+  }, [searchParams, refreshUser]);
 
   if (error) {
     return (

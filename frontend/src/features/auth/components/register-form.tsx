@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
@@ -10,7 +10,6 @@ import { safeReturnUrl } from '@/features/auth/components/require-auth';
 import { registerSchema, type RegisterFormValues } from '../schemas';
 
 export function RegisterForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { register: registerAccount } = useAuth();
   const returnUrl = searchParams.get('returnUrl');
@@ -32,7 +31,7 @@ export function RegisterForm() {
         firstName: values.firstName || undefined,
         lastName: values.lastName || undefined,
       });
-      router.push(safeReturnUrl(returnUrl, user.role));
+      window.location.assign(safeReturnUrl(returnUrl, user.role));
     } catch (err) {
       setError('root', {
         message: err instanceof ApiError ? err.message : 'Registration failed',

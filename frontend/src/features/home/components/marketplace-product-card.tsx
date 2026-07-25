@@ -53,7 +53,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-40px' }}
         transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.3) }}
-        className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 shadow-[0_8px_30px_rgba(0,0,0,0.18)] backdrop-blur-sm transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_16px_40px_rgba(0,181,226,0.12)]"
+        className="group flex h-full flex-col overflow-hidden rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 shadow-[0_8px_30px_rgba(0,0,0,0.18)] backdrop-blur-sm transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_16px_40px_rgba(1,166,194,0.14)] sm:rounded-2xl"
       >
         <div className="relative aspect-square overflow-hidden bg-black/30">
           <Link href={`/products/${product.slug}`} className="absolute inset-0">

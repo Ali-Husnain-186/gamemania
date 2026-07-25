@@ -39,13 +39,13 @@ const cards = [
 
 export function WhyChoose() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="Trust"
         title="Why choose GAME MANIA"
         description="Built for gamers who want quality stock, fair prices and a smooth experience."
       />
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">
         {cards.map((card, i) => (
           <motion.div
             key={card.title}
@@ -54,11 +54,13 @@ export function WhyChoose() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
             whileHover={{ y: -4 }}
-            className="rounded-2xl border border-[var(--gm-border)] bg-gradient-to-br from-white/[0.04] to-transparent p-5 shadow-sm backdrop-blur-sm transition hover:border-[var(--gm-yellow)]/50"
+            className="rounded-2xl border border-[var(--gm-cyan)]/20 bg-gradient-to-br from-[rgba(1,166,194,0.08)] to-transparent p-4 shadow-sm backdrop-blur-sm transition hover:border-[var(--gm-cyan)]/60 sm:p-5"
           >
-            <card.icon className="h-6 w-6 text-[var(--gm-yellow)]" aria-hidden />
-            <h3 className="mt-4 text-base font-extrabold">{card.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-[var(--gm-muted)]">{card.body}</p>
+            <card.icon className="h-6 w-6 text-[var(--gm-cyan)]" aria-hidden />
+            <h3 className="mt-3 text-sm font-extrabold sm:mt-4 sm:text-base">{card.title}</h3>
+            <p className="mt-2 text-xs leading-relaxed text-[var(--gm-muted)] sm:text-sm">
+              {card.body}
+            </p>
           </motion.div>
         ))}
       </div>

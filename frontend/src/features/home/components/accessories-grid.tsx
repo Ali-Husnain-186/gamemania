@@ -25,14 +25,14 @@ const items = [
 
 export function AccessoriesGrid() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="Gear up"
         title="Gaming accessories"
         description="Controllers, audio, docks and more to level up your setup."
         href="/shop?q=accessories"
       />
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5">
         {items.map((item, i) => (
           <motion.div
             key={item.title}
@@ -44,11 +44,13 @@ export function AccessoriesGrid() {
           >
             <Link
               href={item.href}
-              className="flex h-full flex-col items-start rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/70 p-5 transition hover:border-[var(--gm-cyan)]/70 hover:bg-black/30 gm-focus"
+              className="flex h-full min-h-[7.5rem] flex-col items-start rounded-xl border border-[var(--gm-cyan)]/20 bg-[var(--gm-bg-elevated)]/70 p-4 transition hover:border-[var(--gm-cyan)]/70 hover:bg-[rgba(1,166,194,0.08)] sm:min-h-0 sm:rounded-2xl sm:p-5 gm-focus"
             >
-              <item.icon className={`h-7 w-7 ${item.tone}`} aria-hidden />
-              <h3 className="mt-4 text-sm font-extrabold">{item.title}</h3>
-              <span className="mt-2 text-xs font-bold text-[var(--gm-muted)]">Shop now →</span>
+              <item.icon className={`h-6 w-6 sm:h-7 sm:w-7 ${item.tone}`} aria-hidden />
+              <h3 className="mt-3 text-xs font-extrabold sm:mt-4 sm:text-sm">{item.title}</h3>
+              <span className="mt-1.5 text-[11px] font-bold text-[var(--gm-muted)] sm:mt-2 sm:text-xs">
+                Shop now →
+              </span>
             </Link>
           </motion.div>
         ))}

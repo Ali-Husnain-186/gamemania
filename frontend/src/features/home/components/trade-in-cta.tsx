@@ -6,30 +6,31 @@ import { motion } from 'framer-motion';
 
 export function TradeInCta() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="grid overflow-hidden rounded-3xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/70 lg:grid-cols-2">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
+      <div className="grid overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/30 bg-[var(--gm-bg-elevated)]/70 sm:rounded-3xl lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, scale: 1.04 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="relative min-h-[280px] lg:min-h-[420px]"
+          className="relative min-h-[200px] sm:min-h-[280px] lg:min-h-[420px]"
         >
           <Image
             src="/brand/hero-trade-in.jpg"
             alt="Trade in consoles and games"
             fill
+            quality={90}
             sizes="(max-width:1024px) 100vw, 50vw"
             className="object-cover object-left"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/40 lg:bg-gradient-to-l" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[rgba(1,166,194,0.25)] via-transparent to-transparent lg:bg-gradient-to-l lg:from-black/40 lg:via-transparent lg:to-transparent" />
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="flex flex-col justify-center p-6 sm:p-10"
+          className="flex flex-col justify-center p-5 sm:p-10"
         >
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--gm-cyan)]">
             Trade-in

@@ -55,15 +55,15 @@ export function ReviewsSlider() {
   const review = reviews[index];
 
   return (
-    <section className="border-y border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/35">
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="border-y border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)]/35">
+      <div className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
         <SectionHeading
           eyebrow="Reviews"
           title="Customer love"
           description="Verified feedback from gamers across the UK."
         />
 
-        <div className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl border border-[var(--gm-border)] bg-black/30 p-6 shadow-lg backdrop-blur-md sm:p-10">
+        <div className="relative mx-auto max-w-3xl overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/25 bg-black/30 p-5 shadow-lg backdrop-blur-md sm:rounded-3xl sm:p-10">
           {query.isLoading ? (
             <div className="space-y-3">
               <div className="h-12 w-12 animate-pulse rounded-full bg-white/10" />

@@ -48,11 +48,13 @@ export function ShopClient() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+    <div className="mx-auto max-w-6xl px-3 py-8 sm:px-4 md:px-6 md:py-10">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="gm-display text-3xl font-bold md:text-4xl">Shop</h1>
-          <p className="mt-2 text-[var(--gm-muted)]">Games, consoles, and gear — UK ready.</p>
+          <h1 className="gm-display text-[1.75rem] font-bold sm:text-3xl md:text-4xl">Shop</h1>
+          <p className="mt-2 text-sm text-[var(--gm-muted)] sm:text-base">
+            Games, consoles, and gear — UK ready.
+          </p>
         </div>
         <form
           className="flex w-full max-w-md gap-2"
@@ -69,24 +71,21 @@ export function ShopClient() {
             value={draftQ}
             onChange={(e) => setDraftQ(e.target.value)}
             placeholder="Search titles…"
-            className="w-full rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2 text-sm gm-focus"
+            className="min-h-11 w-full rounded-full border border-[var(--gm-cyan)]/30 bg-[var(--gm-bg-elevated)] px-4 py-2 text-sm outline-none transition focus:border-[var(--gm-cyan)] gm-focus"
           />
-          <button
-            type="submit"
-            className="rounded-md bg-[var(--gm-accent)] px-4 py-2 text-sm font-semibold text-[#042016]"
-          >
+          <button type="submit" className="btn-cyan shrink-0 px-4 py-2 text-sm">
             Search
           </button>
         </form>
       </div>
 
-      <div className="mt-8 flex flex-wrap gap-2">
+      <div className="mt-6 flex gap-2 overflow-x-auto pb-1 scrollbar-none sm:mt-8 sm:flex-wrap sm:overflow-visible">
         <button
           type="button"
           onClick={() => applyFilters({ category: '' })}
-          className={`rounded-md border px-3 py-1.5 text-xs ${
+          className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold ${
             !category
-              ? 'border-[var(--gm-accent)] text-[var(--gm-accent)]'
+              ? 'border-[var(--gm-cyan)] bg-[rgba(1,166,194,0.12)] text-[var(--gm-cyan)]'
               : 'border-[var(--gm-border)] text-[var(--gm-muted)]'
           }`}
         >
@@ -97,9 +96,9 @@ export function ShopClient() {
             key={c.id}
             type="button"
             onClick={() => applyFilters({ category: c.slug })}
-            className={`rounded-md border px-3 py-1.5 text-xs ${
+            className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-bold ${
               category === c.slug
-                ? 'border-[var(--gm-accent)] text-[var(--gm-accent)]'
+                ? 'border-[var(--gm-cyan)] bg-[rgba(1,166,194,0.12)] text-[var(--gm-cyan)]'
                 : 'border-[var(--gm-border)] text-[var(--gm-muted)]'
             }`}
           >
@@ -110,7 +109,7 @@ export function ShopClient() {
           aria-label="Sort products"
           value={sort}
           onChange={(e) => applyFilters({ sort: e.target.value })}
-          className="ml-auto rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-1.5 text-xs"
+          className="ml-auto shrink-0 rounded-full border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2 text-xs"
         >
           <option value="newest">Newest</option>
           <option value="price_asc">Price: low to high</option>
@@ -120,13 +119,13 @@ export function ShopClient() {
         </select>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-6 sm:mt-8">
         {productsQuery.isLoading ? (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-[3/4] animate-pulse rounded-lg bg-[var(--gm-bg-elevated)]"
+                className="aspect-[3/4] animate-pulse rounded-xl bg-[var(--gm-bg-elevated)]"
               />
             ))}
           </div>
@@ -141,7 +140,7 @@ export function ShopClient() {
         ) : !productsQuery.data?.length ? (
           <EmptyState title="No products found" description="Try another search or category." />
         ) : (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
             {productsQuery.data.map((p: Product) => (
               <ProductCard key={p.id} product={p} />
             ))}

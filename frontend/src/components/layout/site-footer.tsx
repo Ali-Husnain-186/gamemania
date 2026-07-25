@@ -29,12 +29,12 @@ export function SiteFooter() {
   const showCreateAccount = status !== 'loading' && !isAuthenticated;
 
   return (
-    <footer className="mt-auto border-t-2 border-[var(--gm-magenta)]/45 bg-black">
+    <footer className="mt-auto border-t-2 border-[#01A6C2]/55 bg-black">
       <div className="gm-banner mx-auto max-w-6xl px-4 py-3 text-center text-sm md:text-base">
         Play more. Save more. GAME MANIA!
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 md:px-6 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:gap-10 sm:py-12 md:px-6 lg:grid-cols-4">
         <div>
           <Link href="/" className="inline-flex items-center gap-3 gm-focus rounded-sm">
             <Image

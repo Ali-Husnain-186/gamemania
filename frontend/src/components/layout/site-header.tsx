@@ -44,11 +44,11 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-[var(--gm-cyan)]/40 bg-[var(--gm-bg)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center justify-between gap-3 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
+    <header className="sticky top-0 z-50 border-b-2 border-black/10 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
+      <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-2 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="relative flex shrink-0 items-center gm-focus rounded-sm"
+          className="relative flex shrink-0 items-center rounded-sm gm-focus"
           aria-label="GAME MANIA home"
         >
           <Image
@@ -56,21 +56,21 @@ export function SiteHeader() {
             alt="GAME MANIA"
             width={64}
             height={64}
-            className="h-12 w-12 object-contain sm:h-14 sm:w-14"
+            className="h-11 w-11 object-contain sm:h-14 sm:w-14"
             priority
           />
         </Link>
 
-        <nav className="hidden items-center gap-5 lg:gap-6 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-5 md:flex lg:gap-6" aria-label="Primary">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                'text-xs font-bold uppercase tracking-wide transition gm-focus rounded-sm lg:text-sm',
+                'rounded-sm text-xs font-bold uppercase tracking-wide transition gm-focus lg:text-sm',
                 pathname === item.href || pathname.startsWith(`${item.href}/`)
                   ? 'text-[var(--gm-yellow)]'
-                  : 'text-[var(--gm-muted)] hover:text-[var(--gm-cyan)]',
+                  : 'text-white/90 hover:text-white',
               )}
             >
               {item.label}
@@ -82,7 +82,7 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--gm-border)] text-[var(--gm-muted)] transition hover:border-[var(--gm-cyan)] hover:text-[var(--gm-cyan)] gm-focus"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 gm-focus"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? (
@@ -94,7 +94,7 @@ export function SiteHeader() {
 
           <Link
             href="/cart"
-            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--gm-border)] text-[var(--gm-muted)] transition hover:border-[var(--gm-cyan)] hover:text-[var(--gm-cyan)] gm-focus"
+            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 gm-focus"
             aria-label={`Cart${itemCount ? `, ${itemCount} items` : ''}`}
           >
             <ShoppingBag className="h-4 w-4" aria-hidden />
@@ -109,14 +109,14 @@ export function SiteHeader() {
             <>
               <Link
                 href="/account"
-                className="btn-cyan-outline hidden px-4 py-2 text-xs sm:inline-flex"
+                className="hidden rounded-full border-2 border-white px-4 py-2 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] sm:inline-flex"
               >
                 Account
               </Link>
               <button
                 type="button"
                 onClick={() => void handleSignOut()}
-                className="hidden px-3 py-2 text-xs font-bold uppercase tracking-wide text-[var(--gm-muted)] transition hover:text-[var(--gm-magenta)] sm:inline-flex gm-focus rounded-sm"
+                className="hidden rounded-sm px-3 py-2 text-xs font-bold uppercase tracking-wide text-white/85 transition hover:text-[var(--gm-yellow)] sm:inline-flex gm-focus"
               >
                 Sign out
               </button>
@@ -125,7 +125,7 @@ export function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="btn-cyan-outline hidden px-4 py-2 text-xs sm:inline-flex"
+                className="hidden rounded-full border-2 border-white px-4 py-2 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] sm:inline-flex"
               >
                 Sign in
               </Link>
@@ -140,7 +140,7 @@ export function SiteHeader() {
 
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-[var(--gm-border)] text-[var(--gm-muted)] md:hidden gm-focus"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white md:hidden gm-focus"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -158,17 +158,19 @@ export function SiteHeader() {
       {open ? (
         <nav
           id="mobile-nav"
-          className="border-t-2 border-[var(--gm-border)] px-4 py-4 md:hidden"
+          className="border-t-2 border-white/20 bg-[#01A6C2] px-4 py-4 md:hidden"
           aria-label="Mobile"
         >
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-1">
             {nav.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
                   className={cn(
-                    'block text-sm font-bold uppercase gm-focus rounded-sm',
-                    pathname === item.href ? 'text-[var(--gm-yellow)]' : 'text-[var(--gm-muted)]',
+                    'block rounded-lg px-3 py-3 text-sm font-bold uppercase tracking-wide gm-focus',
+                    pathname === item.href
+                      ? 'bg-black/15 text-[var(--gm-yellow)]'
+                      : 'text-white/90 hover:bg-white/10 hover:text-white',
                   )}
                 >
                   {item.label}
@@ -180,7 +182,7 @@ export function SiteHeader() {
                 <button
                   type="button"
                   onClick={() => void handleSignOut()}
-                  className="block text-sm font-bold text-[var(--gm-magenta)] gm-focus rounded-sm"
+                  className="block w-full rounded-lg px-3 py-3 text-left text-sm font-bold text-[var(--gm-yellow)] gm-focus"
                 >
                   Sign out
                 </button>
@@ -190,7 +192,7 @@ export function SiteHeader() {
                 <li>
                   <Link
                     href="/login"
-                    className="block text-sm font-bold text-[var(--gm-magenta)] gm-focus rounded-sm"
+                    className="block rounded-lg px-3 py-3 text-sm font-bold text-white gm-focus"
                   >
                     Sign in
                   </Link>
@@ -198,7 +200,7 @@ export function SiteHeader() {
                 <li>
                   <Link
                     href="/register"
-                    className="block text-sm font-bold text-[var(--gm-cyan)] gm-focus rounded-sm"
+                    className="block rounded-lg px-3 py-3 text-sm font-bold text-[var(--gm-yellow)] gm-focus"
                   >
                     Create account
                   </Link>

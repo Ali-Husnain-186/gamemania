@@ -32,7 +32,7 @@ export function ProductGridSection({
   const products = query.data ?? [];
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow={eyebrow}
         title={title}
@@ -40,7 +40,7 @@ export function ProductGridSection({
         href={viewAllHref}
         linkLabel="View all"
       />
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {query.isLoading ? (
           <ProductSkeleton count={8} />
         ) : products.length === 0 ? (

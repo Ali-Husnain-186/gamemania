@@ -5,22 +5,22 @@ import { motion } from 'framer-motion';
 
 export function PromoBanner() {
   return (
-    <section className="relative overflow-hidden border-y-2 border-[var(--gm-yellow)]/35">
+    <section className="relative overflow-hidden border-y-2 border-[var(--gm-cyan)]/40">
       <div
         aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(110deg,rgba(229,26,99,0.28),rgba(0,181,226,0.18),rgba(255,209,0,0.2))]"
+        className="absolute inset-0 bg-[linear-gradient(110deg,rgba(1,166,194,0.32),rgba(229,26,99,0.22),rgba(255,209,0,0.18))]"
       />
       <div aria-hidden className="absolute inset-0 opacity-40 gm-halftone" />
-      <div className="relative mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-4 py-10 sm:flex-row sm:items-center sm:px-6 sm:py-14">
+      <div className="relative mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-5 px-4 py-8 sm:flex-row sm:items-center sm:gap-6 sm:px-6 sm:py-14">
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
         >
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[var(--gm-cyan)]">
+          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--gm-cyan-soft)] sm:text-xs">
             Limited offer
           </p>
-          <h2 className="gm-display mt-2 text-3xl text-white sm:text-4xl md:text-5xl">
+          <h2 className="gm-display mt-2 text-[1.75rem] leading-tight text-white sm:text-4xl md:text-5xl">
             10% OFF Your First Order
           </h2>
           <p className="mt-3 text-sm text-white/80 sm:text-base">
@@ -35,8 +35,12 @@ export function PromoBanner() {
           initial={{ opacity: 0, x: 16 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
+          className="w-full sm:w-auto"
         >
-          <Link href="/shop" className="btn-magenta px-6 py-3 text-sm sm:text-base">
+          <Link
+            href="/shop"
+            className="btn-cyan inline-flex w-full justify-center px-6 py-3 text-sm sm:w-auto sm:text-base"
+          >
             Shop the Sale
           </Link>
         </motion.div>

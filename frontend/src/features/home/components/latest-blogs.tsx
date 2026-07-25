@@ -54,7 +54,7 @@ export function LatestBlogs() {
   const posts = (query.data?.length ? query.data : fallbackPosts).slice(0, 3);
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="News"
         title="Latest blogs"
@@ -62,7 +62,7 @@ export function LatestBlogs() {
         href="/shop"
         linkLabel="Browse shop"
       />
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 md:grid-cols-3">
         {posts.map((post, i) => (
           <motion.article
             key={post.id}
@@ -70,32 +70,35 @@ export function LatestBlogs() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.06 }}
-            className="overflow-hidden rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/70 transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/60"
+            className="overflow-hidden rounded-xl border border-[var(--gm-cyan)]/20 bg-[var(--gm-bg-elevated)]/70 transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/60 sm:rounded-2xl"
           >
             <div className="relative aspect-[16/10]">
               <Image
                 src={post.coverImageUrl || '/brand/hero-slide-1.jpg'}
                 alt={post.title}
                 fill
-                sizes="33vw"
+                quality={85}
+                sizes="(max-width:768px) 100vw, 33vw"
                 className="object-cover"
               />
             </div>
-            <div className="p-4">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[var(--gm-cyan)]">
+            <div className="p-3.5 sm:p-4">
+              <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[var(--gm-cyan)] sm:text-[11px]">
                 Gaming news
               </p>
-              <h3 className="mt-2 line-clamp-2 text-base font-extrabold">{post.title}</h3>
-              <p className="mt-2 line-clamp-2 text-sm text-[var(--gm-muted)]">
+              <h3 className="mt-2 line-clamp-2 text-sm font-extrabold sm:text-base">
+                {post.title}
+              </h3>
+              <p className="mt-2 line-clamp-2 text-xs text-[var(--gm-muted)] sm:text-sm">
                 {post.excerpt || 'Read the latest from GAME MANIA.'}
               </p>
-              <div className="mt-4 flex items-center justify-between gap-2">
-                <time className="text-xs text-[var(--gm-muted)]">
+              <div className="mt-3 flex items-center justify-between gap-2 sm:mt-4">
+                <time className="text-[11px] text-[var(--gm-muted)] sm:text-xs">
                   {post.publishedAt ? formatDate(post.publishedAt) : 'Recently'}
                 </time>
                 <Link
                   href={`/shop`}
-                  className="text-xs font-bold text-[var(--gm-yellow)] hover:underline"
+                  className="text-[11px] font-bold text-[var(--gm-yellow)] hover:underline sm:text-xs"
                 >
                   Read more →
                 </Link>

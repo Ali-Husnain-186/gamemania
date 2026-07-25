@@ -33,8 +33,8 @@ const items = [
 
 export function TrustBar() {
   return (
-    <section className="border-b border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/40">
-      <div className="mx-auto grid max-w-6xl gap-3 px-4 py-6 sm:grid-cols-2 sm:px-6 md:grid-cols-3 lg:grid-cols-5 lg:py-8">
+    <section className="border-b border-[var(--gm-cyan)]/25 bg-[linear-gradient(180deg,rgba(1,166,194,0.1),transparent)]">
+      <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2.5 px-3 py-5 sm:gap-3 sm:px-6 sm:py-6 md:grid-cols-3 lg:grid-cols-5 lg:py-8">
         {items.map((item, i) => (
           <motion.div
             key={item.title}
@@ -43,11 +43,13 @@ export function TrustBar() {
             viewport={{ once: true }}
             transition={{ delay: i * 0.05 }}
             whileHover={{ y: -4 }}
-            className="rounded-2xl border border-[var(--gm-border)] bg-black/25 p-4 shadow-sm backdrop-blur-md transition hover:border-[var(--gm-cyan)]/60 hover:shadow-[0_10px_28px_rgba(0,181,226,0.12)]"
+            className="rounded-2xl border border-[var(--gm-cyan)]/20 bg-[var(--gm-bg-elevated)]/80 p-3.5 shadow-sm backdrop-blur-md transition hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_10px_28px_rgba(1,166,194,0.16)] sm:p-4"
           >
-            <item.icon className="h-6 w-6 text-[var(--gm-cyan)]" aria-hidden />
-            <p className="mt-3 text-sm font-extrabold">{item.title}</p>
-            <p className="mt-1 text-xs leading-relaxed text-[var(--gm-muted)]">{item.body}</p>
+            <item.icon className="h-5 w-5 text-[var(--gm-cyan)] sm:h-6 sm:w-6" aria-hidden />
+            <p className="mt-2.5 text-xs font-extrabold sm:mt-3 sm:text-sm">{item.title}</p>
+            <p className="mt-1 text-[11px] leading-relaxed text-[var(--gm-muted)] sm:text-xs">
+              {item.body}
+            </p>
           </motion.div>
         ))}
       </div>

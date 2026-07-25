@@ -18,12 +18,12 @@ export function Newsletter() {
   }
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="relative overflow-hidden rounded-3xl border border-[var(--gm-border)] bg-[linear-gradient(135deg,rgba(0,181,226,0.16),rgba(229,26,99,0.14),rgba(255,209,0,0.1))] p-6 sm:p-10"
+        className="relative overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/35 bg-[linear-gradient(135deg,rgba(1,166,194,0.22),rgba(229,26,99,0.14),rgba(255,209,0,0.1))] p-5 sm:rounded-3xl sm:p-10"
       >
         <div className="relative z-10 max-w-2xl">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[var(--gm-cyan)]">

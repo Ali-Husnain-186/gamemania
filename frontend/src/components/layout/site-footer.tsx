@@ -42,7 +42,7 @@ export function SiteFooter() {
               alt="GAME MANIA"
               width={56}
               height={56}
-              className="h-12 w-12 object-contain sm:h-14 sm:w-14"
+              className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
             />
             <span className="gm-display text-lg leading-none sm:text-xl">
               <span className="text-[var(--gm-yellow)]">GAME</span>

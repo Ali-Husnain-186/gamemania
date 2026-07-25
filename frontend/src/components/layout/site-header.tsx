@@ -44,11 +44,11 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b-2 border-black/10 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
+    <header className="sticky top-0 z-50 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
       <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-2 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="relative flex shrink-0 items-center rounded-sm gm-focus"
+          className="relative flex shrink-0 items-center overflow-hidden rounded-full outline-none focus-visible:outline-none"
           aria-label="GAME MANIA home"
         >
           <Image
@@ -56,7 +56,7 @@ export function SiteHeader() {
             alt="GAME MANIA"
             width={64}
             height={64}
-            className="h-11 w-11 object-contain sm:h-14 sm:w-14"
+            className="h-11 w-11 rounded-full border-0 object-cover outline-none ring-0 sm:h-14 sm:w-14"
             priority
           />
         </Link>

@@ -45,33 +45,29 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 border-b-2 border-[var(--gm-cyan)]/40 bg-[var(--gm-bg)]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
+      <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center justify-between gap-3 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="relative flex items-center gap-2 gm-focus rounded-sm"
+          className="relative flex shrink-0 items-center gm-focus rounded-sm"
           aria-label="GAME MANIA home"
         >
           <Image
             src="/brand/game-mania-logo.png"
             alt="GAME MANIA"
-            width={48}
-            height={48}
-            className="h-11 w-11 object-contain"
+            width={64}
+            height={64}
+            className="h-12 w-12 object-contain sm:h-14 sm:w-14"
             priority
           />
-          <span className="gm-display hidden text-lg leading-none sm:inline">
-            <span className="text-[var(--gm-yellow)]">GAME</span>{' '}
-            <span className="text-[var(--gm-magenta)]">MANIA</span>
-          </span>
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-5 lg:gap-6 md:flex" aria-label="Primary">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
-                'text-sm font-bold uppercase tracking-wide transition gm-focus rounded-sm',
+                'text-xs font-bold uppercase tracking-wide transition gm-focus rounded-sm lg:text-sm',
                 pathname === item.href || pathname.startsWith(`${item.href}/`)
                   ? 'text-[var(--gm-yellow)]'
                   : 'text-[var(--gm-muted)] hover:text-[var(--gm-cyan)]',
@@ -82,7 +78,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}

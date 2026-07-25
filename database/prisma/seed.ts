@@ -428,7 +428,7 @@ async function main() {
     },
   });
 
-  await prisma.product.upsert({
+  const dualSense = await prisma.product.upsert({
     where: { sku: 'GM-CTRL-DUALSENSE-001' },
     update: {},
     create: {
@@ -457,10 +457,128 @@ async function main() {
     },
   });
 
+  const switchDemo = await prisma.product.findUnique({ where: { sku: 'GM-NSW-DEMO-001' } });
+  const ps5Console = await prisma.product.findUnique({ where: { sku: 'GM-PS5-CONSOLE-001' } });
+
+  const reviewCustomers = [
+    {
+      email: 'alex.m@example.com',
+      firstName: 'Alex',
+      lastName: 'Morgan',
+      city: 'Manchester',
+    },
+    {
+      email: 'priya.s@example.com',
+      firstName: 'Priya',
+      lastName: 'Shah',
+      city: 'London',
+    },
+    {
+      email: 'jordan.t@example.com',
+      firstName: 'Jordan',
+      lastName: 'Taylor',
+      city: 'Birmingham',
+    },
+    {
+      email: 'samira.k@example.com',
+      firstName: 'Samira',
+      lastName: 'Khan',
+      city: 'Leeds',
+    },
+    {
+      email: 'chris.w@example.com',
+      firstName: 'Chris',
+      lastName: 'Walker',
+      city: 'Bristol',
+    },
+  ];
+
+  const seededReviewers = [];
+  for (const c of reviewCustomers) {
+    const user = await prisma.user.upsert({
+      where: { email: c.email },
+      update: {
+        firstName: c.firstName,
+        lastName: c.lastName,
+        isActive: true,
+        deletedAt: null,
+        roleId: customerRole.id,
+      },
+      create: {
+        email: c.email,
+        passwordHash: customerPasswordHash,
+        firstName: c.firstName,
+        lastName: c.lastName,
+        emailVerified: new Date(),
+        roleId: customerRole.id,
+      },
+    });
+    seededReviewers.push({ ...user, city: c.city });
+  }
+
+  const reviewTargets = [
+    {
+      user: seededReviewers[0]!,
+      productId: sampleProduct.id,
+      rating: 5,
+      title: 'Sealed and fast',
+      body: 'Fast delivery and the game arrived sealed. Checkout was smooth and the trade-in quote was fair.',
+    },
+    {
+      user: seededReviewers[1]!,
+      productId: dualSense.id,
+      rating: 5,
+      title: 'Great accessory range',
+      body: 'Loved the range of consoles and accessories. Support replied quickly when I needed help.',
+    },
+    {
+      user: seededReviewers[2]!,
+      productId: ps5Console?.id ?? sampleProduct.id,
+      rating: 5,
+      title: 'Trade-in then upgrade',
+      body: 'Traded in my old PS4 games for store credit and picked up new releases the same week.',
+    },
+    {
+      user: seededReviewers[3]!,
+      productId: switchDemo?.id ?? sampleProduct.id,
+      rating: 4,
+      title: 'Promo code worked',
+      body: 'Clean site, genuine products, and GAMEMANIA10 actually worked. Will shop again.',
+    },
+    {
+      user: seededReviewers[4]!,
+      productId: dualSense.id,
+      rating: 5,
+      title: 'Solid UK shop',
+      body: 'Packaging was perfect and tracking updates were clear. Happy to recommend GAME MANIA.',
+    },
+  ];
+
+  // Avoid unique collisions when reseeding: clear demo review set first
+  await prisma.review.deleteMany({
+    where: {
+      user: { email: { in: reviewCustomers.map((c) => c.email) } },
+    },
+  });
+
+  for (const r of reviewTargets) {
+    await prisma.review.create({
+      data: {
+        userId: r.user.id,
+        productId: r.productId,
+        rating: r.rating,
+        title: r.title,
+        body: r.body,
+        status: 'APPROVED',
+      },
+    });
+  }
+
   console.log('Seed complete.');
   console.log('Admin (panel only): Info@gamemaniauk.co.uk / Private08!');
   console.log('Customer: demo@gamemania.com / ChangeMe123!');
   console.log(`Sample product slug: ${sampleProduct.slug}`);
+  console.log(`Seeded ${reviewTargets.length} approved customer reviews.`);
 }
 
 main()

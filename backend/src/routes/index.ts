@@ -15,6 +15,7 @@ import { tradeInRouter } from './trade-in.routes';
 import { reviewsRouter } from './reviews.routes';
 import { cmsRouter, blogRouter } from './cms.routes';
 import { notificationsRouter } from './notifications.routes';
+import { paymentsRouter } from './payments.routes';
 
 const router = Router();
 
@@ -28,6 +29,7 @@ router.use('/users/me', usersMeRouter);
 router.use('/users/me/addresses', addressesRouter);
 router.use('/coupons', couponsRouter);
 router.use('/checkout', checkoutRouter);
+router.use('/payments', paymentsRouter);
 router.use('/orders', ordersRouter);
 router.use('/trade-in', tradeInRouter);
 router.use('/reviews', reviewsRouter);

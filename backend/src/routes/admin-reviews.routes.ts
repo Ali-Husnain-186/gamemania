@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  adminDeleteReviewController,
   adminListReviewsController,
   adminUpdateReviewController,
 } from '../controllers/review.controller';
@@ -19,5 +20,6 @@ router.patch(
   validate(adminUpdateReviewSchema),
   adminUpdateReviewController,
 );
+router.delete('/:id', validate(reviewIdParamsSchema, 'params'), adminDeleteReviewController);
 
 export const adminReviewsRouter = router;

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { apiGet } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
@@ -32,9 +33,13 @@ type OrderDetail = {
 };
 
 export function OrderDetail({ orderNumber }: { orderNumber: string }) {
+  const searchParams = useSearchParams();
+  const justPaid = searchParams.get('paid') === '1';
+
   const orderQuery = useQuery({
     queryKey: ['orders', orderNumber],
     queryFn: () => apiGet<OrderDetail>(`/orders/${encodeURIComponent(orderNumber)}`),
+    refetchInterval: justPaid ? 2500 : false,
   });
 
   if (orderQuery.isLoading) {
@@ -70,6 +75,12 @@ export function OrderDetail({ orderNumber }: { orderNumber: string }) {
       <Link href="/account/orders" className="text-xs font-bold uppercase text-[var(--gm-cyan)]">
         ← Orders
       </Link>
+      {justPaid ? (
+        <p className="mt-4 rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+          Payment submitted successfully. Status updates to <strong>PAID</strong> when Stripe
+          confirms the webhook (may take a few seconds).
+        </p>
+      ) : null}
       <h1 className="gm-display mt-3 text-4xl text-[var(--gm-yellow)]">{order.orderNumber}</h1>
       <p className="mt-2 text-sm text-[var(--gm-muted)]">
         {order.status} · {new Date(order.createdAt).toLocaleDateString('en-GB')}

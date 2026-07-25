@@ -5,6 +5,7 @@ import {
   adminListProductsController,
   adminUpdateProductController,
 } from '../controllers/catalog.controller';
+import { signUploadController } from '../controllers/upload.controller';
 import { authenticate, requirePermissions } from '../middlewares/auth';
 import { validate } from '../middlewares/validate';
 import {
@@ -24,6 +25,8 @@ const productIdParamsSchema = z.object({
 const router = Router();
 
 router.use(authenticate);
+
+router.post('/uploads/sign', requirePermissions('products:write'), signUploadController);
 
 router.get(
   '/products',

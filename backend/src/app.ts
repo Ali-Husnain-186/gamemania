@@ -24,7 +24,16 @@ export function createApp() {
     }),
   );
   app.use(compression());
-  app.use(express.json({ limit: '2mb' }));
+
+  // Stripe webhooks require the raw body for signature verification
+  app.use(`${API_PREFIX}/payments/stripe/webhook`, express.raw({ type: 'application/json' }));
+
+  app.use((req, res, next) => {
+    if (req.originalUrl === `${API_PREFIX}/payments/stripe/webhook`) {
+      return next();
+    }
+    return express.json({ limit: '2mb' })(req, res, next);
+  });
   app.use(express.urlencoded({ extended: true }));
   app.use(cookieParser());
   app.use(morgan(env.isProd ? 'combined' : 'dev'));

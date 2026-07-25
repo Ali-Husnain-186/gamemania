@@ -10,12 +10,14 @@ export function errorHandler(
   _next: NextFunction,
 ): void {
   if (err instanceof ZodError) {
+    const flattened = err.flatten();
+    const firstFieldMessage = Object.values(flattened.fieldErrors).flat()[0];
     res.status(400).json({
       success: false,
       error: {
         code: 'VALIDATION_ERROR',
-        message: 'Validation failed',
-        details: err.flatten(),
+        message: firstFieldMessage || flattened.formErrors[0] || 'Validation failed',
+        details: flattened,
       },
     });
     return;

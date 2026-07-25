@@ -1,11 +1,45 @@
 import type { Prisma } from '@prisma/client';
 import { prisma } from '../config/prisma';
 import { ConflictError, NotFoundError } from '../exceptions/AppError';
+import { slugify } from '../utils/slug';
 import type {
   CreateProductInput,
   ProductListQuery,
   UpdateProductInput,
 } from '../validators/catalog.validators';
+
+async function uniqueSlug(base: string, excludeId?: string): Promise<string> {
+  const root = slugify(base) || 'product';
+  let candidate = root;
+  let n = 1;
+  while (true) {
+    const clash = await prisma.product.findFirst({
+      where: {
+        slug: candidate,
+        ...(excludeId ? { NOT: { id: excludeId } } : {}),
+      },
+      select: { id: true },
+    });
+    if (!clash) return candidate;
+    candidate = `${root}-${n++}`;
+  }
+}
+
+async function uniqueSku(preferred?: string, excludeId?: string): Promise<string> {
+  let candidate = preferred?.trim() || `GM-${Date.now().toString(36).toUpperCase()}`;
+  let n = 1;
+  while (true) {
+    const clash = await prisma.product.findFirst({
+      where: {
+        sku: candidate,
+        ...(excludeId ? { NOT: { id: excludeId } } : {}),
+      },
+      select: { id: true },
+    });
+    if (!clash) return candidate;
+    candidate = `${preferred?.trim() || 'GM'}-${n++}`;
+  }
+}
 
 const productPublicInclude = {
   images: { orderBy: [{ isPrimary: 'desc' as const }, { sortOrder: 'asc' as const }] },
@@ -27,7 +61,13 @@ function mapProduct(product: {
   condition: string;
   status: string;
   isFeatured: boolean;
-  images: Array<{ id: string; url: string; altText: string | null; isPrimary: boolean }>;
+  images: Array<{
+    id: string;
+    url: string;
+    publicId: string | null;
+    altText: string | null;
+    isPrimary: boolean;
+  }>;
   category: { id: string; name: string; slug: string } | null;
   brand: { id: string; name: string; slug: string } | null;
   inventory: { quantity: number; reserved: number } | null;
@@ -161,16 +201,14 @@ export async function listBrands() {
 }
 
 export async function createProduct(input: CreateProductInput) {
-  const exists = await prisma.product.findFirst({
-    where: { OR: [{ slug: input.slug }, { sku: input.sku }] },
-  });
-  if (exists) throw new ConflictError('Product slug or SKU already exists');
+  const slug = await uniqueSlug(input.slug || input.name);
+  const sku = await uniqueSku(input.sku);
 
   const product = await prisma.product.create({
     data: {
       name: input.name,
-      slug: input.slug,
-      sku: input.sku,
+      slug,
+      sku,
       description: input.description,
       shortDescription: input.shortDescription,
       price: input.price,
@@ -181,12 +219,13 @@ export async function createProduct(input: CreateProductInput) {
       condition: input.condition,
       status: input.status,
       isFeatured: input.isFeatured ?? false,
-      inventory: { create: { quantity: input.quantity, reserved: 0 } },
+      inventory: { create: { quantity: input.quantity ?? 0, reserved: 0 } },
       ...(input.imageUrl
         ? {
             images: {
               create: {
                 url: input.imageUrl,
+                publicId: input.imagePublicId,
                 altText: input.name,
                 isPrimary: true,
               },
@@ -203,6 +242,34 @@ export async function createProduct(input: CreateProductInput) {
 export async function updateProduct(id: string, input: UpdateProductInput) {
   const existing = await prisma.product.findFirst({ where: { id, deletedAt: null } });
   if (!existing) throw new NotFoundError('Product not found');
+
+  if (input.slug) {
+    const clash = await prisma.product.findFirst({
+      where: { slug: input.slug, NOT: { id } },
+      select: { id: true },
+    });
+    if (clash) throw new ConflictError('Product slug already exists');
+  }
+  if (input.sku) {
+    const clash = await prisma.product.findFirst({
+      where: { sku: input.sku, NOT: { id } },
+      select: { id: true },
+    });
+    if (clash) throw new ConflictError('Product SKU already exists');
+  }
+
+  if (input.imageUrl) {
+    await prisma.productImage.deleteMany({ where: { productId: id, isPrimary: true } });
+    await prisma.productImage.create({
+      data: {
+        productId: id,
+        url: input.imageUrl,
+        publicId: input.imagePublicId,
+        altText: input.name ?? existing.name,
+        isPrimary: true,
+      },
+    });
+  }
 
   const product = await prisma.product.update({
     where: { id },

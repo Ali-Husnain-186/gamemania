@@ -1,10 +1,10 @@
-import { env } from '../config/env';
 import { prisma } from '../config/prisma';
 import { NotFoundError, ValidationError } from '../exceptions/AppError';
 import { validateCoupon } from './coupon.service';
 import { getCart } from './cart.service';
 import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
+import { createCheckoutSession, isStripeConfigured } from './stripe.service';
 
 export type CheckoutOptions = {
   couponCode?: string;
@@ -132,48 +132,6 @@ export async function previewCheckout(userId: string, options: CheckoutOptions) 
   return rest;
 }
 
-async function createStripeCheckoutSession(
-  orderId: string,
-  orderNumber: string,
-  grandTotalPence: number,
-  email: string,
-): Promise<{ url: string | null; sessionId: string | null; error?: string }> {
-  if (!env.STRIPE_SECRET_KEY || grandTotalPence <= 0) {
-    return { url: null, sessionId: null };
-  }
-
-  try {
-    const Stripe = (await import('stripe')).default;
-    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
-    const session = await stripe.checkout.sessions.create({
-      mode: 'payment',
-      customer_email: email,
-      success_url: `${env.FRONTEND_URL}/orders/${orderNumber}?paid=1`,
-      cancel_url: `${env.FRONTEND_URL}/cart?cancelled=1`,
-      metadata: { orderId, orderNumber },
-      line_items: [
-        {
-          price_data: {
-            currency: 'gbp',
-            product_data: { name: `Order ${orderNumber}` },
-            unit_amount: grandTotalPence,
-          },
-          quantity: 1,
-        },
-      ],
-    });
-
-    return { url: session.url, sessionId: session.id };
-  } catch (err) {
-    return {
-      url: null,
-      sessionId: null,
-      error: err instanceof Error ? err.message : 'Stripe session failed',
-    };
-  }
-}
-
 export async function placeOrder(userId: string, input: PlaceOrderInput) {
   const preview = await computeCheckout(userId, input);
   const couponId = (preview as CheckoutPreview & { couponId?: string }).couponId ?? null;
@@ -196,8 +154,12 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
   }
 
   const orderNumber = generateOrderNumber();
-  const useStripe = Boolean(env.STRIPE_SECRET_KEY);
-  const paymentProvider = useStripe ? ('STRIPE' as const) : ('MANUAL' as const);
+  const useStripe = isStripeConfigured() && preview.grandTotalPence > 0;
+  const paymentProvider = useStripe
+    ? ('STRIPE' as const)
+    : preview.grandTotalPence <= 0
+      ? ('STORE_CREDIT' as const)
+      : ('MANUAL' as const);
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
@@ -233,10 +195,12 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
         payments: {
           create: {
             provider: paymentProvider,
-            status: 'PENDING',
+            status: preview.grandTotalPence <= 0 ? 'SUCCEEDED' : 'PENDING',
             amount: preview.grandTotalPence,
+            paidAt: preview.grandTotalPence <= 0 ? new Date() : undefined,
           },
         },
+        ...(preview.grandTotalPence <= 0 ? { status: 'PAID' as const } : {}),
       },
       include: { items: true, payments: true },
     });
@@ -309,15 +273,18 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
   );
 
   let checkoutUrl: string | null = null;
-  let paymentMessage = 'Configure Stripe sandbox keys';
+  let paymentMessage =
+    preview.grandTotalPence <= 0
+      ? 'Order paid with store credit / rewards — no card payment needed.'
+      : 'Add STRIPE_SECRET_KEY to enable card payments.';
 
   if (useStripe) {
-    const stripeResult = await createStripeCheckoutSession(
-      order.id,
+    const stripeResult = await createCheckoutSession({
+      orderId: order.id,
       orderNumber,
-      preview.grandTotalPence,
-      user.email,
-    );
+      grandTotalPence: preview.grandTotalPence,
+      email: user.email,
+    });
 
     if (stripeResult.sessionId) {
       await prisma.payment.update({
@@ -328,7 +295,7 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
 
     if (stripeResult.url) {
       checkoutUrl = stripeResult.url;
-      paymentMessage = 'Complete payment via Stripe checkout';
+      paymentMessage = 'Redirecting to Stripe Checkout…';
     } else {
       paymentMessage = stripeResult.error ?? 'Stripe checkout unavailable';
     }
@@ -345,5 +312,6 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
     },
     checkoutUrl,
     paymentMessage,
+    stripeEnabled: isStripeConfigured(),
   };
 }

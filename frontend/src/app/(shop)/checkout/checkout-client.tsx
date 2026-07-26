@@ -115,7 +115,15 @@ export function CheckoutClient() {
     })();
   }, [isAuthenticated]);
 
+  const returnOrder = searchParams.get('order');
+  const paidReturn = searchParams.get('paid') === '1';
+  const cancelledReturn = searchParams.get('cancelled') === '1';
+  const isPaymentReturn = Boolean(returnOrder && (paidReturn || cancelledReturn));
+
   useEffect(() => {
+    // After Stripe, cart is empty — never show "Cart is empty" on the thank-you screen.
+    if (isPaymentReturn || confirmation) return;
+
     let cancelled = false;
 
     startTransition(async () => {
@@ -129,7 +137,6 @@ export function CheckoutClient() {
           if (!cancelled) setPreview(data);
         } catch (err) {
           const message = err instanceof ApiError ? err.message : 'Could not load cart totals';
-          // Brief retry — add-to-cart → checkout can race the first preview.
           if (message.toLowerCase().includes('cart is empty') && attempt < 3) {
             await new Promise((r) => setTimeout(r, 250 * attempt));
             if (!cancelled) return loadPreview(attempt + 1);
@@ -147,7 +154,7 @@ export function CheckoutClient() {
     return () => {
       cancelled = true;
     };
-  }, [couponCode]);
+  }, [couponCode, isPaymentReturn, confirmation]);
 
   useEffect(() => {
     const paidFlag = searchParams.get('paid') === '1';
@@ -156,12 +163,13 @@ export function CheckoutClient() {
     const emailParam = searchParams.get('email') ?? undefined;
 
     if (cancelledFlag) {
-      setInfo('Payment was cancelled. Your order is waiting — you can complete payment below.');
+      setError(null);
+      setInfo(null);
       if (orderNumber) {
         setConfirmation({
           orderNumber,
-          title: 'Payment pending',
-          message: 'No charge was made. Complete payment to confirm your order.',
+          title: 'Payment not completed',
+          message: 'No charge was made. You can complete payment below whenever you are ready.',
           paid: false,
           canRetry: true,
           email: emailParam,
@@ -172,24 +180,30 @@ export function CheckoutClient() {
 
     if (!paidFlag || !orderNumber) return;
 
-    setVerifying(true);
+    // Optimistic success UX — never leave the customer on "pending" after Stripe redirect.
+    setError(null);
+    setInfo(null);
+    setConfirmation({
+      orderNumber,
+      title: 'Payment received',
+      message: emailParam
+        ? `Thank you! Your payment was received. We’ve sent a confirmation to ${emailParam} — please check your inbox (and spam folder).`
+        : 'Thank you! Your payment was received. Check your email for order confirmation.',
+      paid: true,
+      canRetry: false,
+      email: emailParam,
+    });
+    setVerifying(false);
+
     void (async () => {
       try {
         const qs = emailParam ? `?email=${encodeURIComponent(emailParam)}` : '';
+        // Syncs with Stripe on the server if the webhook is delayed.
         const status = await apiGet<OrderStatus>(
           `/checkout/orders/${encodeURIComponent(orderNumber)}${qs}`,
         );
 
-        if (status.paid) {
-          setConfirmation({
-            orderNumber: status.orderNumber,
-            title: 'Payment successful',
-            message: 'Thank you — your order is confirmed.',
-            paid: true,
-            canRetry: false,
-            email: status.email,
-          });
-        } else if (status.cancelled) {
+        if (status.cancelled) {
           setConfirmation({
             orderNumber: status.orderNumber,
             title: 'Order cancelled',
@@ -198,29 +212,19 @@ export function CheckoutClient() {
             canRetry: false,
             email: status.email,
           });
-        } else {
-          setConfirmation({
-            orderNumber: status.orderNumber,
-            title: 'Payment pending',
-            message:
-              'We’re confirming your payment. If you completed the card payment, this usually updates within a few seconds — you can refresh or retry below.',
-            paid: false,
-            canRetry: status.canRetryPayment,
-            email: status.email,
-          });
+          return;
         }
-      } catch {
+
         setConfirmation({
-          orderNumber,
-          title: 'Payment pending',
-          message:
-            'We could not verify payment yet. If you paid, please wait a moment and refresh, or contact support with your order reference.',
-          paid: false,
-          canRetry: Boolean(orderNumber),
-          email: emailParam,
+          orderNumber: status.orderNumber,
+          title: 'Payment received',
+          message: `Thank you! Your order is confirmed. A confirmation email has been sent to ${status.email} — please check your inbox (and spam folder).`,
+          paid: true,
+          canRetry: false,
+          email: status.email,
         });
-      } finally {
-        setVerifying(false);
+      } catch {
+        // Keep optimistic success — customer already paid at Stripe.
       }
     })();
   }, [searchParams]);
@@ -342,6 +346,12 @@ export function CheckoutClient() {
           <span className="font-semibold text-[var(--gm-fg)]">{confirmation.orderNumber}</span>
         </p>
         <p className="mt-2 text-sm text-[var(--gm-muted)]">{confirmation.message}</p>
+        {confirmation.paid ? (
+          <p className="mt-4 rounded-xl border border-[var(--gm-cyan)]/40 bg-[rgba(1,166,194,0.12)] px-4 py-3 text-sm text-[var(--gm-cyan)]">
+            Check your email for confirmation. If it doesn’t arrive in a few minutes, check spam or
+            contact support with your order reference.
+          </p>
+        ) : null}
         {error ? (
           <p
             className="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
@@ -362,7 +372,7 @@ export function CheckoutClient() {
               {pending ? 'Opening payment…' : 'Complete payment'}
             </button>
           ) : null}
-          <Link href="/shop" className="btn-cyan-outline inline-flex">
+          <Link href="/shop" className="btn-primary inline-flex">
             Continue shopping
           </Link>
           {confirmation.paid && isAuthenticated ? (

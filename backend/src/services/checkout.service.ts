@@ -5,7 +5,11 @@ import { validateCoupon } from './coupon.service';
 import { getCart, mergeGuestCart } from './cart.service';
 import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
-import { createCheckoutSession, isStripeConfigured } from './stripe.service';
+import {
+  createCheckoutSession,
+  isStripeConfigured,
+  syncOrderPaymentFromStripe,
+} from './stripe.service';
 import { cancelUnpaidOrder } from './order-cancel.service';
 import { emailOrderPaid } from './order-email.service';
 import { createAddress } from './address.service';
@@ -218,7 +222,7 @@ export async function getCheckoutOrderStatus(
   orderNumber: string,
   email?: string,
 ) {
-  const order = await prisma.order.findUnique({
+  let order = await prisma.order.findUnique({
     where: { orderNumber },
     include: {
       payments: { orderBy: { createdAt: 'desc' }, take: 1 },
@@ -228,6 +232,19 @@ export async function getCheckoutOrderStatus(
 
   if (!order) throw new NotFoundError('Order not found');
   assertCanAccessOrder(order, actor, email);
+
+  // If webhook hasn't arrived yet, confirm with Stripe when customer returns from Checkout
+  if (order.status === 'AWAITING_PAYMENT') {
+    await syncOrderPaymentFromStripe(order.orderNumber);
+    order = await prisma.order.findUnique({
+      where: { orderNumber },
+      include: {
+        payments: { orderBy: { createdAt: 'desc' }, take: 1 },
+        items: { select: { name: true, quantity: true, lineTotal: true } },
+      },
+    });
+    if (!order) throw new NotFoundError('Order not found');
+  }
 
   const payment = order.payments[0];
   const paid =
@@ -524,7 +541,10 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
       `Your order ${orderNumber} is confirmed — no card payment needed.`,
       `/account/orders/${orderNumber}`,
     );
-    void emailOrderPaid(order.id);
+    const mail = await emailOrderPaid(order.id);
+    if (!mail.sent) {
+      console.error('[checkout] free-order email failed', order.orderNumber, mail.error);
+    }
 
     return {
       order: {
@@ -536,7 +556,9 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
         payments: order.payments,
       },
       checkoutUrl: null,
-      paymentMessage: 'Order confirmed — no card payment needed.',
+      paymentMessage: mail.sent
+        ? 'Order confirmed — check your email for confirmation.'
+        : 'Order confirmed — no card payment needed.',
       paid: true,
       stripeEnabled: isStripeConfigured(),
     };

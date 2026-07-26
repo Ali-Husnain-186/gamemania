@@ -7,7 +7,7 @@ function resendConfigured(): boolean {
 }
 
 function smtpConfigured(): boolean {
-  return Boolean(env.SMTP_USER && env.SMTP_PASS);
+  return Boolean(env.SMTP_USER?.trim() && env.SMTP_PASS?.trim());
 }
 
 function getTransporter() {
@@ -32,6 +32,14 @@ export function getEmailProvider(): 'resend' | 'smtp' | 'none' {
   return 'none';
 }
 
+function smtpFromAddress(): string {
+  // Resend test sender won't work over SMTP; use the Gmail account when present.
+  if (env.EMAIL_FROM.includes('beth.t@example.com') && env.SMTP_USER) {
+    return `GAME MANIA <${env.SMTP_USER}>`;
+  }
+  return env.EMAIL_FROM;
+}
+
 async function sendViaResend(input: {
   to: string;
   subject: string;
@@ -53,6 +61,7 @@ async function sendViaResend(input: {
     return { sent: false, error: message };
   }
 
+  console.info('[email:resend] sent', input.to, input.subject);
   return { sent: true };
 }
 
@@ -64,12 +73,13 @@ async function sendViaSmtp(input: {
 }): Promise<{ sent: boolean; error?: string }> {
   const transporter = getTransporter();
   await transporter.sendMail({
-    from: env.EMAIL_FROM,
+    from: smtpFromAddress(),
     to: input.to,
     subject: input.subject,
     text: input.text,
     html: input.html ?? `<p>${input.text.replace(/\n/g, '<br/>')}</p>`,
   });
+  console.info('[email:smtp] sent', input.to, input.subject);
   return { sent: true };
 }
 
@@ -79,25 +89,35 @@ export async function sendMail(input: {
   text: string;
   html?: string;
 }): Promise<{ sent: boolean; error?: string }> {
-  const provider = getEmailProvider();
-
-  if (provider === 'none') {
+  if (!isEmailEnabled()) {
     if (!env.isProd) {
       console.info(`[email:skip] To=${input.to} Subject=${input.subject}`);
     }
-    return { sent: false, error: 'Email not configured (set RESEND_API_KEY)' };
+    return {
+      sent: false,
+      error: 'Email not configured (set RESEND_API_KEY or SMTP_USER/SMTP_PASS)',
+    };
   }
 
-  try {
-    if (provider === 'resend') {
-      return await sendViaResend(input);
-    }
-    return await sendViaSmtp(input);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : 'Email send failed';
-    console.error('[email:error]', message);
-    return { sent: false, error: message };
+  const errors: string[] = [];
+
+  if (resendConfigured()) {
+    const resendResult = await sendViaResend(input);
+    if (resendResult.sent) return resendResult;
+    if (resendResult.error) errors.push(`resend: ${resendResult.error}`);
   }
+
+  if (smtpConfigured()) {
+    try {
+      return await sendViaSmtp(input);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'SMTP send failed';
+      console.error('[email:smtp]', message);
+      errors.push(`smtp: ${message}`);
+    }
+  }
+
+  return { sent: false, error: errors.join(' | ') || 'Email send failed' };
 }
 
 /** Customer-facing order email (uses order email, works for guests). */

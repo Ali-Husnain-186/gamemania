@@ -103,7 +103,7 @@ export async function markOrderPaidFromStripe(input: {
   if (!payment) return { ok: false as const, reason: 'PAYMENT_NOT_FOUND' };
 
   if (payment.status === 'SUCCEEDED' && order.status === 'PAID') {
-    return { ok: true as const, alreadyPaid: true };
+    return { ok: true as const, alreadyPaid: true, emailSent: false };
   }
 
   await prisma.$transaction(async (tx) => {
@@ -134,9 +134,71 @@ export async function markOrderPaidFromStripe(input: {
     );
   }
 
-  void emailOrderPaid(order.id);
+  const mail = await emailOrderPaid(order.id);
+  if (!mail.sent) {
+    console.error('[stripe] order paid email failed', order.orderNumber, mail.error);
+  }
 
-  return { ok: true as const, alreadyPaid: false };
+  return { ok: true as const, alreadyPaid: false, emailSent: mail.sent };
+}
+
+/** Confirm payment via Stripe API when webhook is delayed/missing (return from Checkout). */
+export async function syncOrderPaymentFromStripe(orderNumber: string) {
+  if (!isStripeConfigured()) {
+    return { paid: false as const, synced: false as const };
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { orderNumber },
+    include: { payments: { orderBy: { createdAt: 'desc' } } },
+  });
+
+  if (!order) {
+    return { paid: false as const, synced: false as const };
+  }
+
+  if (
+    order.status === 'PAID' ||
+    order.status === 'PROCESSING' ||
+    order.status === 'SHIPPED' ||
+    order.status === 'DELIVERED' ||
+    order.payments.some((p) => p.status === 'SUCCEEDED')
+  ) {
+    return { paid: true as const, synced: false as const };
+  }
+
+  const payment =
+    order.payments.find((p) => p.provider === 'STRIPE' && p.providerSessionId) ??
+    order.payments.find((p) => p.provider === 'STRIPE');
+
+  if (!payment?.providerSessionId) {
+    return { paid: false as const, synced: false as const };
+  }
+
+  try {
+    const session = await getStripe().checkout.sessions.retrieve(payment.providerSessionId);
+    if (session.payment_status === 'paid' || session.status === 'complete') {
+      const result = await markOrderPaidFromStripe({
+        orderId: order.id,
+        orderNumber: order.orderNumber,
+        sessionId: session.id,
+        paymentIntentId:
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : session.payment_intent?.id,
+        rawPayload: session,
+      });
+      return {
+        paid: Boolean(result.ok),
+        synced: true as const,
+        emailSent: 'emailSent' in result ? Boolean(result.emailSent) : false,
+      };
+    }
+  } catch (err) {
+    console.error('[stripe:sync]', orderNumber, err instanceof Error ? err.message : err);
+  }
+
+  return { paid: false as const, synced: false as const };
 }
 
 async function cancelOrderFromStripeSession(session: Stripe.Checkout.Session) {

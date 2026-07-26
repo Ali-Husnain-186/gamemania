@@ -540,6 +540,7 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
       'Order confirmed',
       `Your order ${orderNumber} is confirmed — no card payment needed.`,
       `/account/orders/${orderNumber}`,
+      { email: false },
     );
     const mail = await emailOrderPaid(order.id);
     if (!mail.sent) {

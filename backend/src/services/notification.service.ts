@@ -9,13 +9,16 @@ export async function createNotification(
   title: string,
   body: string,
   link?: string,
+  options?: { email?: boolean },
 ) {
   const notification = await prisma.notification.create({
     data: { userId, type, title, body, link },
   });
 
-  // Best-effort email via Gmail SMTP when configured (does not block the request).
-  void maybeEmailUser(userId, title, body, link);
+  // Best-effort email when configured. Pass email: false if a dedicated order email is sent.
+  if (options?.email !== false) {
+    void maybeEmailUser(userId, title, body, link);
+  }
 
   return notification;
 }

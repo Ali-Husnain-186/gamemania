@@ -131,6 +131,7 @@ export async function markOrderPaidFromStripe(input: {
       'Payment received',
       `Payment for order ${order.orderNumber} was successful. We’ll start processing it soon.`,
       `/account/orders/${order.orderNumber}`,
+      { email: false },
     );
   }
 

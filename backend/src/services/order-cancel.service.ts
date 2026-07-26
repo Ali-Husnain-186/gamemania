@@ -131,5 +131,8 @@ export async function cancelUnpaidOrder(orderId: string, options?: { restoreCart
     }
   });
 
+  const { emailOrderStatusUpdate } = await import('./order-email.service');
+  void emailOrderStatusUpdate(order.id, 'CANCELLED', order.status);
+
   return { ok: true as const, alreadyCancelled: false };
 }

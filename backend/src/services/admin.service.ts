@@ -61,7 +61,8 @@ export async function adminUpdateOrderStatus(id: string, status: OrderStatus) {
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw new NotFoundError('Order not found');
 
-  return prisma.order.update({
+  const previousStatus = order.status;
+  const updated = await prisma.order.update({
     where: { id },
     data: { status },
     include: {
@@ -70,6 +71,29 @@ export async function adminUpdateOrderStatus(id: string, status: OrderStatus) {
       payments: true,
     },
   });
+
+  if (previousStatus !== status) {
+    const { emailOrderStatusUpdate } = await import('./order-email.service');
+    void emailOrderStatusUpdate(updated.id, status, previousStatus).then((mail) => {
+      if (!mail.sent) {
+        console.error('[admin] order status email failed', updated.orderNumber, mail.error);
+      }
+    });
+
+    if (updated.userId) {
+      const { createNotification } = await import('./notification.service');
+      void createNotification(
+        updated.userId,
+        'ORDER',
+        `Order ${status.replace(/_/g, ' ').toLowerCase()}`,
+        `Your order ${updated.orderNumber} is now ${status.replace(/_/g, ' ').toLowerCase()}.`,
+        `/account/orders/${updated.orderNumber}`,
+        { email: false },
+      );
+    }
+  }
+
+  return updated;
 }
 
 export async function adminDeleteOrder(id: string) {

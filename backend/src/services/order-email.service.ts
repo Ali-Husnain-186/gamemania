@@ -3,6 +3,17 @@ import { env } from '../config/env';
 import { prisma } from '../config/prisma';
 import { sendOrderEmail } from './email.service';
 
+const BRAND = {
+  cyan: '#01A6C2',
+  yellow: '#FFD100',
+  magenta: '#E51A63',
+  ink: '#0a1016',
+  muted: '#5a6b75',
+  border: '#d8e2e8',
+  bg: '#f4f7f9',
+  white: '#ffffff',
+};
+
 function gbp(pence: number) {
   return `£${(pence / 100).toFixed(2)}`;
 }
@@ -17,6 +28,11 @@ function escapeHtml(value: string) {
 
 function statusLabel(status: OrderStatus) {
   return status.replace(/_/g, ' ').toLowerCase();
+}
+
+function siteUrl(path = '/') {
+  const base = env.FRONTEND_URL.replace(/\/$/, '');
+  return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 const STATUS_COPY: Record<OrderStatus, { subject: string; title: string; body: string }> = {
@@ -67,6 +83,127 @@ const STATUS_COPY: Record<OrderStatus, { subject: string; title: string; body: s
   },
 };
 
+function statusAccent(status: OrderStatus): string {
+  switch (status) {
+    case 'PAID':
+    case 'DELIVERED':
+      return '#159947';
+    case 'SHIPPED':
+    case 'PROCESSING':
+      return BRAND.cyan;
+    case 'CANCELLED':
+    case 'REFUNDED':
+    case 'PARTIALLY_REFUNDED':
+      return BRAND.magenta;
+    case 'AWAITING_PAYMENT':
+      return '#d97706';
+    default:
+      return BRAND.cyan;
+  }
+}
+
+function wrapEmailLayout(input: {
+  preheader: string;
+  title: string;
+  statusBadge?: string;
+  statusColor?: string;
+  bodyHtml: string;
+  ctaLabel?: string;
+  ctaUrl?: string;
+}) {
+  const badge = input.statusBadge
+    ? `<span style="display:inline-block;background:${input.statusColor ?? BRAND.cyan};color:${BRAND.white};font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;padding:6px 12px;border-radius:999px;">${escapeHtml(input.statusBadge)}</span>`
+    : '';
+
+  const cta =
+    input.ctaLabel && input.ctaUrl
+      ? `<tr>
+          <td style="padding:8px 0 0;">
+            <a href="${input.ctaUrl}" style="display:inline-block;background:${BRAND.yellow};color:${BRAND.ink};text-decoration:none;font-weight:800;font-size:14px;padding:14px 22px;border-radius:10px;">
+              ${escapeHtml(input.ctaLabel)}
+            </a>
+          </td>
+        </tr>`
+      : '';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>${escapeHtml(input.title)}</title>
+</head>
+<body style="margin:0;padding:0;background:${BRAND.bg};">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${escapeHtml(input.preheader)}</div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.bg};padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:${BRAND.white};border-radius:16px;overflow:hidden;border:1px solid ${BRAND.border};">
+          <tr>
+            <td style="background:${BRAND.ink};padding:22px 28px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.04em;color:${BRAND.white};">
+                    GAME <span style="color:${BRAND.cyan};">MANIA</span>
+                  </td>
+                  <td align="right" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${BRAND.yellow};font-weight:700;">
+                    UK Gaming Marketplace
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="height:4px;background:linear-gradient(90deg,${BRAND.cyan},${BRAND.yellow},${BRAND.magenta});font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+          <tr>
+            <td style="padding:28px 28px 8px;font-family:Arial,Helvetica,sans-serif;">
+              ${badge ? `<div style="margin-bottom:14px;">${badge}</div>` : ''}
+              <h1 style="margin:0 0 12px;font-size:26px;line-height:1.25;color:${BRAND.ink};">${escapeHtml(input.title)}</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 28px 28px;font-family:Arial,Helvetica,sans-serif;color:${BRAND.ink};font-size:15px;line-height:1.55;">
+              ${input.bodyHtml}
+              <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:22px;">
+                ${cta}
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#eef4f7;padding:18px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:${BRAND.muted};border-top:1px solid ${BRAND.border};">
+              <strong style="color:${BRAND.ink};">GAME MANIA</strong><br/>
+              Games • Consoles • Accessories<br/>
+              <a href="${siteUrl('/')}" style="color:${BRAND.cyan};text-decoration:none;">${escapeHtml(siteUrl('/'))}</a>
+            </td>
+          </tr>
+        </table>
+        <p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${BRAND.muted};">
+          You’re receiving this because you placed an order with GAME MANIA.
+        </p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+function metaCard(rows: Array<{ label: string; value: string }>) {
+  const cells = rows
+    .map(
+      (row) => `
+      <tr>
+        <td style="padding:10px 0;border-bottom:1px solid ${BRAND.border};font-size:13px;color:${BRAND.muted};width:120px;vertical-align:top;">${escapeHtml(row.label)}</td>
+        <td style="padding:10px 0;border-bottom:1px solid ${BRAND.border};font-size:14px;color:${BRAND.ink};font-weight:700;vertical-align:top;">${row.value}</td>
+      </tr>`,
+    )
+    .join('');
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0;background:${BRAND.bg};border-radius:12px;padding:4px 16px;">
+    ${cells}
+  </table>`;
+}
+
 /** Rich paid confirmation (items + address). */
 export async function emailOrderPaid(orderId: string) {
   return emailOrderStatusUpdate(orderId, 'PAID');
@@ -105,9 +242,8 @@ export async function emailOrderStatusUpdate(
 
   const copy = STATUS_COPY[nextStatus];
   const subject = `${copy.subject} — ${order.orderNumber}`;
-  const viewUrl = order.userId
-    ? `${env.FRONTEND_URL.replace(/\/$/, '')}/account/orders/${order.orderNumber}`
-    : `${env.FRONTEND_URL.replace(/\/$/, '')}/shop`;
+  const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
+  const accent = statusAccent(nextStatus);
 
   const text = [
     `Hi,`,
@@ -123,17 +259,30 @@ export async function emailOrderStatusUpdate(
     `— GAME MANIA`,
   ].join('\n');
 
-  const html = `
-    <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#111">
-      <h1 style="font-size:22px;margin:0 0 12px">${escapeHtml(copy.title)}</h1>
-      <p>${escapeHtml(copy.body)}</p>
-      <p><strong>Reference:</strong> ${escapeHtml(order.orderNumber)}<br/>
-      <strong>Status:</strong> ${escapeHtml(statusLabel(nextStatus))}<br/>
-      <strong>Total:</strong> ${gbp(order.grandTotal)}</p>
-      <p><a href="${viewUrl}">View order details</a></p>
-      <p style="margin-top:24px">— GAME MANIA</p>
-    </div>
+  const bodyHtml = `
+    <p style="margin:0 0 8px;color:${BRAND.muted};">${escapeHtml(copy.body)}</p>
+    ${metaCard([
+      { label: 'Reference', value: escapeHtml(order.orderNumber) },
+      {
+        label: 'Status',
+        value: `<span style="color:${accent};text-transform:capitalize;">${escapeHtml(statusLabel(nextStatus))}</span>`,
+      },
+      {
+        label: 'Total',
+        value: `<span style="color:${BRAND.magenta};">${gbp(order.grandTotal)}</span>`,
+      },
+    ])}
   `;
+
+  const html = wrapEmailLayout({
+    preheader: `${copy.title} for ${order.orderNumber}`,
+    title: copy.title,
+    statusBadge: statusLabel(nextStatus),
+    statusColor: accent,
+    bodyHtml,
+    ctaLabel: order.userId ? 'View order' : 'Continue shopping',
+    ctaUrl: viewUrl,
+  });
 
   return sendOrderEmail({ to: order.email, subject, text, html });
 }
@@ -142,6 +291,7 @@ async function sendPaidOrderEmail(order: {
   email: string;
   orderNumber: string;
   grandTotal: number;
+  userId: string | null;
   items: Array<{ name: string; quantity: number; lineTotal: number }>;
   shippingAddress: {
     fullName: string;
@@ -167,6 +317,8 @@ async function sendPaidOrderEmail(order: {
     : '';
 
   const subject = `Order confirmed — ${order.orderNumber}`;
+  const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
+
   const text = [
     `Thanks for your order with GAME MANIA.`,
     ``,
@@ -180,28 +332,56 @@ async function sendPaidOrderEmail(order: {
     `We’ll email you again when your order status changes.`,
     ``,
     `— GAME MANIA`,
-    env.FRONTEND_URL,
+    siteUrl('/'),
   ].join('\n');
 
-  const html = `
-    <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;color:#111">
-      <h1 style="font-size:22px;margin:0 0 12px">Order confirmed</h1>
-      <p>Thanks for your order with <strong>GAME MANIA</strong>.</p>
-      <p><strong>Reference:</strong> ${escapeHtml(order.orderNumber)}<br/>
-      <strong>Total paid:</strong> ${gbp(order.grandTotal)}</p>
-      <h2 style="font-size:16px;margin:20px 0 8px">Items</h2>
-      <ul>${order.items
-        .map((i) => `<li>${escapeHtml(i.name)} × ${i.quantity} — ${gbp(i.lineTotal)}</li>`)
-        .join('')}</ul>
-      ${
-        address
-          ? `<h2 style="font-size:16px;margin:20px 0 8px">Delivery</h2><p style="white-space:pre-line">${escapeHtml(address)}</p>`
-          : ''
-      }
-      <p style="margin-top:24px;color:#555">We’ll email you again when your order status changes.</p>
-      <p>— GAME MANIA</p>
-    </div>
+  const itemRows = order.items
+    .map(
+      (i, index) => `
+      <tr>
+        <td style="padding:12px 0;border-bottom:1px solid ${BRAND.border};font-size:14px;color:${BRAND.ink};">
+          <strong>${escapeHtml(i.name)}</strong><br/>
+          <span style="color:${BRAND.muted};font-size:12px;">Qty ${i.quantity}</span>
+        </td>
+        <td align="right" style="padding:12px 0;border-bottom:1px solid ${BRAND.border};font-size:14px;font-weight:700;color:${BRAND.ink};white-space:nowrap;">
+          ${gbp(i.lineTotal)}
+        </td>
+      </tr>${index === order.items.length - 1 ? '' : ''}`,
+    )
+    .join('');
+
+  const bodyHtml = `
+    <p style="margin:0 0 8px;color:${BRAND.muted};">Thanks for your order with <strong style="color:${BRAND.ink};">GAME MANIA</strong>. We’ve received your payment.</p>
+    ${metaCard([
+      { label: 'Reference', value: escapeHtml(order.orderNumber) },
+      { label: 'Status', value: `<span style="color:#159947;">Paid</span>` },
+      {
+        label: 'Total paid',
+        value: `<span style="color:${BRAND.magenta};font-size:18px;">${gbp(order.grandTotal)}</span>`,
+      },
+    ])}
+    <h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${itemRows || `<tr><td style="padding:12px 0;color:${BRAND.muted};">No items</td></tr>`}
+    </table>
+    ${
+      address
+        ? `<h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Delivery</h2>
+           <p style="margin:0;padding:14px 16px;background:${BRAND.bg};border-radius:12px;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(address)}</p>`
+        : ''
+    }
+    <p style="margin:20px 0 0;color:${BRAND.muted};font-size:13px;">We’ll email you again when your order status changes.</p>
   `;
+
+  const html = wrapEmailLayout({
+    preheader: `Order confirmed ${order.orderNumber} — ${gbp(order.grandTotal)}`,
+    title: 'Order confirmed',
+    statusBadge: 'Paid',
+    statusColor: '#159947',
+    bodyHtml,
+    ctaLabel: order.userId ? 'View order' : 'Continue shopping',
+    ctaUrl: viewUrl,
+  });
 
   return sendOrderEmail({ to: order.email, subject, text, html });
 }

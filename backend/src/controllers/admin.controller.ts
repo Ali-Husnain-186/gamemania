@@ -42,6 +42,22 @@ export async function adminUpdateOrderController(req: Request, res: Response, ne
   }
 }
 
+export async function adminDeleteOrderController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const result = await adminService.adminDeleteOrder(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'order.delete',
+      entityType: 'Order',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function adminListCustomersController(
   req: Request,
   res: Response,
@@ -49,6 +65,26 @@ export async function adminListCustomersController(
 ) {
   try {
     ok(res, await adminService.adminListCustomers(req.query as unknown as AdminCustomersQuery));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteCustomerController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await adminService.adminDeleteCustomer(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'customer.delete',
+      entityType: 'User',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
   } catch (err) {
     next(err);
   }
@@ -82,6 +118,26 @@ export async function updateShippingRulesController(
       ipAddress: req.ip,
     });
     ok(res, rules);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteShippingRuleController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await adminService.deleteShippingRule(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'shipping.rule_delete',
+      entityType: 'ShippingRule',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
   } catch (err) {
     next(err);
   }

@@ -95,3 +95,23 @@ export async function adminUpdateTradeRequestController(
     next(err);
   }
 }
+
+export async function adminDeleteTradeRequestController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await tradeInService.adminDeleteTradeRequest(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'trade.delete',
+      entityType: 'TradeRequest',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}

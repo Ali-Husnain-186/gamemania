@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
 type CmsPage = {
@@ -58,6 +58,22 @@ export default function CmsAdminPage() {
         await load();
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Save failed');
+      }
+    });
+  }
+
+  function remove(p: CmsPage) {
+    if (!window.confirm(`Delete page “${p.title}”?`)) return;
+    startTransition(async () => {
+      try {
+        await apiDelete(`/admin/cms/pages/${p.id}`);
+        if (editing?.id === p.id) {
+          setEditing(null);
+          setCreating(false);
+        }
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Delete failed');
       }
     });
   }
@@ -151,13 +167,23 @@ export default function CmsAdminPage() {
                 <td className="px-4 py-3 font-mono text-xs">{p.slug}</td>
                 <td className="px-4 py-3 text-[var(--admin-muted)]">{p.status}</td>
                 <td className="px-4 py-3 text-right">
-                  <button
-                    type="button"
-                    className="text-sm text-[var(--admin-accent)] hover:underline"
-                    onClick={() => startEdit(p)}
-                  >
-                    Edit
-                  </button>
+                  <div className="flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      className="text-sm text-[var(--admin-accent)] hover:underline"
+                      onClick={() => startEdit(p)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                      disabled={pending}
+                      onClick={() => remove(p)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -96,3 +96,23 @@ export async function adminUpdateProductController(
     next(err);
   }
 }
+
+export async function adminDeleteProductController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await catalogService.deleteProduct(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'product.delete',
+      entityType: 'Product',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}

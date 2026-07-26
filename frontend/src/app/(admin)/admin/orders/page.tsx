@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { apiGet, apiPatch, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiPatch, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
@@ -61,6 +61,18 @@ export default function OrdersPage() {
     });
   }
 
+  function remove(id: string, orderNumber: string) {
+    if (!window.confirm(`Delete order ${orderNumber}? This cannot be undone.`)) return;
+    startTransition(async () => {
+      try {
+        await apiDelete(`/admin/orders/${id}`);
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Delete failed');
+      }
+    });
+  }
+
   return (
     <>
       <PageHeader title="Orders" description="Update fulfillment status for customer orders." />
@@ -78,12 +90,13 @@ export default function OrdersPage() {
                   <th className="px-4 py-3 font-medium">Total</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium">Placed</th>
+                  <th className="px-4 py-3 font-medium" />
                 </tr>
               </thead>
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-4 py-10 text-center text-[var(--admin-muted)]">
+                    <td colSpan={6} className="px-4 py-10 text-center text-[var(--admin-muted)]">
                       No orders yet
                     </td>
                   </tr>
@@ -112,6 +125,16 @@ export default function OrdersPage() {
                       </td>
                       <td className="px-4 py-3 text-[var(--admin-muted)]">
                         {new Date(o.createdAt).toLocaleString('en-GB')}
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                          disabled={pending}
+                          onClick={() => remove(o.id, o.orderNumber)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { apiGet, apiPatch, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiPatch, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
@@ -67,6 +67,18 @@ export default function TradeInsPage() {
     });
   }
 
+  function remove(id: string, ref: string) {
+    if (!window.confirm(`Delete trade-in ${ref}?`)) return;
+    startTransition(async () => {
+      try {
+        await apiDelete(`/admin/trade-in/requests/${id}`);
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Delete failed');
+      }
+    });
+  }
+
   return (
     <>
       <PageHeader
@@ -88,12 +100,13 @@ export default function TradeInsPage() {
                   <th className="px-4 py-3 font-medium">Quote</th>
                   <th className="px-4 py-3 font-medium">Payout</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium" />
                 </tr>
               </thead>
               <tbody>
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-10 text-center text-[var(--admin-muted)]">
+                    <td colSpan={7} className="px-4 py-10 text-center text-[var(--admin-muted)]">
                       No trade-in requests
                     </td>
                   </tr>
@@ -126,6 +139,16 @@ export default function TradeInsPage() {
                             </option>
                           ))}
                         </select>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          type="button"
+                          className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                          disabled={pending}
+                          onClick={() => remove(t.id, t.requestNumber)}
+                        >
+                          Delete
+                        </button>
                       </td>
                     </tr>
                   ))

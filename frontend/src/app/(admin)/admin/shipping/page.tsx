@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import { apiGet, apiPatch, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiPatch, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
@@ -65,6 +65,20 @@ export default function ShippingPage() {
     setRules((prev) => prev.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   }
 
+  function removeRule(r: Rule) {
+    if (!window.confirm(`Delete shipping rule “${r.name}”?`)) return;
+    startTransition(async () => {
+      try {
+        setMessage(null);
+        await apiDelete(`/admin/shipping-rules/${r.id}`);
+        setMessage('Shipping rule deleted.');
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Delete failed');
+      }
+    });
+  }
+
   return (
     <>
       <PageHeader
@@ -86,6 +100,17 @@ export default function ShippingPage() {
       <div className="space-y-4">
         {rules.map((r) => (
           <Panel key={r.id} className="p-5">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <p className="text-sm font-medium">{r.name}</p>
+              <button
+                type="button"
+                className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                disabled={pending}
+                onClick={() => removeRule(r)}
+              >
+                Delete
+              </button>
+            </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <label className="block text-xs text-[var(--admin-muted)]">
                 Name

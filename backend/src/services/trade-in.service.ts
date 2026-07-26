@@ -247,3 +247,10 @@ export async function adminUpdateTradeRequest(
 
   return request;
 }
+
+export async function adminDeleteTradeRequest(id: string) {
+  const existing = await prisma.tradeRequest.findUnique({ where: { id } });
+  if (!existing) throw new NotFoundError('Trade request not found');
+  await prisma.tradeRequest.delete({ where: { id } });
+  return { deleted: true, id };
+}

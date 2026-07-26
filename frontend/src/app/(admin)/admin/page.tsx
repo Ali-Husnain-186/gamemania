@@ -37,7 +37,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <PageHeader title="Dashboard" description="Live operations overview from PostgreSQL." />
+      <PageHeader title="Dashboard" description="Live operations overview for your store." />
 
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
 

@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import {
+  adminDeleteCustomerController,
+  adminDeleteOrderController,
   adminListCustomersController,
   adminListOrdersController,
   adminUpdateOrderController,
   dashboardStatsController,
+  deleteShippingRuleController,
   getSettingController,
   listShippingRulesController,
   updateSettingController,
@@ -15,8 +18,10 @@ import {
   adminCustomersQuerySchema,
   adminOrdersQuerySchema,
   adminUpdateOrderSchema,
+  customerIdParamsSchema,
   orderIdParamsSchema,
   settingKeyParamsSchema,
+  shippingRuleIdParamsSchema,
   shippingRulesPatchSchema,
   updateSettingSchema,
 } from '../validators/admin.validators';
@@ -40,12 +45,24 @@ router.patch(
   validate(adminUpdateOrderSchema),
   adminUpdateOrderController,
 );
+router.delete(
+  '/orders/:id',
+  requirePermissions('orders:write'),
+  validate(orderIdParamsSchema, 'params'),
+  adminDeleteOrderController,
+);
 
 router.get(
   '/customers',
   requirePermissions('customers:read'),
   validate(adminCustomersQuerySchema, 'query'),
   adminListCustomersController,
+);
+router.delete(
+  '/customers/:id',
+  requirePermissions('customers:write'),
+  validate(customerIdParamsSchema, 'params'),
+  adminDeleteCustomerController,
 );
 
 router.get('/shipping-rules', listShippingRulesController);
@@ -54,6 +71,12 @@ router.patch(
   requirePermissions('shipping:write'),
   validate(shippingRulesPatchSchema),
   updateShippingRulesController,
+);
+router.delete(
+  '/shipping-rules/:id',
+  requirePermissions('shipping:write'),
+  validate(shippingRuleIdParamsSchema, 'params'),
+  deleteShippingRuleController,
 );
 
 router.get('/settings/:key', validate(settingKeyParamsSchema, 'params'), getSettingController);

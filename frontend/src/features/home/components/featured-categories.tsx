@@ -9,44 +9,44 @@ const categories = [
   {
     title: 'PlayStation',
     href: '/shop?q=playstation',
-    image: '/brand/hero-banner-hd.jpg',
-  },
-  {
-    title: 'Xbox',
-    href: '/shop?q=xbox',
-    image: '/brand/hero-slide-2.jpg',
+    image: '/brand/playstation.png',
   },
   {
     title: 'Nintendo',
     href: '/shop?q=nintendo',
-    image: '/brand/hero-slide-1.jpg',
+    image: '/brand/nintendo.png',
   },
   {
     title: 'PC Gaming',
     href: '/shop?q=pc',
-    image: '/brand/hero-accessories.jpg',
+    image: '/brand/pcgames.png',
   },
   {
     title: 'Retro',
     href: '/shop?q=retro',
-    image: '/brand/hero-trade-in.jpg',
+    image: '/brand/retrogames.png',
   },
   {
     title: 'Accessories',
     href: '/shop?q=accessories',
-    image: '/brand/hero-accessories.jpg',
+    image: '/brand/accessories.png',
+  },
+  {
+    title: 'Controllers',
+    href: '/shop?q=controller',
+    image: '/brand/wireless-controller.png',
   },
 ];
 
 export function FeaturedCategories() {
   return (
-    <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
+    <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="Browse"
         title="Featured categories"
         description="Jump straight into the platforms and gear you love."
       />
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3">
+      <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
         {categories.map((cat, i) => (
           <motion.div
             key={cat.title}
@@ -57,20 +57,25 @@ export function FeaturedCategories() {
           >
             <Link
               href={cat.href}
-              className="group relative block aspect-[4/5] overflow-hidden rounded-xl border border-[var(--gm-cyan)]/20 transition hover:border-[var(--gm-cyan)]/70 sm:rounded-2xl gm-focus"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)] transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_14px_36px_rgba(1,166,194,0.16)] gm-focus"
             >
-              <Image
-                src={cat.image}
-                alt={cat.title}
-                fill
-                quality={90}
-                sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 400px"
-                className="object-cover transition duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/35 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">
-                <h3 className="gm-display text-lg text-white sm:text-2xl">{cat.title}</h3>
-                <span className="mt-2 inline-flex rounded-full bg-[var(--gm-cyan)] px-3 py-1 text-[11px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
+              <div className="relative aspect-square bg-[#0a1016] p-4 sm:p-5">
+                <div className="relative h-full w-full">
+                  <Image
+                    src={cat.image}
+                    alt={cat.title}
+                    fill
+                    quality={90}
+                    sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 360px"
+                    className="object-contain object-center transition duration-500 group-hover:scale-[1.03]"
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between gap-2 border-t border-[var(--gm-cyan)]/15 px-4 py-3.5 sm:px-5 sm:py-4">
+                <h3 className="gm-display text-base text-[var(--gm-yellow)] sm:text-xl">
+                  {cat.title}
+                </h3>
+                <span className="shrink-0 rounded-full bg-[var(--gm-cyan)] px-3 py-1 text-[10px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
                   Explore
                 </span>
               </div>

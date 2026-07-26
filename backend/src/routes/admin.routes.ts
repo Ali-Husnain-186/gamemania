@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { z } from 'zod';
 import {
   adminCreateProductController,
+  adminDeleteProductController,
   adminListProductsController,
   adminUpdateProductController,
 } from '../controllers/catalog.controller';
@@ -46,6 +47,12 @@ router.patch(
   validate(productIdParamsSchema, 'params'),
   validate(updateProductSchema),
   adminUpdateProductController,
+);
+router.delete(
+  '/products/:id',
+  requirePermissions('products:write'),
+  validate(productIdParamsSchema, 'params'),
+  adminDeleteProductController,
 );
 
 router.use('/trade-in', adminTradeRouter);

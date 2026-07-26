@@ -23,7 +23,7 @@ const fallbackPosts: BlogPost[] = [
     title: 'Best PlayStation deals this month',
     slug: 'best-playstation-deals',
     excerpt: 'Top PS5 picks and accessories worth grabbing right now.',
-    coverImageUrl: '/brand/hero-banner-hd.jpg',
+    coverImageUrl: '/brand/playstation.png',
     publishedAt: new Date().toISOString(),
   },
   {
@@ -31,7 +31,7 @@ const fallbackPosts: BlogPost[] = [
     title: 'How trade-ins work at GAME MANIA',
     slug: 'how-trade-ins-work',
     excerpt: 'Get cash or store credit for games and consoles in a few steps.',
-    coverImageUrl: '/brand/hero-trade-in.jpg',
+    coverImageUrl: '/brand/retrogames.png',
     publishedAt: new Date().toISOString(),
   },
   {
@@ -39,7 +39,7 @@ const fallbackPosts: BlogPost[] = [
     title: 'Must-have gaming accessories for 2026',
     slug: 'must-have-accessories',
     excerpt: 'Controllers, headsets and docks that upgrade every setup.',
-    coverImageUrl: '/brand/hero-accessories.jpg',
+    coverImageUrl: '/brand/accessories.png',
     publishedAt: new Date().toISOString(),
   },
 ];
@@ -74,7 +74,7 @@ export function LatestBlogs() {
           >
             <div className="relative aspect-[16/10]">
               <Image
-                src={post.coverImageUrl || '/brand/hero-slide-1.jpg'}
+                src={post.coverImageUrl || '/brand/playstation.png'}
                 alt={post.title}
                 fill
                 quality={85}

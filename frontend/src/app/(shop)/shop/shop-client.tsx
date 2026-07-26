@@ -134,7 +134,7 @@ export function ShopClient() {
             message={
               productsQuery.error instanceof Error
                 ? productsQuery.error.message
-                : 'Could not load products (build needs /api/v1).'
+                : 'Could not load products. Please try again.'
             }
           />
         ) : !productsQuery.data?.length ? (

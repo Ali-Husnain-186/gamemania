@@ -239,6 +239,18 @@ export async function createProduct(input: CreateProductInput) {
   return mapProduct(product);
 }
 
+export async function deleteProduct(id: string) {
+  const existing = await prisma.product.findFirst({ where: { id, deletedAt: null } });
+  if (!existing) throw new NotFoundError('Product not found');
+
+  await prisma.product.update({
+    where: { id },
+    data: { deletedAt: new Date(), status: 'ARCHIVED', isFeatured: false },
+  });
+
+  return { deleted: true, id };
+}
+
 export async function updateProduct(id: string, input: UpdateProductInput) {
   const existing = await prisma.product.findFirst({ where: { id, deletedAt: null } });
   if (!existing) throw new NotFoundError('Product not found');

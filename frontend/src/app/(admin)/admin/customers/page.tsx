@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { apiGet, ApiError } from '@/lib/api';
+import { useEffect, useState, useTransition } from 'react';
+import { apiDelete, apiGet, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
@@ -22,25 +22,43 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pending, startTransition] = useTransition();
+
+  async function load(q = search) {
+    setLoading(true);
+    try {
+      const query = q ? `&search=${encodeURIComponent(q)}` : '';
+      const data = await apiGet<{ items: Customer[] }>(`/admin/customers?limit=50${query}`);
+      setCustomers(data.items ?? []);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Failed to load customers');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
     const t = setTimeout(() => {
-      void (async () => {
-        setLoading(true);
-        try {
-          const q = search ? `&search=${encodeURIComponent(search)}` : '';
-          const data = await apiGet<{ items: Customer[] }>(`/admin/customers?limit=50${q}`);
-          setCustomers(data.items ?? []);
-          setError(null);
-        } catch (err) {
-          setError(err instanceof ApiError ? err.message : 'Failed to load customers');
-        } finally {
-          setLoading(false);
-        }
-      })();
+      void load(search);
     }, 250);
     return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
+
+  function remove(c: Customer) {
+    if (!window.confirm(`Delete customer ${c.email}? They will no longer be able to sign in.`)) {
+      return;
+    }
+    startTransition(async () => {
+      try {
+        await apiDelete(`/admin/customers/${c.id}`);
+        await load();
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Delete failed');
+      }
+    });
+  }
 
   return (
     <>
@@ -70,6 +88,7 @@ export default function CustomersPage() {
                   <th className="px-4 py-3 font-medium">Points</th>
                   <th className="px-4 py-3 font-medium">Store credit</th>
                   <th className="px-4 py-3 font-medium">Joined</th>
+                  <th className="px-4 py-3 font-medium" />
                 </tr>
               </thead>
               <tbody>
@@ -86,6 +105,16 @@ export default function CustomersPage() {
                     <td className="px-4 py-3 font-mono">{formatGbp(c.storeCredit)}</td>
                     <td className="px-4 py-3 text-[var(--admin-muted)]">
                       {new Date(c.createdAt).toLocaleDateString('en-GB')}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        type="button"
+                        className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                        disabled={pending}
+                        onClick={() => remove(c)}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

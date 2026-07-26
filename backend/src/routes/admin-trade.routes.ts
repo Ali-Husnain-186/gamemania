@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  adminDeleteTradeRequestController,
   adminListTradeRequestsController,
   adminUpdateTradeRequestController,
 } from '../controllers/trade-in.controller';
@@ -21,6 +22,12 @@ router.patch(
   validate(tradeRequestIdParamsSchema, 'params'),
   validate(adminUpdateTradeRequestSchema),
   adminUpdateTradeRequestController,
+);
+router.delete(
+  '/requests/:id',
+  requirePermissions('trade:write'),
+  validate(tradeRequestIdParamsSchema, 'params'),
+  adminDeleteTradeRequestController,
 );
 
 export const adminTradeRouter = router;

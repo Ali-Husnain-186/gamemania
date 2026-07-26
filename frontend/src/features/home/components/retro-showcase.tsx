@@ -29,7 +29,7 @@ export function RetroShowcase() {
     <section className="relative overflow-hidden border-y border-[var(--gm-cyan)]/25">
       <div className="absolute inset-0">
         <Image
-          src="/brand/hero-slide-1.jpg"
+          src="/brand/retrogames.png"
           alt=""
           fill
           quality={85}

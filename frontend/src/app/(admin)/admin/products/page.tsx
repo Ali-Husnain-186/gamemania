@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImagePlus, Loader2, X } from 'lucide-react';
-import { apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
 import { formatGbp } from '@/lib/utils';
@@ -413,13 +413,37 @@ export default function ProductsPage() {
                     <td className="px-4 py-3 font-mono">{p.stock ?? '—'}</td>
                     <td className="px-4 py-3 text-[var(--admin-muted)]">{p.status}</td>
                     <td className="px-4 py-3 text-right">
-                      <button
-                        type="button"
-                        className="text-sm text-[var(--admin-accent)] hover:underline"
-                        onClick={() => openEdit(p)}
-                      >
-                        Edit
-                      </button>
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          type="button"
+                          className="text-sm text-[var(--admin-accent)] hover:underline"
+                          onClick={() => openEdit(p)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="text-sm text-[var(--admin-danger)] hover:underline"
+                          disabled={pending}
+                          onClick={() => {
+                            if (!window.confirm(`Delete product “${p.name}”?`)) return;
+                            startTransition(async () => {
+                              try {
+                                await apiDelete(`/admin/products/${p.id}`);
+                                if (editingId === p.id) {
+                                  setShowForm(false);
+                                  setEditingId(null);
+                                }
+                                await load();
+                              } catch (err) {
+                                setError(err instanceof ApiError ? err.message : 'Delete failed');
+                              }
+                            });
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

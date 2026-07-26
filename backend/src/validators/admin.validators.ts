@@ -39,6 +39,14 @@ export const orderIdParamsSchema = z.object({
   id: z.string().cuid(),
 });
 
+export const customerIdParamsSchema = z.object({
+  id: z.string().cuid(),
+});
+
+export const shippingRuleIdParamsSchema = z.object({
+  id: z.string().cuid(),
+});
+
 export const shippingRulesPatchSchema = z.object({
   rules: z
     .array(

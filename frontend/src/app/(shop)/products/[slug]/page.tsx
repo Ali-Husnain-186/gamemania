@@ -43,7 +43,7 @@ export default function ProductDetailPage() {
   if (productQuery.isError || !productQuery.data) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <ErrorState message="Product not found or API unavailable." />
+        <ErrorState message="Product not found. Please try again." />
       </div>
     );
   }

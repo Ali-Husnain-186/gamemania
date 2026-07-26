@@ -72,6 +72,35 @@ export async function adminUpdateOrderStatus(id: string, status: OrderStatus) {
   });
 }
 
+export async function adminDeleteOrder(id: string) {
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) throw new NotFoundError('Order not found');
+
+  await prisma.order.delete({ where: { id } });
+  return { deleted: true, id };
+}
+
+export async function adminDeleteCustomer(id: string) {
+  const user = await prisma.user.findFirst({
+    where: { id, deletedAt: null, role: { name: 'CUSTOMER' } },
+  });
+  if (!user) throw new NotFoundError('Customer not found');
+
+  await prisma.user.update({
+    where: { id },
+    data: { deletedAt: new Date(), isActive: false },
+  });
+
+  return { deleted: true, id };
+}
+
+export async function deleteShippingRule(id: string) {
+  const rule = await prisma.shippingRule.findUnique({ where: { id } });
+  if (!rule) throw new NotFoundError('Shipping rule not found');
+  await prisma.shippingRule.delete({ where: { id } });
+  return { deleted: true, id };
+}
+
 export async function adminListCustomers(query: { page: number; limit: number; search?: string }) {
   const where: Prisma.UserWhereInput = {
     deletedAt: null,

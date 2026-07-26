@@ -44,7 +44,7 @@ export async function uploadProductImage(file: File): Promise<CloudinaryUploadRe
   if (!res.ok || !json.secure_url || !json.public_id) {
     throw new ApiError(
       res.status || 500,
-      json.error?.message ?? 'Image upload failed. Check Cloudinary credentials.',
+      json.error?.message ?? 'Image upload failed. Please try again.',
       'CLOUDINARY_UPLOAD_FAILED',
     );
   }

@@ -82,7 +82,7 @@ export function HomeHero() {
             </p>
           </div>
 
-          <div className="pointer-events-auto mt-16 flex flex-col items-center gap-3 sm:mt-24 sm:gap-4 lg:mt-28">
+          <div className="pointer-events-auto mt-32 flex flex-col items-center gap-3 sm:mt-44 sm:gap-4 lg:mt-56">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active.cta}

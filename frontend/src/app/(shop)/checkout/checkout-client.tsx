@@ -1,17 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { FormEvent, useEffect, useState, useTransition } from 'react';
 import { CreditCard, Lock } from 'lucide-react';
 import { ApiError, apiGet, apiPost } from '@/lib/api';
 import { formatGbpFromPence } from '@/lib/money';
+import { useAuth } from '@/providers/auth-provider';
 
-type Address = {
+type SavedAddress = {
   id: string;
+  fullName: string;
   line1: string;
+  line2?: string | null;
   city: string;
   postcode: string;
+  phone?: string | null;
   isDefault: boolean;
 };
 
@@ -26,17 +30,35 @@ type Preview = {
   lineItems: Array<{ name: string; quantity: number; lineTotalPence: number }>;
 };
 
+type ShippingForm = {
+  fullName: string;
+  line1: string;
+  line2: string;
+  city: string;
+  postcode: string;
+  phone: string;
+};
+
+const emptyShipping: ShippingForm = {
+  fullName: '',
+  line1: '',
+  line2: '',
+  city: '',
+  postcode: '',
+  phone: '',
+};
+
 export function CheckoutClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
+  const { user } = useAuth();
   const [pending, startTransition] = useTransition();
-  const [addresses, setAddresses] = useState<Address[]>([]);
-  const [addressId, setAddressId] = useState('');
   const [couponCode, setCouponCode] = useState('');
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [placed, setPlaced] = useState<{ orderNumber: string; message?: string } | null>(null);
+  const [shipping, setShipping] = useState<ShippingForm>(emptyShipping);
+  const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
 
   useEffect(() => {
     if (searchParams.get('cancelled') === '1') {
@@ -45,20 +67,34 @@ export function CheckoutClient() {
   }, [searchParams]);
 
   useEffect(() => {
+    const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim();
+    if (name) {
+      setShipping((s) => (s.fullName ? s : { ...s, fullName: name }));
+    }
+  }, [user?.firstName, user?.lastName]);
+
+  useEffect(() => {
     void (async () => {
       try {
-        const list = await apiGet<Address[]>('/users/me/addresses');
-        setAddresses(list);
+        const list = await apiGet<SavedAddress[]>('/users/me/addresses');
         const def = list.find((a) => a.isDefault) ?? list[0];
-        if (def) setAddressId(def.id);
+        if (!def) return;
+        setSavedAddressId(def.id);
+        setShipping({
+          fullName: def.fullName,
+          line1: def.line1,
+          line2: def.line2 ?? '',
+          city: def.city,
+          postcode: def.postcode,
+          phone: def.phone ?? '',
+        });
       } catch {
-        setError('Sign in and add a delivery address to checkout.');
+        // Guest/session edge — user can still type address on this page
       }
     })();
   }, []);
 
   useEffect(() => {
-    if (!addressId) return;
     startTransition(async () => {
       try {
         setError(null);
@@ -69,26 +105,55 @@ export function CheckoutClient() {
         setPreview(data);
       } catch (err) {
         setPreview(null);
-        setError(err instanceof ApiError ? err.message : 'Preview failed');
+        setError(err instanceof ApiError ? err.message : 'Could not load cart totals');
       }
     });
-  }, [addressId, couponCode]);
+  }, [couponCode]);
 
-  function placeOrder() {
-    if (!addressId) return;
+  function updateField<K extends keyof ShippingForm>(key: K, value: ShippingForm[K]) {
+    setSavedAddressId(null);
+    setShipping((s) => ({ ...s, [key]: value }));
+  }
+
+  function onSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (
+      !shipping.fullName.trim() ||
+      !shipping.line1.trim() ||
+      !shipping.city.trim() ||
+      !shipping.postcode.trim()
+    ) {
+      setError('Please fill in your delivery details.');
+      return;
+    }
+
     startTransition(async () => {
       try {
         setError(null);
+        const payload: Record<string, unknown> = {
+          couponCode: couponCode || undefined,
+          country: 'GB',
+        };
+
+        if (savedAddressId) {
+          payload.shippingAddressId = savedAddressId;
+        } else {
+          payload.shipping = {
+            fullName: shipping.fullName.trim(),
+            line1: shipping.line1.trim(),
+            line2: shipping.line2.trim() || undefined,
+            city: shipping.city.trim(),
+            postcode: shipping.postcode.trim().toUpperCase(),
+            phone: shipping.phone.trim() || undefined,
+            country: 'GB',
+          };
+        }
+
         const data = await apiPost<{
           order: { orderNumber: string };
           checkoutUrl?: string | null;
           paymentMessage?: string;
-          stripeEnabled?: boolean;
-        }>('/checkout', {
-          shippingAddressId: addressId,
-          couponCode: couponCode || undefined,
-          country: 'GB',
-        });
+        }>('/checkout', payload);
 
         if (data.checkoutUrl) {
           window.location.href = data.checkoutUrl;
@@ -127,20 +192,22 @@ export function CheckoutClient() {
 
   const payLabel =
     preview && preview.grandTotalPence <= 0
-      ? 'Complete order'
+      ? pending
+        ? 'Placing order…'
+        : 'Complete order'
       : pending
         ? 'Redirecting to Stripe…'
-        : 'Pay securely with Stripe';
+        : 'Pay with Stripe';
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="gm-display text-4xl text-[var(--gm-yellow)]">Checkout</h1>
-      <p className="mt-2 text-[var(--gm-muted)]">
-        Choose delivery, apply a code, then pay securely with Stripe.
+    <div className="mx-auto max-w-3xl px-3 py-8 sm:px-6 sm:py-10">
+      <h1 className="gm-display text-3xl text-[var(--gm-yellow)] sm:text-4xl">Checkout</h1>
+      <p className="mt-2 text-sm text-[var(--gm-muted)] sm:text-base">
+        Enter delivery details and pay securely — one simple step.
       </p>
 
       {info ? (
-        <p className="mt-6 rounded-xl border border-[var(--gm-cyan)]/40 bg-[var(--gm-cyan)]/10 px-4 py-3 text-sm text-[var(--gm-cyan)]">
+        <p className="mt-6 rounded-xl border border-[var(--gm-cyan)]/40 bg-[rgba(1,166,194,0.1)] px-4 py-3 text-sm text-[var(--gm-cyan)]">
           {info}
         </p>
       ) : null}
@@ -150,82 +217,132 @@ export function CheckoutClient() {
           className="mt-6 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
           role="alert"
         >
-          {error}{' '}
-          {!addresses.length ? (
-            <button
-              type="button"
-              className="underline"
-              onClick={() => router.push('/account/addresses')}
-            >
-              Add address
-            </button>
-          ) : null}
+          {error}
         </p>
       ) : null}
 
-      <div className="mt-8 space-y-6">
-        <label className="block text-sm">
-          <span className="font-medium">Delivery address</span>
-          <select
-            className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
-            value={addressId}
-            onChange={(e) => setAddressId(e.target.value)}
-          >
-            <option value="">Select address</option>
-            {addresses.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.line1}, {a.city} {a.postcode}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block text-sm">
-          <span className="font-medium">Coupon</span>
-          <input
-            className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 uppercase"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-            placeholder="GAMEMANIA10"
-          />
-        </label>
-
-        {preview ? (
-          <div className="rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 p-5 text-sm">
-            <ul className="space-y-2">
-              {preview.lineItems.map((item, i) => (
-                <li key={i} className="flex justify-between gap-4">
-                  <span>
-                    {item.name} × {item.quantity}
-                  </span>
-                  <span>{formatGbpFromPence(item.lineTotalPence)}</span>
-                </li>
-              ))}
-            </ul>
-            <dl className="mt-4 space-y-1 border-t border-[var(--gm-border)] pt-4 text-[var(--gm-muted)]">
-              <div className="flex justify-between">
-                <dt>Subtotal</dt>
-                <dd>{formatGbpFromPence(preview.subtotalPence)}</dd>
-              </div>
-              {preview.discountPence > 0 ? (
-                <div className="flex justify-between text-emerald-400">
-                  <dt>Discount</dt>
-                  <dd>−{formatGbpFromPence(preview.discountPence)}</dd>
-                </div>
-              ) : null}
-              <div className="flex justify-between">
-                <dt>Shipping</dt>
-                <dd>{preview.freeShipping ? 'Free' : formatGbpFromPence(preview.shippingPence)}</dd>
-              </div>
-              <div className="flex justify-between font-display text-lg text-[var(--gm-fg)]">
-                <dt>Total</dt>
-                <dd className="text-[var(--gm-magenta)]">
-                  {formatGbpFromPence(preview.grandTotalPence)}
-                </dd>
-              </div>
-            </dl>
+      <form onSubmit={onSubmit} className="mt-8 space-y-8">
+        <section className="space-y-3">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
+            Delivery
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm sm:col-span-2">
+              <span className="font-medium">Full name</span>
+              <input
+                required
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+                value={shipping.fullName}
+                onChange={(e) => updateField('fullName', e.target.value)}
+                autoComplete="name"
+              />
+            </label>
+            <label className="block text-sm sm:col-span-2">
+              <span className="font-medium">Address line 1</span>
+              <input
+                required
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+                value={shipping.line1}
+                onChange={(e) => updateField('line1', e.target.value)}
+                autoComplete="address-line1"
+              />
+            </label>
+            <label className="block text-sm sm:col-span-2">
+              <span className="font-medium">Address line 2 (optional)</span>
+              <input
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+                value={shipping.line2}
+                onChange={(e) => updateField('line2', e.target.value)}
+                autoComplete="address-line2"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="font-medium">City</span>
+              <input
+                required
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+                value={shipping.city}
+                onChange={(e) => updateField('city', e.target.value)}
+                autoComplete="address-level2"
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="font-medium">Postcode</span>
+              <input
+                required
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 uppercase"
+                value={shipping.postcode}
+                onChange={(e) => updateField('postcode', e.target.value.toUpperCase())}
+                autoComplete="postal-code"
+              />
+            </label>
+            <label className="block text-sm sm:col-span-2">
+              <span className="font-medium">Phone (optional)</span>
+              <input
+                className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+                value={shipping.phone}
+                onChange={(e) => updateField('phone', e.target.value)}
+                autoComplete="tel"
+              />
+            </label>
           </div>
-        ) : null}
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
+            Order
+          </h2>
+          <label className="block text-sm">
+            <span className="font-medium">Coupon (optional)</span>
+            <input
+              className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 uppercase"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+              placeholder="GAMEMANIA10"
+            />
+          </label>
+
+          {preview ? (
+            <div className="rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 p-5 text-sm">
+              <ul className="space-y-2">
+                {preview.lineItems.map((item, i) => (
+                  <li key={i} className="flex justify-between gap-4">
+                    <span>
+                      {item.name} × {item.quantity}
+                    </span>
+                    <span>{formatGbpFromPence(item.lineTotalPence)}</span>
+                  </li>
+                ))}
+              </ul>
+              <dl className="mt-4 space-y-1 border-t border-[var(--gm-border)] pt-4 text-[var(--gm-muted)]">
+                <div className="flex justify-between">
+                  <dt>Subtotal</dt>
+                  <dd>{formatGbpFromPence(preview.subtotalPence)}</dd>
+                </div>
+                {preview.discountPence > 0 ? (
+                  <div className="flex justify-between text-emerald-400">
+                    <dt>Discount</dt>
+                    <dd>−{formatGbpFromPence(preview.discountPence)}</dd>
+                  </div>
+                ) : null}
+                <div className="flex justify-between">
+                  <dt>Shipping</dt>
+                  <dd>
+                    {preview.freeShipping ? 'Free' : formatGbpFromPence(preview.shippingPence)}
+                  </dd>
+                </div>
+                <div className="flex justify-between text-lg font-bold text-[var(--gm-fg)]">
+                  <dt>Total</dt>
+                  <dd className="text-[var(--gm-magenta)]">
+                    {formatGbpFromPence(preview.grandTotalPence)}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          ) : (
+            <div className="h-28 animate-pulse rounded-2xl bg-[var(--gm-bg-elevated)]" />
+          )}
+        </section>
 
         <div className="rounded-2xl border border-[var(--gm-border)] bg-black/25 p-4 text-xs text-[var(--gm-muted)]">
           <p className="inline-flex items-center gap-2 font-semibold text-[var(--gm-cyan)]">
@@ -233,28 +350,26 @@ export function CheckoutClient() {
             Secure card payments by Stripe
           </p>
           <p className="mt-1">
-            You’ll be redirected to Stripe’s secure checkout page (Visa, Mastercard, Apple Pay where
-            available). We never store your full card details.
+            After you click pay, Stripe opens for card payment. We never store full card details.
           </p>
         </div>
 
         <button
-          type="button"
+          type="submit"
           className="btn-primary inline-flex w-full items-center justify-center gap-2 disabled:opacity-50"
-          disabled={pending || !addressId || !preview}
-          onClick={placeOrder}
+          disabled={pending || !preview}
         >
           <CreditCard className="h-4 w-4" />
           {payLabel}
         </button>
 
         <p className="text-center text-xs text-[var(--gm-muted)]">
-          By paying you agree to GAME MANIA terms. Need an address?{' '}
-          <Link href="/account/addresses" className="text-[var(--gm-cyan)] underline">
-            Manage addresses
+          Need to change items?{' '}
+          <Link href="/cart" className="text-[var(--gm-cyan)] underline">
+            Back to cart
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

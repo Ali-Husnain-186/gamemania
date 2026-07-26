@@ -83,7 +83,7 @@ export function RedirectIfAuthenticated({ children }: { children: React.ReactNod
   if (isAuthenticated) {
     return (
       <div className="mx-auto flex min-h-[50vh] max-w-md items-center justify-center px-4">
-        <p className="text-sm text-[var(--gm-muted)]">Taking you to your dashboard…</p>
+        <p className="text-sm text-[var(--gm-muted)]">Taking you to the shop…</p>
       </div>
     );
   }

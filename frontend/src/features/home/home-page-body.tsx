@@ -10,14 +10,12 @@ import { RetroShowcase } from './components/retro-showcase';
 import { ReviewsSlider } from './components/reviews-slider';
 import { ShopByPlatform } from './components/shop-by-platform';
 import { TradeInCta } from './components/trade-in-cta';
-import { TrustBar } from './components/trust-bar';
 import { WhyChoose } from './components/why-choose';
 
 /** Everything below the hero — do not include navbar/hero here. */
 export function HomePageBody() {
   return (
     <>
-      <TrustBar />
       <FeaturedCategories />
       <PromoBanner />
       <ProductGridSection

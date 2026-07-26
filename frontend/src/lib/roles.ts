@@ -19,5 +19,5 @@ export function isStaffRole(role: string | { name?: string } | null | undefined)
 }
 
 export function defaultPostLoginPath(role: string | { name?: string } | null | undefined): string {
-  return isStaffRole(role) ? '/admin' : '/account';
+  return isStaffRole(role) ? '/admin' : '/shop';
 }

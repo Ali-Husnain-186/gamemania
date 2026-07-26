@@ -5,6 +5,7 @@ import { getCart } from './cart.service';
 import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
 import { createCheckoutSession, isStripeConfigured } from './stripe.service';
+import { createAddress } from './address.service';
 
 export type CheckoutOptions = {
   couponCode?: string;
@@ -35,8 +36,18 @@ export type CheckoutPreview = {
 };
 
 export type PlaceOrderInput = CheckoutOptions & {
-  shippingAddressId: string;
+  shippingAddressId?: string;
   billingAddressId?: string;
+  shipping?: {
+    fullName: string;
+    line1: string;
+    line2?: string;
+    city: string;
+    county?: string;
+    postcode: string;
+    country?: string;
+    phone?: string;
+  };
   notes?: string;
 };
 
@@ -136,8 +147,23 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
   const preview = await computeCheckout(userId, input);
   const couponId = (preview as CheckoutPreview & { couponId?: string }).couponId ?? null;
 
+  let shippingAddressId = input.shippingAddressId;
+
+  if (!shippingAddressId && input.shipping) {
+    const created = await createAddress(userId, {
+      ...input.shipping,
+      country: input.shipping.country ?? input.country ?? 'GB',
+      isDefault: true,
+    });
+    shippingAddressId = created.id;
+  }
+
+  if (!shippingAddressId) {
+    throw new ValidationError('Delivery address is required');
+  }
+
   const [shippingAddress, billingAddress, user, cartRecord] = await Promise.all([
-    prisma.address.findFirst({ where: { id: input.shippingAddressId, userId } }),
+    prisma.address.findFirst({ where: { id: shippingAddressId, userId } }),
     input.billingAddressId
       ? prisma.address.findFirst({ where: { id: input.billingAddressId, userId } })
       : Promise.resolve(null),

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
@@ -99,7 +100,17 @@ export default function ProductDetailPage() {
             </button>
           </div>
           {addMutation.isSuccess ? (
-            <p className="mt-3 text-sm text-[var(--gm-accent)]">Added to cart.</p>
+            <p className="mt-3 text-sm text-[var(--gm-accent)]">
+              Added to cart.{' '}
+              <Link href="/cart" className="font-bold underline">
+                View cart
+              </Link>{' '}
+              or{' '}
+              <Link href="/checkout" className="font-bold underline">
+                checkout
+              </Link>
+              .
+            </p>
           ) : null}
         </div>
       </div>

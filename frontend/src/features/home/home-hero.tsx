@@ -3,48 +3,37 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import { BadgeCheck, RefreshCcw, ShieldCheck, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const slides = [
+  { label: 'Games', href: '/shop?category=games', cta: 'Shop games' },
+  { label: 'Consoles', href: '/shop?q=console', cta: 'Shop consoles' },
+  { label: 'PlayStation', href: '/shop?q=playstation', cta: 'Shop PlayStation' },
+  { label: 'Accessories', href: '/shop?q=accessories', cta: 'Shop accessories' },
+  { label: 'Trade-ins', href: '/trade-in', cta: 'Get a trade-in quote' },
+];
+
+const trustItems = [
   {
-    src: '/brand/hero-slide-1.jpg',
-    alt: 'Latest video games',
-    label: 'Games',
-    color: 'text-[var(--gm-yellow)]',
-    href: '/shop?category=games',
-    cta: 'Shop games',
+    icon: ShieldCheck,
+    title: 'Secure Payments',
+    body: 'Encrypted checkout you can trust.',
   },
   {
-    src: '/brand/hero-slide-2.jpg',
-    alt: 'Gaming consoles',
-    label: 'Consoles',
-    color: 'text-[var(--gm-cyan-bright)]',
-    href: '/shop?q=console',
-    cta: 'Shop consoles',
+    icon: Truck,
+    title: 'Free UK Delivery',
+    body: 'On orders over £60.',
   },
   {
-    src: '/brand/hero-banner-hd.jpg',
-    alt: 'PlayStation consoles',
-    label: 'PlayStation',
-    color: 'text-[var(--gm-cyan-soft)]',
-    href: '/shop?q=playstation',
-    cta: 'Shop PlayStation',
+    icon: RefreshCcw,
+    title: 'Easy Returns',
+    body: 'Hassle-free support when you need it.',
   },
   {
-    src: '/brand/hero-accessories.jpg',
-    alt: 'Gaming accessories',
-    label: 'Accessories',
-    color: 'text-[var(--gm-magenta)]',
-    href: '/shop?q=accessories',
-    cta: 'Shop accessories',
-  },
-  {
-    src: '/brand/hero-trade-in.jpg',
-    alt: 'Trade in games and consoles',
-    label: 'Trade-ins',
-    color: 'text-[var(--gm-yellow)]',
-    href: '/trade-in',
-    cta: 'Get a trade-in quote',
+    icon: BadgeCheck,
+    title: 'Genuine Products',
+    body: 'Authentic games & hardware only.',
   },
 ];
 
@@ -61,110 +50,91 @@ export function HomeHero() {
   const active = slides[slideIndex]!;
 
   return (
-    <section className="relative w-full overflow-hidden bg-[var(--gm-bg)]">
-      <div className="relative aspect-[4/5] w-full sm:aspect-[16/10] lg:aspect-[21/9] xl:aspect-[2.4/1]">
-        {slides.map((slide, i) => (
-          <motion.div
-            key={slide.src}
-            aria-hidden={i !== slideIndex}
-            initial={false}
-            animate={{
-              opacity: i === slideIndex ? 1 : 0,
-              scale: i === slideIndex ? 1 : 1.03,
-            }}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-0"
-          >
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              priority={i === 0}
-              quality={100}
-              sizes="(max-width: 640px) 100vw, (max-width: 1280px) 100vw, 2560px"
-              className="object-cover object-[70%_center] sm:object-right"
-            />
-          </motion.div>
-        ))}
-
-        {/* Left-side vignette so copy stays readable */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(5,8,12,0.15)_0%,transparent_35%,rgba(5,8,12,0.55)_100%)] sm:bg-[linear-gradient(90deg,rgba(5,8,12,0.78)_0%,rgba(5,8,12,0.35)_42%,transparent_72%)]"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-0 hidden w-1/2 bg-gradient-to-r from-[rgba(var(--gm-cyan-rgb),0.18)] to-transparent sm:block"
+    <section className="relative w-full bg-black">
+      {/* Natural image height = full photo, nothing cropped */}
+      <div className="relative w-full">
+        <Image
+          src="/brand/hero-main.jpg"
+          alt="GAME MANIA gaming setup"
+          width={2560}
+          height={1440}
+          priority
+          quality={100}
+          sizes="100vw"
+          className="block h-auto w-full"
         />
 
-        <div className="absolute inset-0 z-10 mx-auto flex h-full w-full max-w-6xl items-end justify-center px-4 pb-14 pt-8 sm:items-center sm:justify-start sm:px-6 sm:pb-10 md:px-10">
-          <div className="pointer-events-auto w-full max-w-md text-center sm:text-left">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--gm-cyan-soft)] sm:text-xs">
+        {/* Text overlay — copy higher, CTA lower with clear gap */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pt-[10%] sm:px-6 sm:pt-[9%] lg:pt-[8%]">
+          <div className="pointer-events-auto w-full max-w-3xl text-center">
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] text-white sm:mb-3 sm:text-xs [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
               UK gaming marketplace
             </p>
-            <h1 className="gm-display text-[clamp(2.1rem,8vw,3.75rem)] leading-[0.95] text-white drop-shadow-[0_4px_22px_rgba(0,0,0,0.75)]">
+
+            <h1 className="gm-display text-[clamp(2rem,7vw,5rem)] leading-[0.92] text-white [text-shadow:0_3px_14px_rgba(0,0,0,0.95)]">
               Play more.
               <br />
               <span className="text-[var(--gm-yellow)]">Save more.</span>
             </h1>
 
-            <div className="relative mt-3 grid min-h-[2rem] place-items-center sm:min-h-[2.25rem] sm:place-items-start">
-              <span
-                aria-hidden
-                className="gm-display invisible whitespace-nowrap text-[clamp(1.15rem,4vw,1.65rem)] tracking-[0.08em]"
-              >
-                Accessories
-              </span>
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={active.label}
-                  initial={{ y: 14, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -14, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: 'easeOut' }}
-                  className={`gm-display absolute inset-0 flex items-center justify-center whitespace-nowrap text-[clamp(1.15rem,4vw,1.65rem)] tracking-[0.08em] drop-shadow-[0_3px_14px_rgba(0,0,0,0.8)] sm:justify-start ${active.color}`}
-                >
-                  {active.label}
-                </motion.span>
-              </AnimatePresence>
-            </div>
+            <p className="gm-display mt-3 text-[clamp(0.85rem,2.4vw,1.25rem)] tracking-[0.14em] text-[var(--gm-cyan)] sm:mt-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
+              Games • Consoles • Accessories
+            </p>
+          </div>
 
-            <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-start">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active.cta}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full sm:w-auto"
+          <div className="pointer-events-auto mt-16 flex flex-col items-center gap-3 sm:mt-24 sm:gap-4 lg:mt-28">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active.cta}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.25 }}
+              >
+                <Link
+                  href={active.href}
+                  className="btn-primary inline-flex min-w-[10rem] justify-center px-7 py-3 text-sm sm:min-w-[10.5rem] sm:px-8 sm:py-3.5 sm:text-base"
                 >
-                  <Link
-                    href={active.href}
-                    className="btn-primary inline-flex w-full justify-center px-7 py-3 text-sm sm:w-auto sm:text-base"
-                  >
-                    {active.cta}
-                  </Link>
-                </motion.div>
-              </AnimatePresence>
+                  {active.cta}
+                </Link>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex items-center gap-2">
+              {slides.map((s, i) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  aria-label={`Show ${s.label}`}
+                  aria-current={i === slideIndex}
+                  onClick={() => setSlideIndex(i)}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === slideIndex
+                      ? 'w-7 bg-[var(--gm-yellow)] sm:w-8'
+                      : 'w-2.5 bg-white/50 hover:bg-white/80'
+                  }`}
+                />
+              ))}
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 sm:bottom-5">
-          {slides.map((s, i) => (
-            <button
-              key={s.src}
-              type="button"
-              aria-label={`Show ${s.label}`}
-              aria-current={i === slideIndex}
-              onClick={() => setSlideIndex(i)}
-              className={`h-1.5 rounded-full transition-all ${
-                i === slideIndex
-                  ? 'w-7 bg-[var(--gm-yellow)] sm:w-8'
-                  : 'w-2.5 bg-white/40 hover:bg-white/70'
-              }`}
-            />
+      <div className="border-t border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)]">
+        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-4">
+          {trustItems.map((item) => (
+            <div key={item.title} className="flex items-start gap-2.5">
+              <item.icon
+                className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gm-cyan)] sm:h-6 sm:w-6"
+                aria-hidden
+              />
+              <div>
+                <p className="text-xs font-extrabold sm:text-sm">{item.title}</p>
+                <p className="mt-0.5 text-[10px] leading-snug text-[var(--gm-muted)] sm:text-xs">
+                  {item.body}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </div>

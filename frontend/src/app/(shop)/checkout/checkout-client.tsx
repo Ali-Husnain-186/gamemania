@@ -27,7 +27,12 @@ type Preview = {
   pointsValuePence: number;
   grandTotalPence: number;
   freeShipping: boolean;
-  lineItems: Array<{ name: string; quantity: number; lineTotalPence: number }>;
+  lineItems: Array<{
+    name: string;
+    quantity: number;
+    lineTotalPence: number;
+    imageUrl?: string | null;
+  }>;
   stripeEnabled?: boolean;
   paymentsReady?: boolean;
 };
@@ -539,13 +544,25 @@ export function CheckoutClient() {
 
           {preview ? (
             <div className="rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 p-5 text-sm">
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {preview.lineItems.map((item, i) => (
-                  <li key={i} className="flex justify-between gap-4">
-                    <span>
-                      {item.name} × {item.quantity}
-                    </span>
-                    <span>{formatGbpFromPence(item.lineTotalPence)}</span>
+                  <li key={i} className="flex items-center justify-between gap-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="h-12 w-12 shrink-0 overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg)]">
+                        {item.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={item.imageUrl}
+                            alt={item.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : null}
+                      </div>
+                      <span className="min-w-0 truncate">
+                        {item.name} × {item.quantity}
+                      </span>
+                    </div>
+                    <span className="shrink-0">{formatGbpFromPence(item.lineTotalPence)}</span>
                   </li>
                 ))}
               </ul>

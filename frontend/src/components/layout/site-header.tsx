@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { Menu, Moon, ShoppingBag, Sun, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -19,7 +19,6 @@ const nav = [
 
 export function SiteHeader() {
   const pathname = usePathname();
-  const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const { isAuthenticated, status, logout } = useAuth();
   const itemCount = useCartStore((s) => s.itemCount());
@@ -40,7 +39,7 @@ export function SiteHeader() {
 
   async function handleSignOut() {
     await logout();
-    router.push('/');
+    window.location.assign('/');
   }
 
   return (

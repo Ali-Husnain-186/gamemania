@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { ProtectedLayout } from '@/components/auth/protected-layout';
 import { useAuth } from '@/providers/auth-provider';
@@ -27,7 +27,6 @@ function titleForPath(pathname: string): string {
 
 export function AccountShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const { logout } = useAuth();
 
   useEffect(() => {
@@ -36,7 +35,7 @@ export function AccountShell({ children }: { children: React.ReactNode }) {
 
   async function handleSignOut() {
     await logout();
-    router.push('/');
+    window.location.assign('/');
   }
 
   return (

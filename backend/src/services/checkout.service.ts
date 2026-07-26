@@ -36,6 +36,7 @@ export type CheckoutPreview = {
     quantity: number;
     unitPricePence: number;
     lineTotalPence: number;
+    imageUrl?: string | null;
   }>;
   subtotalPence: number;
   discountPence: number;
@@ -181,6 +182,7 @@ export async function computeCheckout(
       quantity: item.quantity,
       unitPricePence: item.product.price,
       lineTotalPence: item.lineTotal,
+      imageUrl: item.product.imageUrl ?? null,
     })),
     subtotalPence: cart.subtotalPence,
     discountPence,

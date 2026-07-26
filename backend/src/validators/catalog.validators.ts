@@ -86,6 +86,18 @@ export const createProductSchema = z.object({
     z.string().url('Image URL must be a valid URL').optional(),
   ),
   imagePublicId: z.preprocess(emptyToUndefined, z.string().optional()),
+  images: z
+    .array(
+      z.object({
+        url: z.string().url('Image URL must be a valid URL'),
+        publicId: z.string().optional().nullable(),
+        altText: z.string().max(200).optional().nullable(),
+        isPrimary: z.boolean().optional(),
+        sortOrder: z.number().int().min(0).max(3).optional(),
+      }),
+    )
+    .max(4, 'Maximum 4 product images')
+    .optional(),
 });
 
 export const updateProductSchema = createProductSchema.partial();
@@ -93,3 +105,43 @@ export const updateProductSchema = createProductSchema.partial();
 export type ProductListQuery = z.infer<typeof productListQuerySchema>;
 export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
+
+export type ProductImageInput = NonNullable<CreateProductInput['images']>[number];
+
+/** Normalize images payload: max 4, exactly one primary, sortOrder 0..n */
+export function normalizeProductImages(
+  images: ProductImageInput[] | undefined,
+  legacy?: { imageUrl?: string; imagePublicId?: string; altText?: string },
+): Array<{
+  url: string;
+  publicId: string | null;
+  altText: string | null;
+  isPrimary: boolean;
+  sortOrder: number;
+}> {
+  let list = (images ?? []).filter((img) => Boolean(img.url?.trim()));
+  if (list.length === 0 && legacy?.imageUrl) {
+    list = [
+      {
+        url: legacy.imageUrl,
+        publicId: legacy.imagePublicId,
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ];
+  }
+  list = list.slice(0, 4);
+  if (list.length === 0) return [];
+
+  const primaryIndex = Math.max(
+    0,
+    list.findIndex((img) => img.isPrimary),
+  );
+  return list.map((img, index) => ({
+    url: img.url.trim(),
+    publicId: img.publicId?.trim() || null,
+    altText: img.altText?.trim() || legacy?.altText || null,
+    isPrimary: index === (primaryIndex >= 0 ? primaryIndex : 0),
+    sortOrder: index,
+  }));
+}

@@ -1,5 +1,12 @@
 import { z } from 'zod';
 
+export const productImageSlotSchema = z.object({
+  url: z.union([z.literal(''), z.string().url()]),
+  publicId: z.string().optional(),
+  isPrimary: z.boolean().optional(),
+  sortOrder: z.number().int().min(0).max(3).optional(),
+});
+
 export const productFormSchema = z.object({
   name: z
     .string()
@@ -24,12 +31,15 @@ export const productFormSchema = z.object({
     .string()
     .max(500, 'Short description must be at most 500 characters')
     .optional(),
-  imageUrl: z.string().optional(),
-  imagePublicId: z.string().optional(),
+  images: z.array(productImageSlotSchema).max(4, 'Maximum 4 product images').optional(),
   isFeatured: z.boolean().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;
+export type ProductImageSlot = z.infer<typeof productImageSlotSchema>;
+
+export const emptyImageSlots = (): ProductImageSlot[] =>
+  Array.from({ length: 4 }, () => ({ url: '', publicId: '', isPrimary: false }));
 
 export function poundsToPence(value: string): number {
   return Math.round(Number(value) * 100);

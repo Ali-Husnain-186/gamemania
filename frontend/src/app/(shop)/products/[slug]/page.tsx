@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
@@ -15,6 +15,7 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const setCart = useCartStore((s) => s.setCart);
   const queryClient = useQueryClient();
+  const [activeUrl, setActiveUrl] = useState<string | null>(null);
 
   const productQuery = useQuery({
     queryKey: ['product', params.slug],
@@ -34,6 +35,23 @@ export default function ProductDetailPage() {
     mutationFn: (productId: string) => apiPost('/wishlist', { productId }),
   });
 
+  const gallery = useMemo(() => {
+    const images = productQuery.data?.images ?? [];
+    if (!images.length) return [];
+    return [...images]
+      .sort((a, b) => {
+        if (a.isPrimary && !b.isPrimary) return -1;
+        if (!a.isPrimary && b.isPrimary) return 1;
+        return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+      })
+      .slice(0, 4);
+  }, [productQuery.data?.images]);
+
+  const primary = gallery.find((i) => i.isPrimary) ?? gallery[0];
+  const mainUrl = activeUrl ?? primary?.url ?? null;
+  const mainImage = gallery.find((i) => i.url === mainUrl) ?? primary;
+  const thumbs = gallery.filter((img) => img.url && img.url !== mainUrl).slice(0, 3);
+
   if (productQuery.isLoading) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10">
@@ -51,19 +69,40 @@ export default function ProductDetailPage() {
   }
 
   const product = productQuery.data;
-  const image = product.images?.find((i) => i.isPrimary) ?? product.images?.[0];
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
       <div className="grid gap-10 md:grid-cols-2">
-        <div className="aspect-square overflow-hidden rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]">
-          {image?.url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={image.url}
-              alt={image.altText ?? product.name}
-              className="h-full w-full object-cover"
-            />
+        <div>
+          <div className="aspect-square overflow-hidden rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]">
+            {mainImage?.url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={mainImage.url}
+                alt={mainImage.altText ?? product.name}
+                className="h-full w-full object-cover"
+              />
+            ) : null}
+          </div>
+          {thumbs.length > 0 ? (
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {thumbs.map((img) => (
+                <button
+                  key={img.url}
+                  type="button"
+                  onClick={() => setActiveUrl(img.url)}
+                  className="aspect-square overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] transition hover:ring-2 hover:ring-[var(--gm-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gm-accent)]"
+                  aria-label="View product image"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.url}
+                    alt={img.altText ?? product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
           ) : null}
         </div>
         <div>

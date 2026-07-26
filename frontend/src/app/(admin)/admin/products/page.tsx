@@ -10,10 +10,12 @@ import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 import {
+  emptyImageSlots,
   penceToPoundsInput,
   poundsToPence,
   productFormSchema,
   type ProductFormValues,
+  type ProductImageSlot,
 } from '@/features/admin/schemas/product';
 
 type Product = {
@@ -28,11 +30,18 @@ type Product = {
   brandId?: string | null;
   shortDescription?: string | null;
   isFeatured?: boolean;
-  images?: Array<{ url: string; publicId?: string | null; isPrimary?: boolean }>;
+  images?: Array<{
+    url: string;
+    publicId?: string | null;
+    isPrimary?: boolean;
+    sortOrder?: number;
+  }>;
 };
 
 type Category = { id: string; name: string };
 type Brand = { id: string; name: string };
+
+const MAX_IMAGES = 4;
 
 const defaults: ProductFormValues = {
   name: '',
@@ -42,10 +51,36 @@ const defaults: ProductFormValues = {
   categoryId: '',
   brandId: '',
   shortDescription: '',
-  imageUrl: '',
-  imagePublicId: '',
+  images: emptyImageSlots(),
   isFeatured: false,
 };
+
+function slotsFromProductImages(images?: Product['images']): ProductImageSlot[] {
+  const slots = emptyImageSlots();
+  if (!images?.length) return slots;
+
+  const sorted = [...images].sort((a, b) => {
+    if (a.isPrimary && !b.isPrimary) return -1;
+    if (!a.isPrimary && b.isPrimary) return 1;
+    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+  });
+
+  sorted.slice(0, MAX_IMAGES).forEach((img, i) => {
+    slots[i] = {
+      url: img.url,
+      publicId: img.publicId ?? '',
+      isPrimary: Boolean(img.isPrimary) || i === 0,
+      sortOrder: i,
+    };
+  });
+
+  if (!slots.some((s) => s.isPrimary && s.url)) {
+    const first = slots.findIndex((s) => s.url);
+    if (first >= 0) slots[first].isPrimary = true;
+  }
+
+  return slots;
+}
 
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -60,7 +95,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
   const [pending, startTransition] = useTransition();
 
   const {
@@ -77,7 +112,7 @@ export default function ProductsPage() {
     mode: 'onBlur',
   });
 
-  const imageUrl = watch('imageUrl');
+  const images = watch('images') ?? emptyImageSlots();
 
   async function load() {
     setLoading(true);
@@ -110,7 +145,6 @@ export default function ProductsPage() {
   }
 
   function openEdit(p: Product) {
-    const primary = p.images?.find((i) => i.isPrimary) ?? p.images?.[0];
     setEditingId(p.id);
     reset({
       name: p.name,
@@ -120,33 +154,85 @@ export default function ProductsPage() {
       categoryId: p.categoryId ?? '',
       brandId: p.brandId ?? '',
       shortDescription: p.shortDescription ?? '',
-      imageUrl: primary?.url ?? '',
-      imagePublicId: primary?.publicId ?? '',
+      images: slotsFromProductImages(p.images),
       isFeatured: Boolean(p.isFeatured),
     });
     setError(null);
     setShowForm(true);
   }
 
-  async function onPickImage(file: File | undefined) {
+  function updateSlots(next: ProductImageSlot[]) {
+    setValue('images', next, { shouldValidate: true, shouldDirty: true });
+  }
+
+  async function onPickImage(slotIndex: number, file: File | undefined) {
     if (!file) return;
-    setUploading(true);
+    setUploadingSlot(slotIndex);
     setError(null);
     try {
       const uploaded = await uploadProductImage(file);
-      setValue('imageUrl', uploaded.url, { shouldValidate: true });
-      setValue('imagePublicId', uploaded.publicId, { shouldValidate: true });
+      const next = images.map((slot, i) =>
+        i === slotIndex
+          ? {
+              url: uploaded.url,
+              publicId: uploaded.publicId,
+              isPrimary: slot.isPrimary || !images.some((s) => s.url && s.isPrimary),
+              sortOrder: i,
+            }
+          : slot,
+      );
+      if (!next.some((s) => s.isPrimary && s.url)) {
+        next[slotIndex].isPrimary = true;
+      }
+      updateSlots(next);
     } catch (err) {
       setError(firstApiErrorMessage(err, 'Image upload failed'));
     } finally {
-      setUploading(false);
+      setUploadingSlot(null);
     }
+  }
+
+  function removeSlot(slotIndex: number) {
+    const next = images.map((slot, i) =>
+      i === slotIndex ? { url: '', publicId: '', isPrimary: false, sortOrder: i } : slot,
+    );
+    if (!next.some((s) => s.isPrimary && s.url)) {
+      const first = next.findIndex((s) => s.url);
+      if (first >= 0) next[first].isPrimary = true;
+    }
+    updateSlots(next);
+  }
+
+  function setPrimary(slotIndex: number) {
+    if (!images[slotIndex]?.url) return;
+    updateSlots(
+      images.map((slot, i) => ({
+        ...slot,
+        isPrimary: i === slotIndex,
+        sortOrder: i,
+      })),
+    );
   }
 
   function onSubmit(values: ProductFormValues) {
     startTransition(async () => {
       try {
         setError(null);
+        const filled = (values.images ?? [])
+          .map((img, index) => ({ ...img, sortOrder: index }))
+          .filter((img) => Boolean(img.url?.trim()));
+
+        const primaryIndex = Math.max(
+          0,
+          filled.findIndex((img) => img.isPrimary),
+        );
+        const imagesPayload = filled.map((img, index) => ({
+          url: img.url,
+          publicId: img.publicId || undefined,
+          isPrimary: index === primaryIndex,
+          sortOrder: index,
+        }));
+
         const body = {
           name: values.name.trim(),
           price: poundsToPence(values.pricePounds),
@@ -155,8 +241,7 @@ export default function ProductsPage() {
           categoryId: values.categoryId || null,
           brandId: values.brandId || null,
           shortDescription: values.shortDescription?.trim() || undefined,
-          imageUrl: values.imageUrl || undefined,
-          imagePublicId: values.imagePublicId || undefined,
+          images: imagesPayload,
           isFeatured: Boolean(values.isFeatured),
         };
 
@@ -181,9 +266,9 @@ export default function ProductsPage() {
             key === 'categoryId' ||
             key === 'brandId' ||
             key === 'shortDescription' ||
-            key === 'imageUrl'
+            key === 'images'
           ) {
-            setFormError(key, { type: 'server', message });
+            setFormError(key as keyof ProductFormValues, { type: 'server', message });
           }
         }
         setError(firstApiErrorMessage(err, 'Save failed'));
@@ -309,62 +394,107 @@ export default function ProductsPage() {
 
             <div>
               <p className="mb-2 text-xs text-[var(--admin-muted)]">
-                Product image <span className="font-normal opacity-70">(optional)</span>
+                Product gallery{' '}
+                <span className="font-normal opacity-70">(1 main + up to 3 extras)</span>
               </p>
-              <div className="flex flex-wrap items-start gap-4">
-                <label className="flex cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[var(--admin-border)] bg-black/20 px-6 py-8 text-center transition hover:border-[var(--admin-accent)]">
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/gif"
-                    className="sr-only"
-                    disabled={uploading}
-                    onChange={(e) => void onPickImage(e.target.files?.[0])}
-                  />
-                  {uploading ? (
-                    <Loader2 className="h-6 w-6 animate-spin text-[var(--admin-accent)]" />
-                  ) : (
-                    <ImagePlus className="h-6 w-6 text-[var(--admin-accent)]" />
-                  )}
-                  <span className="mt-2 text-xs text-[var(--admin-muted)]">
-                    {uploading ? 'Uploading…' : 'Click to upload'}
-                  </span>
-                  <span className="mt-1 text-[10px] text-[var(--admin-muted)]">
-                    JPG, PNG, WEBP or GIF · max 8MB
-                  </span>
-                </label>
-
-                {imageUrl ? (
-                  <div className="relative">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={imageUrl}
-                      alt="Product preview"
-                      className="h-32 w-32 rounded-md border border-[var(--admin-border)] object-cover"
-                    />
-                    <button
-                      type="button"
-                      aria-label="Remove image"
-                      className="absolute -right-2 -top-2 rounded-full bg-[var(--admin-danger)] p-1 text-black"
-                      onClick={() => {
-                        setValue('imageUrl', '');
-                        setValue('imagePublicId', '');
-                      }}
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {images.map((slot, index) => {
+                  const uploading = uploadingSlot === index;
+                  const label = index === 0 || slot.isPrimary ? 'Main' : `Extra ${index}`;
+                  return (
+                    <div
+                      key={index}
+                      className="rounded-md border border-[var(--admin-border)] bg-black/20 p-3"
                     >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </div>
-                ) : null}
+                      <div className="mb-2 flex items-center justify-between gap-2">
+                        <span className="text-[10px] uppercase tracking-wider text-[var(--admin-muted)]">
+                          {label}
+                        </span>
+                        {slot.isPrimary && slot.url ? (
+                          <span className="text-[10px] font-medium text-[var(--admin-accent)]">
+                            Primary
+                          </span>
+                        ) : null}
+                      </div>
+
+                      {slot.url ? (
+                        <div className="relative">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={slot.url}
+                            alt={`Product slot ${index + 1}`}
+                            className="aspect-square w-full rounded-md border border-[var(--admin-border)] object-cover"
+                          />
+                          <button
+                            type="button"
+                            aria-label={`Remove image ${index + 1}`}
+                            className="absolute -right-2 -top-2 rounded-full bg-[var(--admin-danger)] p-1 text-black"
+                            onClick={() => removeSlot(index)}
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-md border border-dashed border-[var(--admin-border)] transition hover:border-[var(--admin-accent)]">
+                          <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,image/gif"
+                            className="sr-only"
+                            disabled={uploadingSlot !== null}
+                            onChange={(e) => void onPickImage(index, e.target.files?.[0])}
+                          />
+                          {uploading ? (
+                            <Loader2 className="h-6 w-6 animate-spin text-[var(--admin-accent)]" />
+                          ) : (
+                            <ImagePlus className="h-6 w-6 text-[var(--admin-accent)]" />
+                          )}
+                          <span className="mt-2 text-[10px] text-[var(--admin-muted)]">
+                            {uploading ? 'Uploading…' : 'Upload'}
+                          </span>
+                        </label>
+                      )}
+
+                      {slot.url ? (
+                        <div className="mt-2 flex flex-col gap-1">
+                          {!slot.isPrimary ? (
+                            <button
+                              type="button"
+                              className="text-[11px] text-[var(--admin-accent)] hover:underline"
+                              onClick={() => setPrimary(index)}
+                            >
+                              Set as main
+                            </button>
+                          ) : null}
+                          <label className="cursor-pointer text-[11px] text-[var(--admin-muted)] hover:underline">
+                            Replace
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp,image/gif"
+                              className="sr-only"
+                              disabled={uploadingSlot !== null}
+                              onChange={(e) => void onPickImage(index, e.target.files?.[0])}
+                            />
+                          </label>
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
               </div>
-              <FieldError message={errors.imageUrl?.message} />
+              <FieldError
+                message={
+                  typeof errors.images?.message === 'string' ? errors.images.message : undefined
+                }
+              />
               <p className="mt-2 text-[11px] text-[var(--admin-muted)]">
-                Slug and SKU are generated automatically from the product name.
+                JPG, PNG, WEBP or GIF · max 8MB each · Slug and SKU are generated from the name.
               </p>
             </div>
 
             <div className="flex gap-2">
               <button
                 type="submit"
-                disabled={pending || uploading}
+                disabled={pending || uploadingSlot !== null}
                 className="rounded-md bg-[var(--admin-accent)] px-3 py-2 text-sm font-medium text-black disabled:opacity-50"
               >
                 {pending ? 'Saving…' : 'Save'}

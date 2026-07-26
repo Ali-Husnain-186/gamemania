@@ -3,15 +3,19 @@ export type Category = {
   name: string;
   slug: string;
   description?: string | null;
+  imageUrl?: string | null;
+  sortOrder?: number;
   children?: Category[];
 };
 
 export type ProductImage = {
   id?: string;
   url: string;
+  publicId?: string | null;
   altText?: string | null;
   alt?: string | null;
   isPrimary?: boolean;
+  sortOrder?: number;
 };
 
 export type Product = {

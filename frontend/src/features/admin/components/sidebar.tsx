@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
   Package,
@@ -31,12 +31,11 @@ const NAV = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { logout, user } = useAuth();
 
   async function handleLogout() {
     await logout();
-    router.replace('/login');
+    window.location.assign('/');
   }
 
   return (

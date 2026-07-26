@@ -197,38 +197,84 @@ async function main() {
     create: { key: 'loyalty.points_per_pound', value: 1, group: 'loyalty' },
   });
 
-  const games = await prisma.category.upsert({
-    where: { slug: 'games' },
-    update: {},
-    create: {
-      name: 'Games',
-      slug: 'games',
-      description: 'Physical and digital-ready game titles',
+  // Featured storefront categories (keep home + admin product dropdown in sync)
+  const categoryDefs = [
+    {
+      name: 'PlayStation',
+      slug: 'playstation',
+      description: 'PS5, PS4 and PlayStation gear',
+      imageUrl: '/brand/playstation.png',
       sortOrder: 1,
     },
-  });
-
-  const consoles = await prisma.category.upsert({
-    where: { slug: 'consoles' },
-    update: {},
-    create: {
-      name: 'Consoles',
-      slug: 'consoles',
-      description: 'Gaming consoles and bundles',
+    {
+      name: 'Nintendo',
+      slug: 'nintendo',
+      description: 'Switch and Nintendo classics',
+      imageUrl: '/brand/nintendo.png',
       sortOrder: 2,
     },
-  });
-
-  await prisma.category.upsert({
-    where: { slug: 'accessories' },
-    update: {},
-    create: {
-      name: 'Accessories',
-      slug: 'accessories',
-      description: 'Controllers, headsets, and more',
+    {
+      name: 'PC Gaming',
+      slug: 'pc-gaming',
+      description: 'PC games and gaming hardware',
+      imageUrl: '/brand/pcgames.png',
       sortOrder: 3,
     },
+    {
+      name: 'Retro',
+      slug: 'retro',
+      description: 'Retro consoles and classic titles',
+      imageUrl: '/brand/retrogames.png',
+      sortOrder: 4,
+    },
+    {
+      name: 'Accessories',
+      slug: 'accessories',
+      description: 'Headsets, cables, and more',
+      imageUrl: '/brand/accessories.png',
+      sortOrder: 5,
+    },
+    {
+      name: 'Controllers',
+      slug: 'controllers',
+      description: 'Wireless and wired controllers',
+      imageUrl: '/brand/wireless-controller.png',
+      sortOrder: 6,
+    },
+  ] as const;
+
+  const categoriesBySlug: Record<string, { id: string }> = {};
+  for (const def of categoryDefs) {
+    const row = await prisma.category.upsert({
+      where: { slug: def.slug },
+      update: {
+        name: def.name,
+        description: def.description,
+        imageUrl: def.imageUrl,
+        sortOrder: def.sortOrder,
+        isActive: true,
+      },
+      create: {
+        name: def.name,
+        slug: def.slug,
+        description: def.description,
+        imageUrl: def.imageUrl,
+        sortOrder: def.sortOrder,
+        isActive: true,
+      },
+    });
+    categoriesBySlug[def.slug] = row;
+  }
+
+  // Hide legacy taxonomy that no longer appears on the storefront
+  await prisma.category.updateMany({
+    where: { slug: { in: ['games', 'consoles'] } },
+    data: { isActive: false },
   });
+
+  const playstation = categoriesBySlug.playstation;
+  const nintendoCat = categoriesBySlug.nintendo;
+  const controllers = categoriesBySlug.controllers;
 
   const sony = await prisma.brand.upsert({
     where: { slug: 'sony' },
@@ -244,7 +290,7 @@ async function main() {
 
   const sampleProduct = await prisma.product.upsert({
     where: { sku: 'GM-PS5-DEMO-001' },
-    update: {},
+    update: { categoryId: playstation.id },
     create: {
       name: 'Demo Adventure — PS5',
       slug: 'demo-adventure-ps5',
@@ -253,7 +299,7 @@ async function main() {
       description: 'This is a seeded demo product used to verify catalog APIs and storefront wiring.',
       price: 5499,
       compareAtPrice: 5999,
-      categoryId: games.id,
+      categoryId: playstation.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
@@ -275,7 +321,7 @@ async function main() {
 
   await prisma.product.upsert({
     where: { sku: 'GM-NSW-DEMO-001' },
-    update: {},
+    update: { categoryId: nintendoCat.id },
     create: {
       name: 'Demo Kart Deluxe — Switch',
       slug: 'demo-kart-deluxe-switch',
@@ -283,7 +329,7 @@ async function main() {
       shortDescription: 'Second sample product for filters and listing.',
       description: 'Seeded Switch title for development.',
       price: 4499,
-      categoryId: games.id,
+      categoryId: nintendoCat.id,
       brandId: nintendo.id,
       platform: 'SWITCH',
       condition: ProductCondition.NEW,
@@ -303,7 +349,7 @@ async function main() {
 
   await prisma.product.upsert({
     where: { sku: 'GM-PS5-CONSOLE-001' },
-    update: {},
+    update: { categoryId: playstation.id },
     create: {
       name: 'PlayStation 5 Console (Demo)',
       slug: 'playstation-5-console-demo',
@@ -311,7 +357,7 @@ async function main() {
       shortDescription: 'Demo console SKU for high-value shipping tests.',
       description: 'Seeded console product.',
       price: 47999,
-      categoryId: consoles.id,
+      categoryId: playstation.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
@@ -430,7 +476,7 @@ async function main() {
 
   const dualSense = await prisma.product.upsert({
     where: { sku: 'GM-CTRL-DUALSENSE-001' },
-    update: {},
+    update: { categoryId: controllers.id },
     create: {
       name: 'DualSense Wireless Controller (Demo)',
       slug: 'dualsense-wireless-controller-demo',
@@ -438,7 +484,7 @@ async function main() {
       shortDescription: 'Accessory SKU for cart and free-shipping tests.',
       description: 'Seeded accessory product.',
       price: 6499,
-      categoryId: (await prisma.category.findUnique({ where: { slug: 'accessories' } }))!.id,
+      categoryId: controllers.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,

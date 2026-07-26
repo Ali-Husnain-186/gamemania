@@ -76,16 +76,28 @@ export default function CartPage() {
                 key={item.id}
                 className="flex items-center justify-between gap-4 rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/40 p-4"
               >
-                <div>
-                  <Link
-                    href={`/products/${product.slug}`}
-                    className="font-semibold hover:text-[var(--gm-accent)]"
-                  >
-                    {product.name}
-                  </Link>
-                  <p className="mt-1 text-sm text-[var(--gm-muted)]">
-                    {formatGBP(product.price)} each
-                  </p>
+                <div className="flex min-w-0 items-center gap-3">
+                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg)]">
+                    {product.imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={product.imageUrl}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="min-w-0">
+                    <Link
+                      href={`/products/${product.slug}`}
+                      className="font-semibold hover:text-[var(--gm-accent)]"
+                    >
+                      {product.name}
+                    </Link>
+                    <p className="mt-1 text-sm text-[var(--gm-muted)]">
+                      {formatGBP(product.price)} each
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
                   <input

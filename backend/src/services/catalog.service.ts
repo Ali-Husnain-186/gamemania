@@ -7,6 +7,7 @@ import type {
   ProductListQuery,
   UpdateProductInput,
 } from '../validators/catalog.validators';
+import { normalizeProductImages } from '../validators/catalog.validators';
 
 async function uniqueSlug(base: string, excludeId?: string): Promise<string> {
   const root = slugify(base) || 'product';
@@ -67,6 +68,7 @@ function mapProduct(product: {
     publicId: string | null;
     altText: string | null;
     isPrimary: boolean;
+    sortOrder?: number;
   }>;
   category: { id: string; name: string; slug: string } | null;
   brand: { id: string; name: string; slug: string } | null;
@@ -203,6 +205,11 @@ export async function listBrands() {
 export async function createProduct(input: CreateProductInput) {
   const slug = await uniqueSlug(input.slug || input.name);
   const sku = await uniqueSku(input.sku);
+  const images = normalizeProductImages(input.images, {
+    imageUrl: input.imageUrl,
+    imagePublicId: input.imagePublicId,
+    altText: input.name,
+  });
 
   const product = await prisma.product.create({
     data: {
@@ -220,15 +227,16 @@ export async function createProduct(input: CreateProductInput) {
       status: input.status,
       isFeatured: input.isFeatured ?? false,
       inventory: { create: { quantity: input.quantity ?? 0, reserved: 0 } },
-      ...(input.imageUrl
+      ...(images.length
         ? {
             images: {
-              create: {
-                url: input.imageUrl,
-                publicId: input.imagePublicId,
-                altText: input.name,
-                isPrimary: true,
-              },
+              create: images.map((img) => ({
+                url: img.url,
+                publicId: img.publicId,
+                altText: img.altText ?? input.name,
+                isPrimary: img.isPrimary,
+                sortOrder: img.sortOrder,
+              })),
             },
           }
         : {}),
@@ -270,16 +278,26 @@ export async function updateProduct(id: string, input: UpdateProductInput) {
     if (clash) throw new ConflictError('Product SKU already exists');
   }
 
-  if (input.imageUrl) {
-    await prisma.productImage.deleteMany({ where: { productId: id, isPrimary: true } });
-    await prisma.productImage.create({
-      data: {
-        productId: id,
-        url: input.imageUrl,
-        publicId: input.imagePublicId,
-        altText: input.name ?? existing.name,
-        isPrimary: true,
-      },
+  if (input.images !== undefined || input.imageUrl) {
+    const images = normalizeProductImages(input.images, {
+      imageUrl: input.imageUrl,
+      imagePublicId: input.imagePublicId,
+      altText: input.name ?? existing.name,
+    });
+    await prisma.$transaction(async (tx) => {
+      await tx.productImage.deleteMany({ where: { productId: id } });
+      if (images.length) {
+        await tx.productImage.createMany({
+          data: images.map((img) => ({
+            productId: id,
+            url: img.url,
+            publicId: img.publicId,
+            altText: img.altText ?? input.name ?? existing.name,
+            isPrimary: img.isPrimary,
+            sortOrder: img.sortOrder,
+          })),
+        });
+      }
     });
   }
 

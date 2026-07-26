@@ -27,7 +27,10 @@ async function loadCart(cartId: string) {
         include: {
           product: {
             include: {
-              images: { where: { isPrimary: true }, take: 1 },
+              images: {
+                orderBy: [{ isPrimary: 'desc' as const }, { sortOrder: 'asc' as const }],
+                take: 1,
+              },
               inventory: true,
             },
           },

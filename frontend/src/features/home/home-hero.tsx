@@ -7,10 +7,10 @@ import { BadgeCheck, RefreshCcw, ShieldCheck, Truck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const slides = [
-  { label: 'Games', href: '/shop?category=games', cta: 'Shop games' },
-  { label: 'Consoles', href: '/shop?q=console', cta: 'Shop consoles' },
-  { label: 'PlayStation', href: '/shop?q=playstation', cta: 'Shop PlayStation' },
-  { label: 'Accessories', href: '/shop?q=accessories', cta: 'Shop accessories' },
+  { label: 'PlayStation', href: '/shop?category=playstation', cta: 'Shop PlayStation' },
+  { label: 'Nintendo', href: '/shop?category=nintendo', cta: 'Shop Nintendo' },
+  { label: 'PC Gaming', href: '/shop?category=pc-gaming', cta: 'Shop PC Gaming' },
+  { label: 'Accessories', href: '/shop?category=accessories', cta: 'Shop accessories' },
   { label: 'Trade-ins', href: '/trade-in', cta: 'Get a trade-in quote' },
 ];
 

@@ -266,7 +266,7 @@ export async function retryCheckoutPayment(
 ) {
   if (!isStripeConfigured()) {
     throw new ValidationError(
-      'Card payments are not configured. Add STRIPE_SECRET_KEY to backend/.env and restart the API.',
+      'Card payments are temporarily unavailable. Please try again later or contact support.',
     );
   }
 
@@ -363,7 +363,7 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
   // Fail closed: paid orders require Stripe before we touch stock/cart
   if (preview.grandTotalPence > 0 && !isStripeConfigured()) {
     throw new ValidationError(
-      'Card payments are not configured. Add your Stripe secret key (sk_test_...) to backend/.env as STRIPE_SECRET_KEY, then restart the API. After that, Pay securely will open the card page.',
+      'Card payments are temporarily unavailable. Please try again later or contact support.',
     );
   }
 

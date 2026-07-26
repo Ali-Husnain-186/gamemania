@@ -419,18 +419,6 @@ export function CheckoutClient() {
         </p>
       ) : null}
 
-      {preview && preview.grandTotalPence > 0 && preview.paymentsReady === false ? (
-        <p
-          className="mt-6 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
-          role="status"
-        >
-          Card payments are not set up yet. Add your Stripe test secret key to{' '}
-          <code className="text-[var(--gm-fg)]">backend/.env</code> as{' '}
-          <code className="text-[var(--gm-fg)]">STRIPE_SECRET_KEY=sk_test_...</code>, restart the
-          API, then Pay securely will open the card page.
-        </p>
-      ) : null}
-
       {error ? (
         <p
           className="mt-6 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"

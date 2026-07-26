@@ -103,15 +103,24 @@ async function findOrCreateCheckoutUser(email: string, fullName?: string) {
   });
 }
 
-export async function computeCheckout(
-  actor: CheckoutActor,
-  options: CheckoutOptions,
-): Promise<CheckoutPreview> {
+async function resolveCheckoutCart(actor: CheckoutActor) {
   if (!actor.userId && !actor.guestId) {
     throw new ValidationError('Cart session missing. Please add items again.');
   }
 
-  const cart = await getCart(actor.userId, actor.guestId);
+  // Logged-in users may still have items only on the guest cart (pre-login add).
+  if (actor.userId && actor.guestId) {
+    await mergeGuestCart(actor.userId, actor.guestId);
+  }
+
+  return getCart(actor.userId, actor.guestId);
+}
+
+export async function computeCheckout(
+  actor: CheckoutActor,
+  options: CheckoutOptions,
+): Promise<CheckoutPreview> {
+  const cart = await resolveCheckoutCart(actor);
   if (cart.items.length === 0) {
     throw new ValidationError('Cart is empty');
   }
@@ -185,7 +194,11 @@ export async function computeCheckout(
 export async function previewCheckout(actor: CheckoutActor, options: CheckoutOptions) {
   const preview = await computeCheckout(actor, options);
   const { couponId: _couponId, ...rest } = preview as CheckoutPreview & { couponId?: string };
-  return rest;
+  return {
+    ...rest,
+    stripeEnabled: isStripeConfigured(),
+    paymentsReady: isStripeConfigured() || rest.grandTotalPence <= 0,
+  };
 }
 
 function assertCanAccessOrder(
@@ -252,7 +265,7 @@ export async function retryCheckoutPayment(
 ) {
   if (!isStripeConfigured()) {
     throw new ValidationError(
-      'Card payments are not available right now. Please try again later or contact support.',
+      'Card payments are not configured. Add STRIPE_SECRET_KEY to backend/.env and restart the API.',
     );
   }
 
@@ -339,15 +352,17 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
     const guestUser = await findOrCreateCheckoutUser(email, input.shipping?.fullName);
     userId = guestUser.id;
     await mergeGuestCart(userId, actor.guestId);
+  } else if (actor.guestId) {
+    await mergeGuestCart(userId, actor.guestId);
   }
 
-  const preview = await computeCheckout({ userId }, input);
+  const preview = await computeCheckout({ userId, guestId: actor.guestId }, input);
   const couponId = (preview as CheckoutPreview & { couponId?: string }).couponId ?? null;
 
   // Fail closed: paid orders require Stripe before we touch stock/cart
   if (preview.grandTotalPence > 0 && !isStripeConfigured()) {
     throw new ValidationError(
-      'Card payments are not available right now. Please try again later or contact support.',
+      'Card payments are not configured. Add your Stripe secret key (sk_test_...) to backend/.env as STRIPE_SECRET_KEY, then restart the API. After that, Pay securely will open the card page.',
     );
   }
 

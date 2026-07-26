@@ -28,6 +28,8 @@ type Preview = {
   grandTotalPence: number;
   freeShipping: boolean;
   lineItems: Array<{ name: string; quantity: number; lineTotalPence: number }>;
+  stripeEnabled?: boolean;
+  paymentsReady?: boolean;
 };
 
 type ShippingForm = {
@@ -114,19 +116,37 @@ export function CheckoutClient() {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    let cancelled = false;
+
     startTransition(async () => {
-      try {
-        setError(null);
-        const data = await apiPost<Preview>('/checkout/preview', {
-          couponCode: couponCode || undefined,
-          country: 'GB',
-        });
-        setPreview(data);
-      } catch (err) {
-        setPreview(null);
-        setError(err instanceof ApiError ? err.message : 'Could not load cart totals');
-      }
+      const loadPreview = async (attempt: number): Promise<void> => {
+        try {
+          setError(null);
+          const data = await apiPost<Preview>('/checkout/preview', {
+            couponCode: couponCode || undefined,
+            country: 'GB',
+          });
+          if (!cancelled) setPreview(data);
+        } catch (err) {
+          const message = err instanceof ApiError ? err.message : 'Could not load cart totals';
+          // Brief retry — add-to-cart → checkout can race the first preview.
+          if (message.toLowerCase().includes('cart is empty') && attempt < 3) {
+            await new Promise((r) => setTimeout(r, 250 * attempt));
+            if (!cancelled) return loadPreview(attempt + 1);
+          }
+          if (!cancelled) {
+            setPreview(null);
+            setError(message);
+          }
+        }
+      };
+
+      await loadPreview(1);
     });
+
+    return () => {
+      cancelled = true;
+    };
   }, [couponCode]);
 
   useEffect(() => {
@@ -399,6 +419,18 @@ export function CheckoutClient() {
         </p>
       ) : null}
 
+      {preview && preview.grandTotalPence > 0 && preview.paymentsReady === false ? (
+        <p
+          className="mt-6 rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-200"
+          role="status"
+        >
+          Card payments are not set up yet. Add your Stripe test secret key to{' '}
+          <code className="text-[var(--gm-fg)]">backend/.env</code> as{' '}
+          <code className="text-[var(--gm-fg)]">STRIPE_SECRET_KEY=sk_test_...</code>, restart the
+          API, then Pay securely will open the card page.
+        </p>
+      ) : null}
+
       {error ? (
         <p
           className="mt-6 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
@@ -562,7 +594,9 @@ export function CheckoutClient() {
         <button
           type="submit"
           className="btn-primary inline-flex w-full items-center justify-center gap-2 disabled:opacity-50"
-          disabled={pending || !preview}
+          disabled={
+            pending || !preview || (preview.grandTotalPence > 0 && preview.paymentsReady === false)
+          }
         >
           <CreditCard className="h-4 w-4" />
           {payLabel}

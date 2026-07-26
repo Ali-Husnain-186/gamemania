@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { isStaffRole } from '@/lib/roles';
 
-const CUSTOMER_PROTECTED = ['/account', '/wishlist', '/checkout'];
+const CUSTOMER_PROTECTED = ['/account', '/wishlist'];
 const AUTH_PATHS = ['/login', '/register', '/auth'];
 
 function isCustomerProtected(pathname: string): boolean {

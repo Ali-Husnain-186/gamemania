@@ -5,6 +5,7 @@ const checkoutOptionsSchema = z.object({
   useStoreCredit: z.boolean().optional(),
   pointsToRedeem: z.number().int().min(0).optional(),
   country: z.string().length(2).optional(),
+  email: z.string().email().max(200).optional(),
 });
 
 const shippingAddressFieldsSchema = z.object({

@@ -38,7 +38,7 @@ export async function createCheckoutSession(input: {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: input.email,
-      success_url: `${successBase}/account/orders/${encodeURIComponent(input.orderNumber)}?paid=1`,
+      success_url: `${successBase}/checkout?paid=1&order=${encodeURIComponent(input.orderNumber)}`,
       cancel_url: `${successBase}/checkout?cancelled=1`,
       metadata: {
         orderId: input.orderId,
@@ -128,7 +128,7 @@ export async function markOrderPaidFromStripe(input: {
       'ORDER',
       'Payment received',
       `Payment for order ${order.orderNumber} was successful. We’ll start processing it soon.`,
-      `/account/orders/${order.orderNumber}`,
+      `/checkout?paid=1&order=${order.orderNumber}`,
     );
   }
 

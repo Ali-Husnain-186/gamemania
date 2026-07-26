@@ -38,7 +38,10 @@ export default function WishlistPage() {
 
   const addCartMutation = useMutation({
     mutationFn: (productId: string) => apiPost<Cart>('/cart/items', { productId, quantity: 1 }),
-    onSuccess: (cart) => setCart(cart),
+    onSuccess: (cart) => {
+      setCart(cart);
+      window.location.assign('/checkout');
+    },
   });
 
   return (

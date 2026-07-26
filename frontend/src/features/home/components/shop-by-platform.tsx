@@ -61,20 +61,18 @@ export function ShopByPlatform() {
               href={p.href}
               className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)] transition hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_12px_32px_rgba(1,166,194,0.14)] gm-focus"
             >
-              <div className="relative aspect-square bg-[#0a1016] p-3 sm:p-4">
-                <div className="relative h-full w-full">
-                  <Image
-                    src={p.image}
-                    alt={p.name}
-                    fill
-                    quality={90}
-                    sizes="(max-width:640px) 46vw, 20vw"
-                    className="object-contain object-center transition duration-500 group-hover:scale-[1.03]"
-                  />
-                </div>
+              <div className="relative h-[155px] w-full shrink-0 overflow-hidden bg-[#0a1016] sm:h-[175px] lg:h-[190px]">
+                <Image
+                  src={p.image}
+                  alt={p.name}
+                  fill
+                  quality={90}
+                  sizes="(max-width:640px) 46vw, 20vw"
+                  className="object-cover object-center transition duration-500 group-hover:scale-[1.03]"
+                />
               </div>
-              <div className="px-3.5 py-3 sm:px-4 sm:py-3.5">
-                <h3 className="gm-display text-base text-[var(--gm-yellow)] sm:text-lg">
+              <div className="flex h-[4.5rem] flex-col justify-center px-3.5 sm:px-4">
+                <h3 className="gm-display line-clamp-1 text-base text-[var(--gm-yellow)] sm:text-lg">
                   {p.name}
                 </h3>
                 <p className="mt-1 text-[11px] font-semibold text-[var(--gm-cyan)] sm:text-xs">

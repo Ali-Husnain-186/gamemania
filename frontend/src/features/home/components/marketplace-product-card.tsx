@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Eye, Heart, ShoppingBag, Star, X } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -22,6 +23,7 @@ function conditionLabel(condition?: string | null) {
 }
 
 export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProductCardProps) {
+  const router = useRouter();
   const [quickOpen, setQuickOpen] = useState(false);
   const [wishMsg, setWishMsg] = useState<string | null>(null);
   const setCart = useCartStore((s) => s.setCart);
@@ -34,6 +36,8 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
     onSuccess: (cart) => {
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
+      setQuickOpen(false);
+      router.push('/checkout');
     },
   });
 

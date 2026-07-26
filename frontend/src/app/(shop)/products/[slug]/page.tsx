@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { useCartStore } from '@/stores/cart-store';
@@ -12,6 +12,7 @@ import { ErrorState } from '@/components/shared/error-state';
 
 export default function ProductDetailPage() {
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
   const setCart = useCartStore((s) => s.setCart);
   const queryClient = useQueryClient();
 
@@ -24,7 +25,8 @@ export default function ProductDetailPage() {
     mutationFn: (productId: string) => apiPost<Cart>('/cart/items', { productId, quantity: 1 }),
     onSuccess: (cart) => {
       setCart(cart);
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      void queryClient.invalidateQueries({ queryKey: ['cart'] });
+      router.push('/checkout');
     },
   });
 
@@ -99,18 +101,8 @@ export default function ProductDetailPage() {
               {wishlistMutation.isSuccess ? 'Saved' : 'Wishlist'}
             </button>
           </div>
-          {addMutation.isSuccess ? (
-            <p className="mt-3 text-sm text-[var(--gm-accent)]">
-              Added to cart.{' '}
-              <Link href="/cart" className="font-bold underline">
-                View cart
-              </Link>{' '}
-              or{' '}
-              <Link href="/checkout" className="font-bold underline">
-                checkout
-              </Link>
-              .
-            </p>
+          {addMutation.isPending ? (
+            <p className="mt-3 text-sm text-[var(--gm-accent)]">Taking you to checkout…</p>
           ) : null}
         </div>
       </div>

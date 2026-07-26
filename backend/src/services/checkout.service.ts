@@ -1,17 +1,25 @@
+import { randomBytes } from 'crypto';
 import { prisma } from '../config/prisma';
 import { NotFoundError, ValidationError } from '../exceptions/AppError';
 import { validateCoupon } from './coupon.service';
-import { getCart } from './cart.service';
+import { getCart, mergeGuestCart } from './cart.service';
 import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
 import { createCheckoutSession, isStripeConfigured } from './stripe.service';
 import { createAddress } from './address.service';
+import { hashPassword } from '../utils/password';
 
 export type CheckoutOptions = {
   couponCode?: string;
   useStoreCredit?: boolean;
   pointsToRedeem?: number;
   country?: string;
+  email?: string;
+};
+
+export type CheckoutActor = {
+  userId?: string;
+  guestId?: string;
 };
 
 export type CheckoutPreview = {
@@ -65,15 +73,51 @@ async function loadUserForCheckout(userId: string) {
   return user;
 }
 
+async function findOrCreateCheckoutUser(email: string, fullName?: string) {
+  const normalized = email.trim().toLowerCase();
+  const existing = await prisma.user.findFirst({
+    where: { email: normalized, deletedAt: null },
+  });
+  if (existing) {
+    if (!existing.isActive) throw new ValidationError('This account is inactive');
+    return existing;
+  }
+
+  const role = await prisma.role.findUnique({ where: { name: 'CUSTOMER' } });
+  if (!role) throw new ValidationError('CUSTOMER role is not configured');
+
+  const parts = (fullName ?? '').trim().split(/\s+/).filter(Boolean);
+  const firstName = parts[0] ?? 'Guest';
+  const lastName = parts.length > 1 ? parts.slice(1).join(' ') : null;
+  const passwordHash = await hashPassword(randomBytes(24).toString('hex'));
+
+  return prisma.user.create({
+    data: {
+      email: normalized,
+      passwordHash,
+      firstName,
+      lastName,
+      roleId: role.id,
+    },
+  });
+}
+
 export async function computeCheckout(
-  userId: string,
+  actor: CheckoutActor,
   options: CheckoutOptions,
 ): Promise<CheckoutPreview> {
-  const [cart, user] = await Promise.all([getCart(userId), loadUserForCheckout(userId)]);
+  if (!actor.userId && !actor.guestId) {
+    throw new ValidationError('Cart session missing. Please add items again.');
+  }
 
+  const cart = await getCart(actor.userId, actor.guestId);
   if (cart.items.length === 0) {
     throw new ValidationError('Cart is empty');
   }
+
+  const user = actor.userId
+    ? await loadUserForCheckout(actor.userId)
+    : { rewardPoints: 0, storeCredit: 0 };
 
   const productSkus = await prisma.product.findMany({
     where: { id: { in: cart.items.map((i) => i.productId) } },
@@ -88,7 +132,7 @@ export async function computeCheckout(
   let couponId: string | null = null;
 
   if (options.couponCode) {
-    const coupon = await validateCoupon(options.couponCode, cart.subtotalPence, userId);
+    const coupon = await validateCoupon(options.couponCode, cart.subtotalPence, actor.userId);
     discountPence = coupon.discountPence;
     freeShipping = coupon.freeShipping;
     couponCode = coupon.code;
@@ -137,14 +181,32 @@ export async function computeCheckout(
   } as CheckoutPreview & { couponId?: string };
 }
 
-export async function previewCheckout(userId: string, options: CheckoutOptions) {
-  const preview = await computeCheckout(userId, options);
+export async function previewCheckout(actor: CheckoutActor, options: CheckoutOptions) {
+  const preview = await computeCheckout(actor, options);
   const { couponId: _couponId, ...rest } = preview as CheckoutPreview & { couponId?: string };
   return rest;
 }
 
-export async function placeOrder(userId: string, input: PlaceOrderInput) {
-  const preview = await computeCheckout(userId, input);
+export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
+  let userId = actor.userId;
+
+  // Guest checkout: create/find customer from email, merge guest cart
+  if (!userId) {
+    const email = input.email?.trim();
+    if (!email) throw new ValidationError('Email is required to checkout');
+    if (!input.shipping && !input.shippingAddressId) {
+      throw new ValidationError('Delivery address is required');
+    }
+    if (!actor.guestId) {
+      throw new ValidationError('Cart session missing. Please add items again.');
+    }
+
+    const guestUser = await findOrCreateCheckoutUser(email, input.shipping?.fullName);
+    userId = guestUser.id;
+    await mergeGuestCart(userId, actor.guestId);
+  }
+
+  const preview = await computeCheckout({ userId }, input);
   const couponId = (preview as CheckoutPreview & { couponId?: string }).couponId ?? null;
 
   let shippingAddressId = input.shippingAddressId;
@@ -179,6 +241,7 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
     throw new ValidationError('Cart is empty');
   }
 
+  const orderEmail = (input.email?.trim() || user.email).toLowerCase();
   const orderNumber = generateOrderNumber();
   const useStripe = isStripeConfigured() && preview.grandTotalPence > 0;
   const paymentProvider = useStripe
@@ -193,7 +256,7 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
         orderNumber,
         userId,
         status: 'AWAITING_PAYMENT',
-        email: user.email,
+        email: orderEmail,
         subtotal: preview.subtotalPence,
         discountTotal: preview.discountPence,
         shippingTotal: preview.shippingPence,
@@ -295,35 +358,35 @@ export async function placeOrder(userId: string, input: PlaceOrderInput) {
     'ORDER',
     'Order placed',
     `Your order ${orderNumber} has been placed and is awaiting payment.`,
-    `/orders/${orderNumber}`,
+    `/checkout?paid=1&order=${orderNumber}`,
   );
 
   let checkoutUrl: string | null = null;
   let paymentMessage =
     preview.grandTotalPence <= 0
-      ? 'Order paid with store credit / rewards — no card payment needed.'
-      : 'Add STRIPE_SECRET_KEY to enable card payments.';
+      ? 'Order confirmed — no card payment needed.'
+      : 'Card payments are being set up. Please contact support if this continues.';
 
   if (useStripe) {
     const stripeResult = await createCheckoutSession({
       orderId: order.id,
       orderNumber,
       grandTotalPence: preview.grandTotalPence,
-      email: user.email,
+      email: orderEmail,
     });
 
     if (stripeResult.sessionId) {
       await prisma.payment.update({
-        where: { id: order.payments[0].id },
+        where: { id: order.payments[0]!.id },
         data: { providerSessionId: stripeResult.sessionId },
       });
     }
 
     if (stripeResult.url) {
       checkoutUrl = stripeResult.url;
-      paymentMessage = 'Redirecting to Stripe Checkout…';
+      paymentMessage = 'Redirecting to secure payment…';
     } else {
-      paymentMessage = stripeResult.error ?? 'Stripe checkout unavailable';
+      paymentMessage = stripeResult.error ?? 'Payment unavailable right now';
     }
   }
 

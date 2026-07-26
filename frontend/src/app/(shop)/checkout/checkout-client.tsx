@@ -50,9 +50,10 @@ const emptyShipping: ShippingForm = {
 
 export function CheckoutClient() {
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [pending, startTransition] = useTransition();
   const [couponCode, setCouponCode] = useState('');
+  const [email, setEmail] = useState('');
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -64,16 +65,25 @@ export function CheckoutClient() {
     if (searchParams.get('cancelled') === '1') {
       setInfo('Payment was cancelled. You can try again when ready.');
     }
+    const paidOrder = searchParams.get('order');
+    if (searchParams.get('paid') === '1' && paidOrder) {
+      setPlaced({
+        orderNumber: paidOrder,
+        message: 'Payment received — thank you for your order.',
+      });
+    }
   }, [searchParams]);
 
   useEffect(() => {
+    if (user?.email) setEmail(user.email);
     const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim();
     if (name) {
       setShipping((s) => (s.fullName ? s : { ...s, fullName: name }));
     }
-  }, [user?.firstName, user?.lastName]);
+  }, [user?.email, user?.firstName, user?.lastName]);
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     void (async () => {
       try {
         const list = await apiGet<SavedAddress[]>('/users/me/addresses');
@@ -89,10 +99,10 @@ export function CheckoutClient() {
           phone: def.phone ?? '',
         });
       } catch {
-        // Guest/session edge — user can still type address on this page
+        // Guest can still type address
       }
     })();
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     startTransition(async () => {
@@ -117,6 +127,10 @@ export function CheckoutClient() {
 
   function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!email.trim()) {
+      setError('Please enter your email.');
+      return;
+    }
     if (
       !shipping.fullName.trim() ||
       !shipping.line1.trim() ||
@@ -131,11 +145,12 @@ export function CheckoutClient() {
       try {
         setError(null);
         const payload: Record<string, unknown> = {
+          email: email.trim().toLowerCase(),
           couponCode: couponCode || undefined,
           country: 'GB',
         };
 
-        if (savedAddressId) {
+        if (savedAddressId && isAuthenticated) {
           payload.shippingAddressId = savedAddressId;
         } else {
           payload.shipping = {
@@ -173,19 +188,26 @@ export function CheckoutClient() {
   if (placed) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-        <p className="gm-display text-3xl text-[var(--gm-yellow)]">Order placed</p>
+        <p className="gm-display text-3xl text-[var(--gm-yellow)]">Order confirmed</p>
         <p className="mt-3 text-[var(--gm-muted)]">
           Reference <span className="font-semibold text-[var(--gm-fg)]">{placed.orderNumber}</span>
         </p>
         {placed.message ? (
           <p className="mt-2 text-sm text-[var(--gm-muted)]">{placed.message}</p>
         ) : null}
-        <Link
-          href={`/account/orders/${placed.orderNumber}`}
-          className="btn-primary mt-8 inline-flex"
-        >
-          View order
-        </Link>
+        <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <Link href="/shop" className="btn-primary inline-flex">
+            Continue shopping
+          </Link>
+          {isAuthenticated ? (
+            <Link
+              href={`/account/orders/${placed.orderNumber}`}
+              className="btn-cyan-outline inline-flex"
+            >
+              View order
+            </Link>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -196,14 +218,14 @@ export function CheckoutClient() {
         ? 'Placing order…'
         : 'Complete order'
       : pending
-        ? 'Redirecting to Stripe…'
-        : 'Pay with Stripe';
+        ? 'Opening payment…'
+        : 'Pay securely';
 
   return (
     <div className="mx-auto max-w-3xl px-3 py-8 sm:px-6 sm:py-10">
       <h1 className="gm-display text-3xl text-[var(--gm-yellow)] sm:text-4xl">Checkout</h1>
       <p className="mt-2 text-sm text-[var(--gm-muted)] sm:text-base">
-        Enter delivery details and pay securely — one simple step.
+        Enter your details and pay — no account required.
       </p>
 
       {info ? (
@@ -222,6 +244,24 @@ export function CheckoutClient() {
       ) : null}
 
       <form onSubmit={onSubmit} className="mt-8 space-y-8">
+        <section className="space-y-3">
+          <h2 className="text-sm font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
+            Contact
+          </h2>
+          <label className="block text-sm">
+            <span className="font-medium">Email</span>
+            <input
+              required
+              type="email"
+              className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              placeholder="you@email.com"
+            />
+          </label>
+        </section>
+
         <section className="space-y-3">
           <h2 className="text-sm font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
             Delivery
@@ -347,11 +387,9 @@ export function CheckoutClient() {
         <div className="rounded-2xl border border-[var(--gm-border)] bg-black/25 p-4 text-xs text-[var(--gm-muted)]">
           <p className="inline-flex items-center gap-2 font-semibold text-[var(--gm-cyan)]">
             <Lock className="h-3.5 w-3.5" />
-            Secure card payments by Stripe
+            Secure card payment
           </p>
-          <p className="mt-1">
-            After you click pay, Stripe opens for card payment. We never store full card details.
-          </p>
+          <p className="mt-1">You’ll pay on the next screen. We never store full card details.</p>
         </div>
 
         <button

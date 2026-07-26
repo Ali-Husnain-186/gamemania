@@ -39,6 +39,27 @@ type ShippingForm = {
   phone: string;
 };
 
+type OrderStatus = {
+  orderNumber: string;
+  status: string;
+  paid: boolean;
+  awaitingPayment: boolean;
+  cancelled: boolean;
+  grandTotalPence: number;
+  email: string;
+  canRetryPayment: boolean;
+  paymentStatus: string | null;
+};
+
+type ConfirmationState = {
+  orderNumber: string;
+  title: string;
+  message: string;
+  paid: boolean;
+  canRetry: boolean;
+  email?: string;
+};
+
 const emptyShipping: ShippingForm = {
   fullName: '',
   line1: '',
@@ -57,22 +78,10 @@ export function CheckoutClient() {
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
-  const [placed, setPlaced] = useState<{ orderNumber: string; message?: string } | null>(null);
+  const [confirmation, setConfirmation] = useState<ConfirmationState | null>(null);
+  const [verifying, setVerifying] = useState(false);
   const [shipping, setShipping] = useState<ShippingForm>(emptyShipping);
   const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (searchParams.get('cancelled') === '1') {
-      setInfo('Payment was cancelled. You can try again when ready.');
-    }
-    const paidOrder = searchParams.get('order');
-    if (searchParams.get('paid') === '1' && paidOrder) {
-      setPlaced({
-        orderNumber: paidOrder,
-        message: 'Payment received — thank you for your order.',
-      });
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     if (user?.email) setEmail(user.email);
@@ -120,9 +129,104 @@ export function CheckoutClient() {
     });
   }, [couponCode]);
 
+  useEffect(() => {
+    const paidFlag = searchParams.get('paid') === '1';
+    const cancelledFlag = searchParams.get('cancelled') === '1';
+    const orderNumber = searchParams.get('order');
+    const emailParam = searchParams.get('email') ?? undefined;
+
+    if (cancelledFlag) {
+      setInfo('Payment was cancelled. Your order is waiting — you can complete payment below.');
+      if (orderNumber) {
+        setConfirmation({
+          orderNumber,
+          title: 'Payment pending',
+          message: 'No charge was made. Complete payment to confirm your order.',
+          paid: false,
+          canRetry: true,
+          email: emailParam,
+        });
+      }
+      return;
+    }
+
+    if (!paidFlag || !orderNumber) return;
+
+    setVerifying(true);
+    void (async () => {
+      try {
+        const qs = emailParam ? `?email=${encodeURIComponent(emailParam)}` : '';
+        const status = await apiGet<OrderStatus>(
+          `/checkout/orders/${encodeURIComponent(orderNumber)}${qs}`,
+        );
+
+        if (status.paid) {
+          setConfirmation({
+            orderNumber: status.orderNumber,
+            title: 'Payment successful',
+            message: 'Thank you — your order is confirmed.',
+            paid: true,
+            canRetry: false,
+            email: status.email,
+          });
+        } else if (status.cancelled) {
+          setConfirmation({
+            orderNumber: status.orderNumber,
+            title: 'Order cancelled',
+            message: 'This payment session expired. Please start checkout again from your cart.',
+            paid: false,
+            canRetry: false,
+            email: status.email,
+          });
+        } else {
+          setConfirmation({
+            orderNumber: status.orderNumber,
+            title: 'Payment pending',
+            message:
+              'We’re confirming your payment. If you completed the card payment, this usually updates within a few seconds — you can refresh or retry below.',
+            paid: false,
+            canRetry: status.canRetryPayment,
+            email: status.email,
+          });
+        }
+      } catch {
+        setConfirmation({
+          orderNumber,
+          title: 'Payment pending',
+          message:
+            'We could not verify payment yet. If you paid, please wait a moment and refresh, or contact support with your order reference.',
+          paid: false,
+          canRetry: Boolean(orderNumber),
+          email: emailParam,
+        });
+      } finally {
+        setVerifying(false);
+      }
+    })();
+  }, [searchParams]);
+
   function updateField<K extends keyof ShippingForm>(key: K, value: ShippingForm[K]) {
     setSavedAddressId(null);
     setShipping((s) => ({ ...s, [key]: value }));
+  }
+
+  function retryPayment(orderNumber: string, orderEmail?: string) {
+    startTransition(async () => {
+      try {
+        setError(null);
+        const data = await apiPost<{ checkoutUrl?: string | null; paymentMessage?: string }>(
+          `/checkout/orders/${encodeURIComponent(orderNumber)}/pay`,
+          { email: orderEmail || email.trim().toLowerCase() || undefined },
+        );
+        if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+          return;
+        }
+        setError(data.paymentMessage ?? 'Could not start secure payment.');
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Could not start secure payment');
+      }
+    });
   }
 
   function onSubmit(e: FormEvent) {
@@ -168,6 +272,7 @@ export function CheckoutClient() {
           order: { orderNumber: string };
           checkoutUrl?: string | null;
           paymentMessage?: string;
+          paid?: boolean;
         }>('/checkout', payload);
 
         if (data.checkoutUrl) {
@@ -175,39 +280,89 @@ export function CheckoutClient() {
           return;
         }
 
-        setPlaced({
-          orderNumber: data.order.orderNumber,
-          message: data.paymentMessage,
-        });
+        if (data.paid || (preview && preview.grandTotalPence <= 0)) {
+          setConfirmation({
+            orderNumber: data.order.orderNumber,
+            title: 'Order confirmed',
+            message: data.paymentMessage ?? 'Order confirmed — no card payment needed.',
+            paid: true,
+            canRetry: false,
+            email: email.trim().toLowerCase(),
+          });
+          return;
+        }
+
+        setError(
+          data.paymentMessage ??
+            'Could not open secure payment. Please try again or contact support.',
+        );
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Could not place order');
       }
     });
   }
 
-  if (placed) {
+  if (verifying) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-        <p className="gm-display text-3xl text-[var(--gm-yellow)]">Order confirmed</p>
-        <p className="mt-3 text-[var(--gm-muted)]">
-          Reference <span className="font-semibold text-[var(--gm-fg)]">{placed.orderNumber}</span>
+        <p className="gm-display text-3xl text-[var(--gm-yellow)]">Confirming payment…</p>
+        <p className="mt-3 text-sm text-[var(--gm-muted)]">
+          Just a moment while we verify your order.
         </p>
-        {placed.message ? (
-          <p className="mt-2 text-sm text-[var(--gm-muted)]">{placed.message}</p>
+      </div>
+    );
+  }
+
+  if (confirmation) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
+        <p className="gm-display text-3xl text-[var(--gm-yellow)]">{confirmation.title}</p>
+        <p className="mt-3 text-[var(--gm-muted)]">
+          Reference{' '}
+          <span className="font-semibold text-[var(--gm-fg)]">{confirmation.orderNumber}</span>
+        </p>
+        <p className="mt-2 text-sm text-[var(--gm-muted)]">{confirmation.message}</p>
+        {error ? (
+          <p
+            className="mt-4 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300"
+            role="alert"
+          >
+            {error}
+          </p>
         ) : null}
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-          <Link href="/shop" className="btn-primary inline-flex">
+          {confirmation.canRetry ? (
+            <button
+              type="button"
+              className="btn-primary inline-flex items-center gap-2 disabled:opacity-50"
+              disabled={pending}
+              onClick={() => retryPayment(confirmation.orderNumber, confirmation.email)}
+            >
+              <CreditCard className="h-4 w-4" />
+              {pending ? 'Opening payment…' : 'Complete payment'}
+            </button>
+          ) : null}
+          <Link href="/shop" className="btn-cyan-outline inline-flex">
             Continue shopping
           </Link>
-          {isAuthenticated ? (
+          {confirmation.paid && isAuthenticated ? (
             <Link
-              href={`/account/orders/${placed.orderNumber}`}
+              href={`/account/orders/${confirmation.orderNumber}`}
               className="btn-cyan-outline inline-flex"
             >
               View order
             </Link>
           ) : null}
         </div>
+        {!isAuthenticated && confirmation.paid ? (
+          <p className="mt-6 text-xs text-[var(--gm-muted)]">
+            Want to track orders faster next time?{' '}
+            <Link href="/login" className="text-[var(--gm-cyan)] underline">
+              Sign in
+            </Link>{' '}
+            or use the email on your order for support.
+          </p>
+        ) : null}
       </div>
     );
   }
@@ -225,8 +380,18 @@ export function CheckoutClient() {
     <div className="mx-auto max-w-3xl px-3 py-8 sm:px-6 sm:py-10">
       <h1 className="gm-display text-3xl text-[var(--gm-yellow)] sm:text-4xl">Checkout</h1>
       <p className="mt-2 text-sm text-[var(--gm-muted)] sm:text-base">
-        Enter your details and pay — no account required.
+        {isAuthenticated
+          ? 'Review your details and pay securely.'
+          : 'Checking out as a guest — no account required.'}
       </p>
+      {!isAuthenticated ? (
+        <p className="mt-2 text-xs text-[var(--gm-muted)]">
+          Have an account?{' '}
+          <Link href="/login?returnUrl=/checkout" className="text-[var(--gm-cyan)] underline">
+            Sign in for faster checkout
+          </Link>
+        </p>
+      ) : null}
 
       {info ? (
         <p className="mt-6 rounded-xl border border-[var(--gm-cyan)]/40 bg-[rgba(1,166,194,0.1)] px-4 py-3 text-sm text-[var(--gm-cyan)]">
@@ -389,7 +554,9 @@ export function CheckoutClient() {
             <Lock className="h-3.5 w-3.5" />
             Secure card payment
           </p>
-          <p className="mt-1">You’ll pay on the next screen. We never store full card details.</p>
+          <p className="mt-1">
+            You’ll pay on Stripe’s secure next screen. We never store full card details.
+          </p>
         </div>
 
         <button

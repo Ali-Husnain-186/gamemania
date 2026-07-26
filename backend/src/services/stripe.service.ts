@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { env } from '../config/env';
 import { prisma } from '../config/prisma';
 import { createNotification } from './notification.service';
+import { cancelUnpaidOrder } from './order-cancel.service';
 
 let stripeClient: Stripe | null = null;
 
@@ -38,8 +39,8 @@ export async function createCheckoutSession(input: {
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: input.email,
-      success_url: `${successBase}/checkout?paid=1&order=${encodeURIComponent(input.orderNumber)}`,
-      cancel_url: `${successBase}/checkout?cancelled=1`,
+      success_url: `${successBase}/checkout?paid=1&order=${encodeURIComponent(input.orderNumber)}&email=${encodeURIComponent(input.email)}`,
+      cancel_url: `${successBase}/checkout?cancelled=1&order=${encodeURIComponent(input.orderNumber)}&email=${encodeURIComponent(input.email)}`,
       metadata: {
         orderId: input.orderId,
         orderNumber: input.orderNumber,
@@ -128,11 +129,40 @@ export async function markOrderPaidFromStripe(input: {
       'ORDER',
       'Payment received',
       `Payment for order ${order.orderNumber} was successful. We’ll start processing it soon.`,
-      `/checkout?paid=1&order=${order.orderNumber}`,
+      `/account/orders/${order.orderNumber}`,
     );
   }
 
   return { ok: true as const, alreadyPaid: false };
+}
+
+async function cancelOrderFromStripeSession(session: Stripe.Checkout.Session) {
+  const payment = await prisma.payment.findFirst({
+    where: { providerSessionId: session.id },
+    include: { order: true },
+  });
+
+  const orderId =
+    payment?.orderId ??
+    session.metadata?.orderId ??
+    (
+      await prisma.order.findFirst({
+        where: { orderNumber: session.metadata?.orderNumber ?? '' },
+        select: { id: true },
+      })
+    )?.id;
+
+  if (!orderId) return;
+
+  if (payment && payment.status === 'PENDING') {
+    await prisma.payment.update({
+      where: { id: payment.id },
+      data: { status: 'CANCELLED', rawPayload: session as object },
+    });
+  }
+
+  // Restore stock; keep cart cleared so user uses retry-payment for same order
+  await cancelUnpaidOrder(orderId, { restoreCart: false });
 }
 
 export async function handleStripeWebhook(rawBody: Buffer, signature: string | undefined) {
@@ -164,15 +194,7 @@ export async function handleStripeWebhook(rawBody: Buffer, signature: string | u
 
   if (event.type === 'checkout.session.expired') {
     const session = event.data.object as Stripe.Checkout.Session;
-    const payment = await prisma.payment.findFirst({
-      where: { providerSessionId: session.id, status: 'PENDING' },
-    });
-    if (payment) {
-      await prisma.payment.update({
-        where: { id: payment.id },
-        data: { status: 'CANCELLED', rawPayload: session as object },
-      });
-    }
+    await cancelOrderFromStripeSession(session);
   }
 
   return { received: true, type: event.type };

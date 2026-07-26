@@ -45,3 +45,14 @@ export type CheckoutShippingInput = z.infer<typeof shippingAddressFieldsSchema>;
 export const orderNumberParamsSchema = z.object({
   orderNumber: z.string().min(1),
 });
+
+export const checkoutOrderLookupQuerySchema = z.object({
+  email: z.string().email().max(200).optional(),
+});
+
+export const checkoutOrderPaySchema = z.object({
+  email: z.string().email().max(200).optional(),
+});
+
+export type CheckoutOrderLookupQuery = z.infer<typeof checkoutOrderLookupQuerySchema>;
+export type CheckoutOrderPayInput = z.infer<typeof checkoutOrderPaySchema>;

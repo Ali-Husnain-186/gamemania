@@ -6,6 +6,7 @@ import { getCart, mergeGuestCart } from './cart.service';
 import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
 import { createCheckoutSession, isStripeConfigured } from './stripe.service';
+import { cancelUnpaidOrder } from './order-cancel.service';
 import { createAddress } from './address.service';
 import { hashPassword } from '../utils/password';
 
@@ -187,6 +188,140 @@ export async function previewCheckout(actor: CheckoutActor, options: CheckoutOpt
   return rest;
 }
 
+function assertCanAccessOrder(
+  order: { email: string; userId: string | null },
+  actor: CheckoutActor,
+  email?: string,
+) {
+  if (actor.userId && order.userId === actor.userId) return;
+  const normalized = email?.trim().toLowerCase();
+  if (normalized && order.email.toLowerCase() === normalized) return;
+  throw new NotFoundError('Order not found');
+}
+
+export async function getCheckoutOrderStatus(
+  actor: CheckoutActor,
+  orderNumber: string,
+  email?: string,
+) {
+  const order = await prisma.order.findUnique({
+    where: { orderNumber },
+    include: {
+      payments: { orderBy: { createdAt: 'desc' }, take: 1 },
+      items: { select: { name: true, quantity: true, lineTotal: true } },
+    },
+  });
+
+  if (!order) throw new NotFoundError('Order not found');
+  assertCanAccessOrder(order, actor, email);
+
+  const payment = order.payments[0];
+  const paid =
+    order.status === 'PAID' ||
+    order.status === 'PROCESSING' ||
+    order.status === 'SHIPPED' ||
+    order.status === 'DELIVERED' ||
+    payment?.status === 'SUCCEEDED';
+
+  return {
+    orderNumber: order.orderNumber,
+    status: order.status,
+    paid,
+    awaitingPayment: order.status === 'AWAITING_PAYMENT',
+    cancelled: order.status === 'CANCELLED',
+    grandTotalPence: order.grandTotal,
+    email: order.email,
+    items: order.items.map((i) => ({
+      name: i.name,
+      quantity: i.quantity,
+      lineTotalPence: i.lineTotal,
+    })),
+    paymentStatus: payment?.status ?? null,
+    canRetryPayment:
+      order.status === 'AWAITING_PAYMENT' &&
+      order.grandTotal > 0 &&
+      isStripeConfigured() &&
+      payment?.status !== 'SUCCEEDED',
+  };
+}
+
+export async function retryCheckoutPayment(
+  actor: CheckoutActor,
+  orderNumber: string,
+  email?: string,
+) {
+  if (!isStripeConfigured()) {
+    throw new ValidationError(
+      'Card payments are not available right now. Please try again later or contact support.',
+    );
+  }
+
+  const order = await prisma.order.findUnique({
+    where: { orderNumber },
+    include: { payments: { orderBy: { createdAt: 'desc' } } },
+  });
+
+  if (!order) throw new NotFoundError('Order not found');
+  assertCanAccessOrder(order, actor, email);
+
+  if (order.status === 'PAID' || order.payments.some((p) => p.status === 'SUCCEEDED')) {
+    throw new ValidationError('This order is already paid');
+  }
+  if (order.status === 'CANCELLED') {
+    throw new ValidationError('This order was cancelled. Please start a new checkout.');
+  }
+  if (order.status !== 'AWAITING_PAYMENT') {
+    throw new ValidationError('This order cannot be paid online right now');
+  }
+  if (order.grandTotal <= 0) {
+    throw new ValidationError('No payment is due for this order');
+  }
+
+  const stripeResult = await createCheckoutSession({
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    grandTotalPence: order.grandTotal,
+    email: order.email,
+  });
+
+  if (!stripeResult.url || !stripeResult.sessionId) {
+    throw new ValidationError(
+      stripeResult.error ?? 'Could not start secure payment. Please try again.',
+    );
+  }
+
+  const pendingPayment =
+    order.payments.find((p) => p.status === 'PENDING' || p.status === 'REQUIRES_ACTION') ??
+    order.payments[0];
+
+  if (pendingPayment) {
+    await prisma.payment.update({
+      where: { id: pendingPayment.id },
+      data: {
+        provider: 'STRIPE',
+        status: 'PENDING',
+        providerSessionId: stripeResult.sessionId,
+      },
+    });
+  } else {
+    await prisma.payment.create({
+      data: {
+        orderId: order.id,
+        provider: 'STRIPE',
+        status: 'PENDING',
+        amount: order.grandTotal,
+        providerSessionId: stripeResult.sessionId,
+      },
+    });
+  }
+
+  return {
+    orderNumber: order.orderNumber,
+    checkoutUrl: stripeResult.url,
+    paymentMessage: 'Redirecting to secure payment…',
+  };
+}
+
 export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
   let userId = actor.userId;
 
@@ -208,6 +343,13 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
 
   const preview = await computeCheckout({ userId }, input);
   const couponId = (preview as CheckoutPreview & { couponId?: string }).couponId ?? null;
+
+  // Fail closed: paid orders require Stripe before we touch stock/cart
+  if (preview.grandTotalPence > 0 && !isStripeConfigured()) {
+    throw new ValidationError(
+      'Card payments are not available right now. Please try again later or contact support.',
+    );
+  }
 
   let shippingAddressId = input.shippingAddressId;
 
@@ -241,14 +383,19 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
     throw new ValidationError('Cart is empty');
   }
 
+  // Stock check before placing
+  for (const item of preview.lineItems) {
+    const inv = await prisma.inventory.findUnique({ where: { productId: item.productId } });
+    const available = Math.max(0, (inv?.quantity ?? 0) - (inv?.reserved ?? 0));
+    if (available < item.quantity) {
+      throw new ValidationError(`${item.name} does not have enough stock`);
+    }
+  }
+
   const orderEmail = (input.email?.trim() || user.email).toLowerCase();
   const orderNumber = generateOrderNumber();
-  const useStripe = isStripeConfigured() && preview.grandTotalPence > 0;
-  const paymentProvider = useStripe
-    ? ('STRIPE' as const)
-    : preview.grandTotalPence <= 0
-      ? ('STORE_CREDIT' as const)
-      : ('MANUAL' as const);
+  const needsStripe = preview.grandTotalPence > 0;
+  const paymentProvider = needsStripe ? ('STRIPE' as const) : ('STORE_CREDIT' as const);
 
   const order = await prisma.$transaction(async (tx) => {
     const created = await tx.order.create({
@@ -284,12 +431,12 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
         payments: {
           create: {
             provider: paymentProvider,
-            status: preview.grandTotalPence <= 0 ? 'SUCCEEDED' : 'PENDING',
+            status: needsStripe ? 'PENDING' : 'SUCCEEDED',
             amount: preview.grandTotalPence,
-            paidAt: preview.grandTotalPence <= 0 ? new Date() : undefined,
+            paidAt: needsStripe ? undefined : new Date(),
           },
         },
-        ...(preview.grandTotalPence <= 0 ? { status: 'PAID' as const } : {}),
+        ...(!needsStripe ? { status: 'PAID' as const } : {}),
       },
       include: { items: true, payments: true },
     });
@@ -353,54 +500,71 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
     return created;
   });
 
+  if (!needsStripe) {
+    await createNotification(
+      userId,
+      'ORDER',
+      'Order confirmed',
+      `Your order ${orderNumber} is confirmed — no card payment needed.`,
+      `/account/orders/${orderNumber}`,
+    );
+
+    return {
+      order: {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        status: order.status,
+        grandTotal: order.grandTotal,
+        items: order.items,
+        payments: order.payments,
+      },
+      checkoutUrl: null,
+      paymentMessage: 'Order confirmed — no card payment needed.',
+      paid: true,
+      stripeEnabled: isStripeConfigured(),
+    };
+  }
+
+  const stripeResult = await createCheckoutSession({
+    orderId: order.id,
+    orderNumber,
+    grandTotalPence: preview.grandTotalPence,
+    email: orderEmail,
+  });
+
+  if (!stripeResult.url || !stripeResult.sessionId) {
+    await cancelUnpaidOrder(order.id, { restoreCart: true });
+    throw new ValidationError(
+      stripeResult.error ??
+        'Could not start secure payment. Your cart has been restored — please try again.',
+    );
+  }
+
+  await prisma.payment.update({
+    where: { id: order.payments[0]!.id },
+    data: { providerSessionId: stripeResult.sessionId },
+  });
+
   await createNotification(
     userId,
     'ORDER',
-    'Order placed',
-    `Your order ${orderNumber} has been placed and is awaiting payment.`,
-    `/checkout?paid=1&order=${orderNumber}`,
+    'Complete your payment',
+    `Your order ${orderNumber} is ready — finish payment to confirm it.`,
+    `/checkout?order=${orderNumber}`,
   );
-
-  let checkoutUrl: string | null = null;
-  let paymentMessage =
-    preview.grandTotalPence <= 0
-      ? 'Order confirmed — no card payment needed.'
-      : 'Card payments are being set up. Please contact support if this continues.';
-
-  if (useStripe) {
-    const stripeResult = await createCheckoutSession({
-      orderId: order.id,
-      orderNumber,
-      grandTotalPence: preview.grandTotalPence,
-      email: orderEmail,
-    });
-
-    if (stripeResult.sessionId) {
-      await prisma.payment.update({
-        where: { id: order.payments[0]!.id },
-        data: { providerSessionId: stripeResult.sessionId },
-      });
-    }
-
-    if (stripeResult.url) {
-      checkoutUrl = stripeResult.url;
-      paymentMessage = 'Redirecting to secure payment…';
-    } else {
-      paymentMessage = stripeResult.error ?? 'Payment unavailable right now';
-    }
-  }
 
   return {
     order: {
       id: order.id,
       orderNumber: order.orderNumber,
-      status: order.status,
+      status: 'AWAITING_PAYMENT' as const,
       grandTotal: order.grandTotal,
       items: order.items,
       payments: order.payments,
     },
-    checkoutUrl,
-    paymentMessage,
-    stripeEnabled: isStripeConfigured(),
+    checkoutUrl: stripeResult.url,
+    paymentMessage: 'Redirecting to secure payment…',
+    paid: false,
+    stripeEnabled: true,
   };
 }

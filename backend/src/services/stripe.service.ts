@@ -8,7 +8,7 @@ import { emailOrderPaid } from './order-email.service';
 let stripeClient: Stripe | null = null;
 
 export function isStripeConfigured(): boolean {
-  return Boolean(env.STRIPE_SECRET_KEY);
+  return Boolean(env.STRIPE_SECRET_KEY?.trim());
 }
 
 export function getStripe(): Stripe {

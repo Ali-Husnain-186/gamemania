@@ -43,9 +43,9 @@ Requires local PostgreSQL (see root `.env.example`). See [docs/api/rest-api.md](
 
 1. Create a free account at [resend.com](https://resend.com)
 2. API Keys → Create → copy `re_...` into `backend/.env` as `RESEND_API_KEY`
-3. For testing, keep `EMAIL_FROM=GAME MANIA <beth.t@example.com>`
-4. For brand mail (`info@gamemaniauk.co.uk`): Domains → Add `gamemaniauk.co.uk` → add the DNS records Resend shows → then set:
-   `EMAIL_FROM=GAME MANIA <info@gamemaniauk.co.uk>`
+3. For testing, you can use `EMAIL_FROM=GAME MANIA <beth.t@example.com>`
+4. For brand mail: Domains → Add `gamemaniaauk.co.uk` → add DNS (DKIM/SPF) → Verify → then set:
+   `EMAIL_FROM=GAME MANIA <info@gamemaniaauk.co.uk>`
 5. Restart the API
 
 Order confirmation emails send when payment succeeds (or £0 orders).

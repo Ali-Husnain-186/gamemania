@@ -7,6 +7,7 @@ import { quoteShipping } from './shipping.service';
 import { createNotification } from './notification.service';
 import { createCheckoutSession, isStripeConfigured } from './stripe.service';
 import { cancelUnpaidOrder } from './order-cancel.service';
+import { emailOrderPaid } from './order-email.service';
 import { createAddress } from './address.service';
 import { hashPassword } from '../utils/password';
 
@@ -523,6 +524,7 @@ export async function placeOrder(actor: CheckoutActor, input: PlaceOrderInput) {
       `Your order ${orderNumber} is confirmed — no card payment needed.`,
       `/account/orders/${orderNumber}`,
     );
+    void emailOrderPaid(order.id);
 
     return {
       order: {

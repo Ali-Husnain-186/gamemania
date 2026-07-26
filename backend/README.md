@@ -39,6 +39,17 @@ src/
 
 Requires local PostgreSQL (see root `.env.example`). See [docs/api/rest-api.md](../docs/api/rest-api.md).
 
+## Customer emails (Resend — free, no Gmail App Password)
+
+1. Create a free account at [resend.com](https://resend.com)
+2. API Keys → Create → copy `re_...` into `backend/.env` as `RESEND_API_KEY`
+3. For testing, keep `EMAIL_FROM=GAME MANIA <beth.t@example.com>`
+4. For brand mail (`info@gamemaniauk.co.uk`): Domains → Add `gamemaniauk.co.uk` → add the DNS records Resend shows → then set:
+   `EMAIL_FROM=GAME MANIA <info@gamemaniauk.co.uk>`
+5. Restart the API
+
+Order confirmation emails send when payment succeeds (or £0 orders).
+
 ## Stripe checkout (required for paid orders)
 
 Paid checkout uses **Stripe Checkout** (hosted card page). Card details never touch this API.

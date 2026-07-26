@@ -3,6 +3,7 @@ import { env } from '../config/env';
 import { prisma } from '../config/prisma';
 import { createNotification } from './notification.service';
 import { cancelUnpaidOrder } from './order-cancel.service';
+import { emailOrderPaid } from './order-email.service';
 
 let stripeClient: Stripe | null = null;
 
@@ -132,6 +133,8 @@ export async function markOrderPaidFromStripe(input: {
       `/account/orders/${order.orderNumber}`,
     );
   }
+
+  void emailOrderPaid(order.id);
 
   return { ok: true as const, alreadyPaid: false };
 }

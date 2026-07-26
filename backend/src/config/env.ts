@@ -36,6 +36,8 @@ const envSchema = z.object({
   SMTP_PORT: z.coerce.number().default(587),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
+  // Prefer Resend (free tier). Falls back to SMTP if RESEND_API_KEY is empty.
+  RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default('GAME MANIA <beth.t@example.com>'),
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
@@ -78,6 +80,7 @@ const data = parsed.success
       SMTP_PORT: Number(process.env.SMTP_PORT ?? 587),
       SMTP_USER: process.env.SMTP_USER,
       SMTP_PASS: process.env.SMTP_PASS,
+      RESEND_API_KEY: process.env.RESEND_API_KEY,
       EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <beth.t@example.com>',
       CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
       CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,

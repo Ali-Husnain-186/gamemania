@@ -16,6 +16,7 @@ export default function ProductDetailPage() {
   const setCart = useCartStore((s) => s.setCart);
   const queryClient = useQueryClient();
   const [activeUrl, setActiveUrl] = useState<string | null>(null);
+  const [tradeMethod, setTradeMethod] = useState<'STORE_CREDIT' | 'CASH'>('STORE_CREDIT');
 
   const productQuery = useQuery({
     queryKey: ['product', params.slug],
@@ -28,6 +29,21 @@ export default function ProductDetailPage() {
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
       router.push('/checkout');
+    },
+  });
+
+  const tradeMutation = useMutation({
+    mutationFn: (productId: string) =>
+      apiPost<Cart>('/cart/items', {
+        productId,
+        quantity: 1,
+        isTradeIn: true,
+        tradePayoutMethod: tradeMethod,
+      }),
+    onSuccess: (cart) => {
+      setCart(cart);
+      void queryClient.invalidateQueries({ queryKey: ['cart'] });
+      router.push('/cart');
     },
   });
 
@@ -69,6 +85,9 @@ export default function ProductDetailPage() {
   }
 
   const product = productQuery.data;
+  const hasTradeIn =
+    (product.tradeInCashPence != null && product.tradeInCashPence > 0) ||
+    (product.tradeInCreditPence != null && product.tradeInCreditPence > 0);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
@@ -107,15 +126,46 @@ export default function ProductDetailPage() {
         </div>
         <div>
           <p className="text-xs uppercase tracking-[0.18em] text-[var(--gm-muted)]">
-            {product.platform ?? product.brand?.name}
+            {product.category?.name ?? product.platform ?? product.brand?.name}
           </p>
           <h1 className="gm-display mt-2 text-3xl font-bold md:text-4xl">{product.name}</h1>
+          {product.isPreorder ? (
+            <p className="mt-2 inline-flex rounded bg-[var(--gm-magenta)] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
+              Pre-order
+            </p>
+          ) : null}
           <p className="mt-4 text-2xl font-semibold text-[var(--gm-accent)]">
             {formatGBP(product.price)}
           </p>
+
+          {hasTradeIn ? (
+            <div className="mt-3 space-y-1 text-sm text-[var(--gm-muted)]">
+              {product.tradeInCreditPence != null && product.tradeInCreditPence > 0 ? (
+                <p>
+                  <span className="font-semibold text-[var(--gm-fg)]">
+                    {formatGBP(product.tradeInCreditPence)}
+                  </span>{' '}
+                  Trade-in for voucher / store credit
+                </p>
+              ) : null}
+              {product.tradeInCashPence != null && product.tradeInCashPence > 0 ? (
+                <p>
+                  <span className="font-semibold text-[var(--gm-fg)]">
+                    {formatGBP(product.tradeInCashPence)}
+                  </span>{' '}
+                  Trade-in for cash
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           <p className="mt-4 text-[var(--gm-muted)]">
             {product.shortDescription ?? product.description ?? 'Premium gaming product.'}
           </p>
+          <p className="mt-3 text-xs text-[var(--gm-muted)]">
+            Includes a 3-month warranty on all products.
+          </p>
+
           <div className="mt-8 flex flex-wrap gap-3">
             <button
               type="button"
@@ -140,6 +190,50 @@ export default function ProductDetailPage() {
               {wishlistMutation.isSuccess ? 'Saved' : 'Wishlist'}
             </button>
           </div>
+
+          {hasTradeIn ? (
+            <div className="mt-6 rounded-xl border border-[var(--gm-cyan)]/30 bg-[var(--gm-bg-elevated)] p-4">
+              <p className="text-sm font-bold">Trade this game to us</p>
+              <p className="mt-1 text-xs text-[var(--gm-muted)]">
+                Add as a trade-in, fill your details at checkout — we email a pre-printed postage
+                label to our address.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={tradeMethod === 'STORE_CREDIT'}
+                    onChange={() => setTradeMethod('STORE_CREDIT')}
+                  />
+                  Store credit
+                </label>
+                <label className="inline-flex items-center gap-2">
+                  <input
+                    type="radio"
+                    checked={tradeMethod === 'CASH'}
+                    onChange={() => setTradeMethod('CASH')}
+                  />
+                  Cash
+                </label>
+              </div>
+              <button
+                type="button"
+                disabled={tradeMutation.isPending}
+                onClick={() => tradeMutation.mutate(product.id)}
+                className="btn-cyan mt-4 inline-flex px-5 py-2.5 text-sm font-bold"
+              >
+                {tradeMutation.isPending ? 'Adding…' : 'Trade to us'}
+              </button>
+              {tradeMutation.isError ? (
+                <p className="mt-2 text-xs text-[var(--gm-danger)]">
+                  {tradeMutation.error instanceof Error
+                    ? tradeMutation.error.message
+                    : 'Could not add trade-in'}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
+
           {addMutation.isPending ? (
             <p className="mt-3 text-sm text-[var(--gm-accent)]">Taking you to checkout…</p>
           ) : null}

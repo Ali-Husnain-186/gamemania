@@ -62,6 +62,10 @@ function mapProduct(product: {
   condition: string;
   status: string;
   isFeatured: boolean;
+  isPreorder?: boolean;
+  releaseDate?: Date | null;
+  tradeInCashPence?: number | null;
+  tradeInCreditPence?: number | null;
   images: Array<{
     id: string;
     url: string;
@@ -90,6 +94,10 @@ function mapProduct(product: {
     condition: product.condition,
     status: product.status,
     isFeatured: product.isFeatured,
+    isPreorder: product.isPreorder ?? false,
+    releaseDate: product.releaseDate ?? null,
+    tradeInCashPence: product.tradeInCashPence ?? null,
+    tradeInCreditPence: product.tradeInCreditPence ?? null,
     images: product.images,
     category: product.category,
     brand: product.brand,
@@ -128,6 +136,14 @@ export async function listProducts(query: ProductListQuery, admin = false) {
       ...(query.maxPrice !== undefined ? { lte: query.maxPrice } : {}),
     };
   }
+  if (query.preorder === true) {
+    where.isPreorder = true;
+  } else if (query.preorder === false) {
+    where.isPreorder = false;
+  }
+  if (query.inStock === true) {
+    where.inventory = { is: { quantity: { gt: 0 } } };
+  }
 
   const orderBy: Prisma.ProductOrderByWithRelationInput =
     query.sort === 'price_asc'
@@ -138,7 +154,9 @@ export async function listProducts(query: ProductListQuery, admin = false) {
           ? { name: 'asc' }
           : query.sort === 'featured'
             ? { isFeatured: 'desc' }
-            : { createdAt: 'desc' };
+            : query.sort === 'release'
+              ? { releaseDate: 'asc' }
+              : { createdAt: 'desc' };
 
   const skip = (query.page - 1) * query.limit;
   const [total, rows] = await Promise.all([
@@ -226,6 +244,10 @@ export async function createProduct(input: CreateProductInput) {
       condition: input.condition,
       status: input.status,
       isFeatured: input.isFeatured ?? false,
+      isPreorder: input.isPreorder ?? false,
+      releaseDate: input.releaseDate ?? undefined,
+      tradeInCashPence: input.tradeInCashPence ?? undefined,
+      tradeInCreditPence: input.tradeInCreditPence ?? undefined,
       inventory: { create: { quantity: input.quantity ?? 0, reserved: 0 } },
       ...(images.length
         ? {
@@ -317,6 +339,10 @@ export async function updateProduct(id: string, input: UpdateProductInput) {
       condition: input.condition,
       status: input.status,
       isFeatured: input.isFeatured,
+      isPreorder: input.isPreorder,
+      releaseDate: input.releaseDate === null ? null : input.releaseDate,
+      tradeInCashPence: input.tradeInCashPence === null ? null : input.tradeInCashPence,
+      tradeInCreditPence: input.tradeInCreditPence === null ? null : input.tradeInCreditPence,
       ...(input.quantity !== undefined
         ? {
             inventory: {
@@ -332,4 +358,218 @@ export async function updateProduct(id: string, input: UpdateProductInput) {
   });
 
   return mapProduct(product);
+}
+
+export async function adminListCategories() {
+  return prisma.category.findMany({
+    orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      imageUrl: true,
+      parentId: true,
+      sortOrder: true,
+      isActive: true,
+      _count: { select: { products: true } },
+    },
+  });
+}
+
+export async function createCategory(input: {
+  name: string;
+  slug?: string;
+  description?: string | null;
+  imageUrl?: string | null;
+  sortOrder?: number;
+  isActive?: boolean;
+  parentId?: string | null;
+}) {
+  const slug = await uniqueCategorySlug(input.slug || input.name);
+  return prisma.category.create({
+    data: {
+      name: input.name.trim(),
+      slug,
+      description: input.description ?? undefined,
+      imageUrl: input.imageUrl ?? undefined,
+      sortOrder: input.sortOrder ?? 0,
+      isActive: input.isActive ?? true,
+      parentId: input.parentId ?? undefined,
+    },
+  });
+}
+
+export async function updateCategory(
+  id: string,
+  input: {
+    name?: string;
+    slug?: string;
+    description?: string | null;
+    imageUrl?: string | null;
+    sortOrder?: number;
+    isActive?: boolean;
+    parentId?: string | null;
+  },
+) {
+  const existing = await prisma.category.findUnique({ where: { id } });
+  if (!existing) throw new NotFoundError('Category not found');
+
+  if (input.slug) {
+    const clash = await prisma.category.findFirst({
+      where: { slug: input.slug, NOT: { id } },
+      select: { id: true },
+    });
+    if (clash) throw new ConflictError('Category slug already exists');
+  }
+
+  return prisma.category.update({
+    where: { id },
+    data: {
+      name: input.name?.trim(),
+      slug: input.slug,
+      description: input.description === null ? null : input.description,
+      imageUrl: input.imageUrl === null ? null : input.imageUrl,
+      sortOrder: input.sortOrder,
+      isActive: input.isActive,
+      parentId: input.parentId === null ? null : input.parentId,
+    },
+  });
+}
+
+export async function deleteCategory(id: string) {
+  const existing = await prisma.category.findUnique({
+    where: { id },
+    include: { _count: { select: { products: true, children: true } } },
+  });
+  if (!existing) throw new NotFoundError('Category not found');
+  if (existing._count.products > 0) {
+    throw new ConflictError('Category has products — reassign or deactivate instead');
+  }
+  if (existing._count.children > 0) {
+    throw new ConflictError('Category has child categories — remove children first');
+  }
+  await prisma.category.delete({ where: { id } });
+  return { deleted: true, id };
+}
+
+export async function adminListBrands() {
+  return prisma.brand.findMany({
+    orderBy: { name: 'asc' },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      description: true,
+      logoUrl: true,
+      isActive: true,
+      _count: { select: { products: true } },
+    },
+  });
+}
+
+export async function createBrand(input: {
+  name: string;
+  slug?: string;
+  description?: string | null;
+  logoUrl?: string | null;
+  isActive?: boolean;
+}) {
+  const slug = await uniqueBrandSlug(input.slug || input.name);
+  return prisma.brand.create({
+    data: {
+      name: input.name.trim(),
+      slug,
+      description: input.description ?? undefined,
+      logoUrl: input.logoUrl ?? undefined,
+      isActive: input.isActive ?? true,
+    },
+  });
+}
+
+export async function updateBrand(
+  id: string,
+  input: {
+    name?: string;
+    slug?: string;
+    description?: string | null;
+    logoUrl?: string | null;
+    isActive?: boolean;
+  },
+) {
+  const existing = await prisma.brand.findUnique({ where: { id } });
+  if (!existing) throw new NotFoundError('Brand not found');
+
+  if (input.slug) {
+    const clash = await prisma.brand.findFirst({
+      where: { slug: input.slug, NOT: { id } },
+      select: { id: true },
+    });
+    if (clash) throw new ConflictError('Brand slug already exists');
+  }
+  if (input.name) {
+    const clash = await prisma.brand.findFirst({
+      where: { name: input.name.trim(), NOT: { id } },
+      select: { id: true },
+    });
+    if (clash) throw new ConflictError('Brand name already exists');
+  }
+
+  return prisma.brand.update({
+    where: { id },
+    data: {
+      name: input.name?.trim(),
+      slug: input.slug,
+      description: input.description === null ? null : input.description,
+      logoUrl: input.logoUrl === null ? null : input.logoUrl,
+      isActive: input.isActive,
+    },
+  });
+}
+
+export async function deleteBrand(id: string) {
+  const existing = await prisma.brand.findUnique({
+    where: { id },
+    include: { _count: { select: { products: true } } },
+  });
+  if (!existing) throw new NotFoundError('Brand not found');
+  if (existing._count.products > 0) {
+    throw new ConflictError('Brand has products — reassign or deactivate instead');
+  }
+  await prisma.brand.delete({ where: { id } });
+  return { deleted: true, id };
+}
+
+async function uniqueCategorySlug(base: string, excludeId?: string): Promise<string> {
+  const root = slugify(base) || 'category';
+  let candidate = root;
+  let n = 1;
+  while (true) {
+    const clash = await prisma.category.findFirst({
+      where: {
+        slug: candidate,
+        ...(excludeId ? { NOT: { id: excludeId } } : {}),
+      },
+      select: { id: true },
+    });
+    if (!clash) return candidate;
+    candidate = `${root}-${n++}`;
+  }
+}
+
+async function uniqueBrandSlug(base: string, excludeId?: string): Promise<string> {
+  const root = slugify(base) || 'brand';
+  let candidate = root;
+  let n = 1;
+  while (true) {
+    const clash = await prisma.brand.findFirst({
+      where: {
+        slug: candidate,
+        ...(excludeId ? { NOT: { id: excludeId } } : {}),
+      },
+      select: { id: true },
+    });
+    if (!clash) return candidate;
+    candidate = `${root}-${n++}`;
+  }
 }

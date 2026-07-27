@@ -5,6 +5,14 @@ import {
   adminDeleteProductController,
   adminListProductsController,
   adminUpdateProductController,
+  adminListCategoriesController,
+  adminCreateCategoryController,
+  adminUpdateCategoryController,
+  adminDeleteCategoryController,
+  adminListBrandsController,
+  adminCreateBrandController,
+  adminUpdateBrandController,
+  adminDeleteBrandController,
 } from '../controllers/catalog.controller';
 import { signUploadController } from '../controllers/upload.controller';
 import { authenticate, requirePermissions } from '../middlewares/auth';
@@ -13,6 +21,10 @@ import {
   createProductSchema,
   productListQuerySchema,
   updateProductSchema,
+  createCategorySchema,
+  updateCategorySchema,
+  createBrandSchema,
+  updateBrandSchema,
 } from '../validators/catalog.validators';
 import { adminCmsRouter } from './admin-cms.routes';
 import { adminOpsRouter } from './admin-ops.routes';
@@ -20,6 +32,10 @@ import { adminReviewsRouter } from './admin-reviews.routes';
 import { adminTradeRouter } from './admin-trade.routes';
 
 const productIdParamsSchema = z.object({
+  id: z.string().cuid(),
+});
+
+const idParamsSchema = z.object({
   id: z.string().cuid(),
 });
 
@@ -53,6 +69,48 @@ router.delete(
   requirePermissions('products:write'),
   validate(productIdParamsSchema, 'params'),
   adminDeleteProductController,
+);
+
+router.get('/categories', requirePermissions('products:read'), adminListCategoriesController);
+router.post(
+  '/categories',
+  requirePermissions('products:write'),
+  validate(createCategorySchema),
+  adminCreateCategoryController,
+);
+router.patch(
+  '/categories/:id',
+  requirePermissions('products:write'),
+  validate(idParamsSchema, 'params'),
+  validate(updateCategorySchema),
+  adminUpdateCategoryController,
+);
+router.delete(
+  '/categories/:id',
+  requirePermissions('products:write'),
+  validate(idParamsSchema, 'params'),
+  adminDeleteCategoryController,
+);
+
+router.get('/brands', requirePermissions('products:read'), adminListBrandsController);
+router.post(
+  '/brands',
+  requirePermissions('products:write'),
+  validate(createBrandSchema),
+  adminCreateBrandController,
+);
+router.patch(
+  '/brands/:id',
+  requirePermissions('products:write'),
+  validate(idParamsSchema, 'params'),
+  validate(updateBrandSchema),
+  adminUpdateBrandController,
+);
+router.delete(
+  '/brands/:id',
+  requirePermissions('products:write'),
+  validate(idParamsSchema, 'params'),
+  adminDeleteBrandController,
 );
 
 router.use('/trade-in', adminTradeRouter);

@@ -43,6 +43,134 @@ export async function listBrandsController(_req: Request, res: Response, next: N
   }
 }
 
+export async function adminListCategoriesController(
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    ok(res, await catalogService.adminListCategories());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateCategoryController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const row = await catalogService.createCategory(req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'category.create',
+      entityType: 'Category',
+      entityId: row.id,
+      ipAddress: req.ip,
+    });
+    created(res, row);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateCategoryController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const row = await catalogService.updateCategory(req.params.id, req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'category.update',
+      entityType: 'Category',
+      entityId: row.id,
+      ipAddress: req.ip,
+    });
+    ok(res, row);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteCategoryController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  try {
+    const result = await catalogService.deleteCategory(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'category.delete',
+      entityType: 'Category',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminListBrandsController(_req: Request, res: Response, next: NextFunction) {
+  try {
+    ok(res, await catalogService.adminListBrands());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateBrandController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const row = await catalogService.createBrand(req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'brand.create',
+      entityType: 'Brand',
+      entityId: row.id,
+      ipAddress: req.ip,
+    });
+    created(res, row);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateBrandController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const row = await catalogService.updateBrand(req.params.id, req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'brand.update',
+      entityType: 'Brand',
+      entityId: row.id,
+      ipAddress: req.ip,
+    });
+    ok(res, row);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteBrandController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const result = await catalogService.deleteBrand(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'brand.delete',
+      entityType: 'Brand',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function adminListProductsController(req: Request, res: Response, next: NextFunction) {
   try {
     const query = req.query as unknown as ProductListQuery;

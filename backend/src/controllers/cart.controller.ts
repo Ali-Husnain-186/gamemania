@@ -23,7 +23,13 @@ export async function addCartItemController(req: Request, res: Response, next: N
   try {
     const body = req.body as AddCartItemInput;
     const { userId, guestId } = ids(req);
-    ok(res, await cartService.addCartItem(body.productId, body.quantity, userId, guestId));
+    ok(
+      res,
+      await cartService.addCartItem(body.productId, body.quantity, userId, guestId, {
+        isTradeIn: body.isTradeIn,
+        tradePayoutMethod: body.tradePayoutMethod,
+      }),
+    );
   } catch (err) {
     next(err);
   }

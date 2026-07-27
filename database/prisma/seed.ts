@@ -452,11 +452,47 @@ async function main() {
 
   await prisma.cmsPage.upsert({
     where: { slug: 'faq' },
-    update: {},
+    update: {
+      status: 'PUBLISHED',
+      publishedAt: new Date(),
+      content: `Q: What warranty do you offer?
+A: All GAME MANIA products include a 3-month warranty from the date of delivery, covering manufacturing faults under normal use.
+
+Q: How does free UK delivery work?
+A: Orders over £60 qualify for free UK shipping. Below that, shipping is calculated at checkout.
+
+Q: Can I trade in games and consoles?
+A: Yes. Use Trade-In for consoles, or on product pages use “Trade to us” when a trade-in price is listed for games. Choose cash or store credit. We send a pre-printed postage label to our address.
+
+Q: How do I use a coupon?
+A: Enter your code at checkout (e.g. GAMEMANIA10 for 10% off when available).
+
+Q: How long does delivery take?
+A: Most UK orders ship within 1–2 working days after payment clears.
+
+Q: How do I contact support?
+A: Email us via the Contact page or reply to your order confirmation email.`,
+    },
     create: {
       title: 'FAQ',
       slug: 'faq',
-      content: 'Frequently asked questions will be managed from the admin CMS.',
+      content: `Q: What warranty do you offer?
+A: All GAME MANIA products include a 3-month warranty from the date of delivery, covering manufacturing faults under normal use.
+
+Q: How does free UK delivery work?
+A: Orders over £60 qualify for free UK shipping. Below that, shipping is calculated at checkout.
+
+Q: Can I trade in games and consoles?
+A: Yes. Use Trade-In for consoles, or on product pages use “Trade to us” when a trade-in price is listed for games. Choose cash or store credit. We send a pre-printed postage label to our address.
+
+Q: How do I use a coupon?
+A: Enter your code at checkout (e.g. GAMEMANIA10 for 10% off when available).
+
+Q: How long does delivery take?
+A: Most UK orders ship within 1–2 working days after payment clears.
+
+Q: How do I contact support?
+A: Email us via the Contact page or reply to your order confirmation email.`,
       status: 'PUBLISHED',
       publishedAt: new Date(),
     },

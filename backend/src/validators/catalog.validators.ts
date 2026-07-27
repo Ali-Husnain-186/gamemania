@@ -17,7 +17,23 @@ export const productListQuerySchema = z
       .optional(),
     minPrice: z.coerce.number().int().min(0).optional(),
     maxPrice: z.coerce.number().int().min(0).optional(),
-    sort: z.enum(['newest', 'price_asc', 'price_desc', 'name_asc', 'featured']).default('newest'),
+    inStock: z
+      .preprocess(
+        (v) =>
+          v === 'true' || v === true ? true : v === 'false' || v === false ? false : undefined,
+        z.boolean().optional(),
+      )
+      .optional(),
+    preorder: z
+      .preprocess(
+        (v) =>
+          v === 'true' || v === true ? true : v === 'false' || v === false ? false : undefined,
+        z.boolean().optional(),
+      )
+      .optional(),
+    sort: z
+      .enum(['newest', 'price_asc', 'price_desc', 'name_asc', 'featured', 'release'])
+      .default('newest'),
   })
   .merge(paginationSchema);
 
@@ -76,6 +92,10 @@ export const createProductSchema = z.object({
     .default('NEW'),
   status: z.enum(['DRAFT', 'ACTIVE', 'ARCHIVED', 'OUT_OF_STOCK']).default('DRAFT'),
   isFeatured: z.boolean().optional(),
+  isPreorder: z.boolean().optional(),
+  releaseDate: z.preprocess(emptyToUndefined, z.coerce.date().optional().nullable()),
+  tradeInCashPence: z.number().int().min(0).optional().nullable(),
+  tradeInCreditPence: z.number().int().min(0).optional().nullable(),
   quantity: z
     .number({ invalid_type_error: 'Stock quantity must be a number' })
     .int('Stock quantity must be a whole number')
@@ -107,6 +127,51 @@ export type CreateProductInput = z.infer<typeof createProductSchema>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
 
 export type ProductImageInput = NonNullable<CreateProductInput['images']>[number];
+
+export const createCategorySchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .min(2)
+      .max(140)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      .optional(),
+  ),
+  description: z.preprocess(emptyToUndefined, z.string().max(2000).optional().nullable()),
+  imageUrl: z.preprocess(emptyToUndefined, z.string().max(2000).optional().nullable()),
+  sortOrder: z.number().int().min(0).max(999).optional(),
+  isActive: z.boolean().optional(),
+  parentId: z.preprocess(emptyToUndefined, z.string().cuid().optional().nullable()),
+});
+
+export const updateCategorySchema = createCategorySchema.partial();
+
+export const createBrandSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  slug: z.preprocess(
+    emptyToUndefined,
+    z
+      .string()
+      .trim()
+      .min(2)
+      .max(140)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+      .optional(),
+  ),
+  description: z.preprocess(emptyToUndefined, z.string().max(2000).optional().nullable()),
+  logoUrl: z.preprocess(emptyToUndefined, z.string().max(2000).optional().nullable()),
+  isActive: z.boolean().optional(),
+});
+
+export const updateBrandSchema = createBrandSchema.partial();
+
+export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
+export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
+export type CreateBrandInput = z.infer<typeof createBrandSchema>;
+export type UpdateBrandInput = z.infer<typeof updateBrandSchema>;
 
 /** Normalize images payload: max 4, exactly one primary, sortOrder 0..n */
 export function normalizeProductImages(

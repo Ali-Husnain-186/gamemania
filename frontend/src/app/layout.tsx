@@ -17,12 +17,17 @@ const bangers = Bangers({
 
 export const metadata: Metadata = {
   title: {
-    default: 'GAME MANIA | UK Gaming Marketplace',
+    default: 'GAME MANIA | Trade. Play. Repeat.',
     template: '%s | GAME MANIA',
   },
   description:
-    'Buy games, consoles and accessories. Trade in for store credit or cash bank transfer. Free UK shipping on orders £60+. Use code GAMEMANIA10 for 10% off.',
+    'Built by Gamers, For Gamers. Buy games, consoles and accessories. Trade in for store credit or cash. Free UK shipping on orders £60+. 3-month warranty on all products.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  icons: {
+    icon: [{ url: '/brand/game-mania-logo.png', type: 'image/png' }],
+    shortcut: '/brand/game-mania-logo.png',
+    apple: '/brand/game-mania-logo.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

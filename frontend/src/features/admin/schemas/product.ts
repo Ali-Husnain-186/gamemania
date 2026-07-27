@@ -33,6 +33,17 @@ export const productFormSchema = z.object({
     .optional(),
   images: z.array(productImageSlotSchema).max(4, 'Maximum 4 product images').optional(),
   isFeatured: z.boolean().optional(),
+  isPreorder: z.boolean().optional(),
+  releaseDate: z.string().optional(),
+  tradeInCashPounds: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 6.00'),
+  tradeInCreditPounds: z
+    .string()
+    .optional()
+    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
+  platform: z.string().optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;

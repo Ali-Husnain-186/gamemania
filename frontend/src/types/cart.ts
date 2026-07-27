@@ -13,6 +13,9 @@ export type CartItem = {
   quantity: number;
   product: CartProduct;
   lineTotal: number;
+  isTradeIn?: boolean;
+  tradePayoutMethod?: string | null;
+  tradeValuePence?: number | null;
 };
 
 export type Cart = {

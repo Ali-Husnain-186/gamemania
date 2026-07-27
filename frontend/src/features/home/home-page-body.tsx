@@ -4,6 +4,7 @@ import { AccessoriesGrid } from './components/accessories-grid';
 import { FeaturedCategories } from './components/featured-categories';
 import { LatestBlogs } from './components/latest-blogs';
 import { Newsletter } from './components/newsletter';
+import { PreorderReleasesSection } from './components/preorder-releases-section';
 import { ProductGridSection } from './components/product-grid-section';
 import { PromoBanner } from './components/promo-banner';
 import { RetroShowcase } from './components/retro-showcase';
@@ -16,6 +17,7 @@ import { WhyChoose } from './components/why-choose';
 export function HomePageBody() {
   return (
     <>
+      <PreorderReleasesSection />
       <FeaturedCategories />
       <PromoBanner />
       <ProductGridSection

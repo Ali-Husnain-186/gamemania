@@ -30,6 +30,11 @@ type Product = {
   brandId?: string | null;
   shortDescription?: string | null;
   isFeatured?: boolean;
+  isPreorder?: boolean;
+  releaseDate?: string | null;
+  tradeInCashPence?: number | null;
+  tradeInCreditPence?: number | null;
+  platform?: string | null;
   images?: Array<{
     url: string;
     publicId?: string | null;
@@ -53,6 +58,11 @@ const defaults: ProductFormValues = {
   shortDescription: '',
   images: emptyImageSlots(),
   isFeatured: false,
+  isPreorder: false,
+  releaseDate: '',
+  tradeInCashPounds: '',
+  tradeInCreditPounds: '',
+  platform: '',
 };
 
 function slotsFromProductImages(images?: Product['images']): ProductImageSlot[] {
@@ -120,8 +130,8 @@ export default function ProductsPage() {
     try {
       const [list, cats, brs] = await Promise.all([
         apiGet<Product[]>('/admin/products?limit=100'),
-        apiGet<Category[]>('/categories'),
-        apiGet<Brand[]>('/brands'),
+        apiGet<Category[]>('/admin/categories'),
+        apiGet<Brand[]>('/admin/brands'),
       ]);
       setProducts(Array.isArray(list) ? list : []);
       setCategories(cats);
@@ -156,6 +166,12 @@ export default function ProductsPage() {
       shortDescription: p.shortDescription ?? '',
       images: slotsFromProductImages(p.images),
       isFeatured: Boolean(p.isFeatured),
+      isPreorder: Boolean(p.isPreorder),
+      releaseDate: p.releaseDate ? String(p.releaseDate).slice(0, 10) : '',
+      tradeInCashPounds: p.tradeInCashPence != null ? penceToPoundsInput(p.tradeInCashPence) : '',
+      tradeInCreditPounds:
+        p.tradeInCreditPence != null ? penceToPoundsInput(p.tradeInCreditPence) : '',
+      platform: p.platform ?? '',
     });
     setError(null);
     setShowForm(true);
@@ -243,6 +259,15 @@ export default function ProductsPage() {
           shortDescription: values.shortDescription?.trim() || undefined,
           images: imagesPayload,
           isFeatured: Boolean(values.isFeatured),
+          isPreorder: Boolean(values.isPreorder),
+          releaseDate: values.releaseDate?.trim() || null,
+          tradeInCashPence: values.tradeInCashPounds?.trim()
+            ? poundsToPence(values.tradeInCashPounds)
+            : null,
+          tradeInCreditPence: values.tradeInCreditPounds?.trim()
+            ? poundsToPence(values.tradeInCreditPounds)
+            : null,
+          platform: values.platform?.trim() || null,
         };
 
         if (editingId) {
@@ -389,6 +414,47 @@ export default function ProductsPage() {
               <label className="inline-flex items-center gap-2 text-xs text-[var(--admin-muted)] sm:col-span-2">
                 <input type="checkbox" className="rounded" {...register('isFeatured')} />
                 Feature on homepage hero
+              </label>
+
+              <label className="inline-flex items-center gap-2 text-xs text-[var(--admin-muted)]">
+                <input type="checkbox" className="rounded" {...register('isPreorder')} />
+                Pre-order / upcoming release
+              </label>
+
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Release date
+                <input
+                  type="date"
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  {...register('releaseDate')}
+                />
+              </label>
+
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Platform
+                <input
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  placeholder="PS5, SWITCH, PC…"
+                  {...register('platform')}
+                />
+              </label>
+
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Trade-in cash (£)
+                <input
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  placeholder="4.00"
+                  {...register('tradeInCashPounds')}
+                />
+              </label>
+
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Trade-in store credit (£)
+                <input
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  placeholder="6.00"
+                  {...register('tradeInCreditPounds')}
+                />
               </label>
             </div>
 

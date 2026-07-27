@@ -82,7 +82,7 @@ export default function CmsAdminPage() {
     <>
       <PageHeader
         title="CMS"
-        description="Manage About, FAQ, Contact and other content pages."
+        description="Manage About, FAQ, Contact and other content pages. FAQ must stay slug “faq” and status PUBLISHED to show on the site."
         actions={
           <button
             type="button"

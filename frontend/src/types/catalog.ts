@@ -37,6 +37,10 @@ export type Product = {
   inStock?: boolean;
   status?: string;
   isFeatured?: boolean;
+  isPreorder?: boolean;
+  releaseDate?: string | null;
+  tradeInCashPence?: number | null;
+  tradeInCreditPence?: number | null;
 };
 
 export type ProductSort =

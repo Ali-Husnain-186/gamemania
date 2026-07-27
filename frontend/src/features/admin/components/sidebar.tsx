@@ -13,6 +13,8 @@ import {
   FileText,
   MessageSquare,
   LogOut,
+  Tags,
+  Award,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
@@ -20,6 +22,8 @@ import { useAuth } from '@/providers/auth-provider';
 const NAV = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/products', label: 'Products', icon: Package },
+  { href: '/admin/categories', label: 'Categories', icon: Tags },
+  { href: '/admin/brands', label: 'Brands', icon: Award },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingCart },
   { href: '/admin/customers', label: 'Customers', icon: Users },
   { href: '/admin/trade-ins', label: 'Trade-ins', icon: RefreshCw },

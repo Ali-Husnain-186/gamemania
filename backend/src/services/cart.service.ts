@@ -41,25 +41,39 @@ async function loadCart(cartId: string) {
   });
   if (!cart) throw new NotFoundError('Cart not found');
 
-  const items = cart.items.map((item) => ({
-    id: item.id,
-    productId: item.productId,
-    quantity: item.quantity,
-    product: {
-      id: item.product.id,
-      name: item.product.name,
-      slug: item.product.slug,
-      price: item.product.price,
-      imageUrl: item.product.images[0]?.url ?? null,
-      stock: Math.max(
-        0,
-        (item.product.inventory?.quantity ?? 0) - (item.product.inventory?.reserved ?? 0),
-      ),
-    },
-    lineTotal: item.product.price * item.quantity,
-  }));
+  const items = cart.items.map((item) => {
+    const isTradeIn = item.isTradeIn;
+    const tradeValue =
+      item.tradePayoutMethod === 'CASH'
+        ? (item.product.tradeInCashPence ?? 0)
+        : (item.product.tradeInCreditPence ?? item.product.tradeInCashPence ?? 0);
+    const unitPrice = isTradeIn ? 0 : item.product.price;
+    return {
+      id: item.id,
+      productId: item.productId,
+      quantity: item.quantity,
+      isTradeIn,
+      tradePayoutMethod: item.tradePayoutMethod,
+      tradeValuePence: isTradeIn ? tradeValue : null,
+      product: {
+        id: item.product.id,
+        name: item.product.name,
+        slug: item.product.slug,
+        price: item.product.price,
+        tradeInCashPence: item.product.tradeInCashPence,
+        tradeInCreditPence: item.product.tradeInCreditPence,
+        imageUrl: item.product.images[0]?.url ?? null,
+        stock: Math.max(
+          0,
+          (item.product.inventory?.quantity ?? 0) - (item.product.inventory?.reserved ?? 0),
+        ),
+      },
+      lineTotal: unitPrice * item.quantity,
+    };
+  });
 
-  const subtotal = items.reduce((sum, i) => sum + i.lineTotal, 0);
+  const purchaseItems = items.filter((i) => !i.isTradeIn);
+  const subtotal = purchaseItems.reduce((sum, i) => sum + i.lineTotal, 0);
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
   return { id: cart.id, items, subtotalPence: subtotal, itemCount };
 }
@@ -74,25 +88,46 @@ export async function addCartItem(
   quantity: number,
   userId?: string,
   guestId?: string,
+  opts?: { isTradeIn?: boolean; tradePayoutMethod?: 'CASH' | 'STORE_CREDIT' },
 ) {
+  const isTradeIn = Boolean(opts?.isTradeIn);
+  const tradePayoutMethod = isTradeIn ? (opts?.tradePayoutMethod ?? 'STORE_CREDIT') : null;
+
   const product = await prisma.product.findFirst({
     where: { id: productId, deletedAt: null, status: 'ACTIVE' },
   });
   if (!product) throw new NotFoundError('Product not found');
 
+  if (isTradeIn) {
+    if (!product.tradeInCashPence && !product.tradeInCreditPence) {
+      throw new ValidationError('This product is not set up for trade-in');
+    }
+  }
+
   const cart = await resolveCart(userId, guestId);
   const existing = await prisma.cartItem.findUnique({
-    where: { cartId_productId: { cartId: cart.id, productId } },
+    where: {
+      cartId_productId_isTradeIn: { cartId: cart.id, productId, isTradeIn },
+    },
   });
 
   if (existing) {
     await prisma.cartItem.update({
       where: { id: existing.id },
-      data: { quantity: existing.quantity + quantity },
+      data: {
+        quantity: isTradeIn ? 1 : existing.quantity + quantity,
+        tradePayoutMethod: tradePayoutMethod ?? existing.tradePayoutMethod,
+      },
     });
   } else {
     await prisma.cartItem.create({
-      data: { cartId: cart.id, productId, quantity },
+      data: {
+        cartId: cart.id,
+        productId,
+        quantity: isTradeIn ? 1 : quantity,
+        isTradeIn,
+        tradePayoutMethod,
+      },
     });
   }
 
@@ -109,7 +144,10 @@ export async function updateCartItem(
   const item = await prisma.cartItem.findFirst({ where: { id: itemId, cartId: cart.id } });
   if (!item) throw new NotFoundError('Cart item not found');
 
-  await prisma.cartItem.update({ where: { id: itemId }, data: { quantity } });
+  await prisma.cartItem.update({
+    where: { id: itemId },
+    data: { quantity: item.isTradeIn ? 1 : quantity },
+  });
   return loadCart(cart.id);
 }
 
@@ -135,12 +173,21 @@ export async function mergeGuestCart(userId: string, guestId?: string) {
 
   for (const item of guestCart.items) {
     const existing = await prisma.cartItem.findUnique({
-      where: { cartId_productId: { cartId: userCart.id, productId: item.productId } },
+      where: {
+        cartId_productId_isTradeIn: {
+          cartId: userCart.id,
+          productId: item.productId,
+          isTradeIn: item.isTradeIn,
+        },
+      },
     });
     if (existing) {
       await prisma.cartItem.update({
         where: { id: existing.id },
-        data: { quantity: existing.quantity + item.quantity },
+        data: {
+          quantity: item.isTradeIn ? 1 : existing.quantity + item.quantity,
+          tradePayoutMethod: item.tradePayoutMethod ?? existing.tradePayoutMethod,
+        },
       });
     } else {
       await prisma.cartItem.create({
@@ -148,6 +195,8 @@ export async function mergeGuestCart(userId: string, guestId?: string) {
           cartId: userCart.id,
           productId: item.productId,
           quantity: item.quantity,
+          isTradeIn: item.isTradeIn,
+          tradePayoutMethod: item.tradePayoutMethod,
         },
       });
     }

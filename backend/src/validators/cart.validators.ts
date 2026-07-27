@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const addCartItemSchema = z.object({
   productId: z.string().cuid(),
   quantity: z.coerce.number().int().min(1).max(99).default(1),
+  isTradeIn: z.boolean().optional(),
+  tradePayoutMethod: z.enum(['CASH', 'STORE_CREDIT']).optional(),
 });
 
 export const updateCartItemSchema = z.object({

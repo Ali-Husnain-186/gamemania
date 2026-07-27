@@ -94,24 +94,46 @@ export default function CartPage() {
                     >
                       {product.name}
                     </Link>
-                    <p className="mt-1 text-sm text-[var(--gm-muted)]">
-                      {formatGBP(product.price)} each
-                    </p>
+                    {item.isTradeIn ? (
+                      <p className="mt-1 text-sm text-[var(--gm-cyan)]">
+                        Trade-in · {item.tradePayoutMethod === 'CASH' ? 'Cash' : 'Store credit'}{' '}
+                        {item.tradeValuePence != null ? formatGBP(item.tradeValuePence) : ''}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-sm text-[var(--gm-muted)]">
+                        {formatGBP(product.price)} each
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <input
-                    type="number"
-                    min={1}
-                    max={99}
-                    value={item.quantity}
-                    onChange={(e) =>
-                      updateMutation.mutate({ id: item.id, quantity: Number(e.target.value) || 1 })
-                    }
-                    className="w-16 rounded border border-[var(--gm-border)] bg-[var(--gm-bg)] px-2 py-1 text-sm"
-                    aria-label={`Quantity for ${product.name}`}
-                  />
-                  <p className="w-20 text-right text-sm font-semibold">{formatGBP(lineTotal)}</p>
+                  {item.isTradeIn ? (
+                    <span className="rounded bg-[var(--gm-cyan)]/20 px-2 py-1 text-[10px] font-bold uppercase text-[var(--gm-cyan)]">
+                      Trade in
+                    </span>
+                  ) : (
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={item.quantity}
+                      onChange={(e) =>
+                        updateMutation.mutate({
+                          id: item.id,
+                          quantity: Number(e.target.value) || 1,
+                        })
+                      }
+                      className="w-16 rounded border border-[var(--gm-border)] bg-[var(--gm-bg)] px-2 py-1 text-sm"
+                      aria-label={`Quantity for ${product.name}`}
+                    />
+                  )}
+                  <p className="w-20 text-right text-sm font-semibold">
+                    {item.isTradeIn
+                      ? item.tradeValuePence != null
+                        ? formatGBP(item.tradeValuePence)
+                        : '—'
+                      : formatGBP(lineTotal)}
+                  </p>
                   <button
                     type="button"
                     onClick={() => removeMutation.mutate(item.id)}

@@ -172,6 +172,9 @@ model Product {
   isFeatured      Boolean          @default(false)
   isPreorder      Boolean          @default(false)
   releaseDate     DateTime?
+  /** Trade-in offer for this product (games), pence — admin sets when listing */
+  tradeInCashPence   Int?
+  tradeInCreditPence Int?
   weightGrams     Int?
   metaTitle       String?
   metaDescription String?
@@ -274,16 +277,19 @@ model Cart {
 }
 
 model CartItem {
-  id        String   @id @default(cuid())
-  cartId    String
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  cartId             String
+  cart               Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product  @relation(fields: [productId], references: [id])
+  quantity           Int      @default(1)
+  /** Customer trading this product in (not buying) */
+  isTradeIn          Boolean  @default(false)
+  tradePayoutMethod  String? // CASH | STORE_CREDIT
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
-  @@unique([cartId, productId])
+  @@unique([cartId, productId, isTradeIn])
   @@map("cart_items")
 }
 

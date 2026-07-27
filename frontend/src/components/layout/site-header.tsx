@@ -47,17 +47,20 @@ export function SiteHeader() {
       <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-2 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="relative flex shrink-0 items-center overflow-hidden rounded-full outline-none focus-visible:outline-none"
-          aria-label="GAME MANIA home"
+          className="flex min-w-0 flex-1 items-center gap-2.5 outline-none focus-visible:outline-none sm:gap-3 md:flex-none"
+          aria-label="GAMEMANIA UK home"
         >
           <Image
             src="/brand/game-mania-logo.png"
-            alt="GAME MANIA"
+            alt=""
             width={64}
             height={64}
-            className="h-11 w-11 rounded-full border-0 object-cover outline-none ring-0 sm:h-14 sm:w-14"
+            className="h-11 w-11 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-14 sm:w-14"
             priority
           />
+          <span className="gm-display truncate text-[1.35rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_2px_0_#000] sm:text-[1.75rem] md:text-[2rem]">
+            GAMEMANIA UK
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-5 md:flex lg:gap-6" aria-label="Primary">

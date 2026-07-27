@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BadgeCheck, RefreshCcw, ShieldCheck, Truck } from 'lucide-react';
+import { BadgeCheck, RefreshCcw, ShieldCheck, Truck, ArrowLeftRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 const slides = [
@@ -35,6 +35,12 @@ const trustItems = [
     title: 'Genuine Products',
     body: 'Authentic games & hardware only.',
   },
+  {
+    icon: ArrowLeftRight,
+    title: 'Trade In',
+    body: 'Consoles & games for cash or credit.',
+    href: '/trade-in',
+  },
 ];
 
 export function HomeHero() {
@@ -51,7 +57,6 @@ export function HomeHero() {
 
   return (
     <section className="relative w-full bg-black">
-      {/* Natural image height = full photo, nothing cropped */}
       <div className="relative w-full">
         <Image
           src="/brand/hero-main.jpg"
@@ -64,21 +69,20 @@ export function HomeHero() {
           className="block h-auto w-full"
         />
 
-        {/* Text overlay — copy higher, CTA lower with clear gap */}
         <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pt-[10%] sm:px-6 sm:pt-[9%] lg:pt-[8%]">
           <div className="pointer-events-auto w-full max-w-3xl text-center">
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] text-white sm:mb-3 sm:text-xs [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
-              UK gaming marketplace
+              Built by Gamers, For Gamers
             </p>
 
-            <h1 className="gm-display text-[clamp(2rem,7vw,5rem)] leading-[0.92] text-white [text-shadow:0_3px_14px_rgba(0,0,0,0.95)]">
-              Play more.
+            <h1 className="gm-display text-[clamp(1.85rem,6.5vw,4.5rem)] leading-[0.95] text-white [text-shadow:0_3px_14px_rgba(0,0,0,0.95)]">
+              Trade. Play.
               <br />
-              <span className="text-[var(--gm-yellow)]">Save more.</span>
+              <span className="text-[var(--gm-yellow)]">Repeat.</span>
             </h1>
 
-            <p className="gm-display mt-3 text-[clamp(0.85rem,2.4vw,1.25rem)] tracking-[0.14em] text-[var(--gm-cyan)] sm:mt-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
-              Games • Consoles • Accessories
+            <p className="gm-display mt-3 text-[clamp(0.8rem,2.2vw,1.2rem)] tracking-[0.12em] text-[var(--gm-cyan)] sm:mt-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
+              Games • Consoles • Accessories • Trade In
             </p>
           </div>
 
@@ -121,21 +125,32 @@ export function HomeHero() {
       </div>
 
       <div className="border-t border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)]">
-        <div className="mx-auto grid max-w-5xl grid-cols-2 gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-4">
-          {trustItems.map((item) => (
-            <div key={item.title} className="flex items-start gap-2.5">
-              <item.icon
-                className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gm-cyan)] sm:h-6 sm:w-6"
-                aria-hidden
-              />
-              <div>
-                <p className="text-xs font-extrabold sm:text-sm">{item.title}</p>
-                <p className="mt-0.5 text-[10px] leading-snug text-[var(--gm-muted)] sm:text-xs">
-                  {item.body}
-                </p>
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-5">
+          {trustItems.map((item) => {
+            const inner = (
+              <>
+                <item.icon
+                  className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gm-cyan)] sm:h-6 sm:w-6"
+                  aria-hidden
+                />
+                <div>
+                  <p className="text-xs font-extrabold sm:text-sm">{item.title}</p>
+                  <p className="mt-0.5 text-[10px] leading-snug text-[var(--gm-muted)] sm:text-xs">
+                    {item.body}
+                  </p>
+                </div>
+              </>
+            );
+            return item.href ? (
+              <Link key={item.title} href={item.href} className="flex items-start gap-2.5 gm-focus">
+                {inner}
+              </Link>
+            ) : (
+              <div key={item.title} className="flex items-start gap-2.5">
+                {inner}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

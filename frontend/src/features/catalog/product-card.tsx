@@ -37,6 +37,11 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
               No image
             </div>
           )}
+          {product.isPreorder ? (
+            <span className="absolute left-2 top-2 rounded bg-[var(--gm-magenta)] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
+              Pre-order
+            </span>
+          ) : null}
         </div>
         <div className="mt-3 space-y-1">
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--gm-cyan)]">

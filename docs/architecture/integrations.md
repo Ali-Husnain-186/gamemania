@@ -27,9 +27,10 @@ sequenceDiagram
 
 ## Media (Cloudinary)
 
-- Admin requests signed upload params from API
-- Browser uploads directly to Cloudinary
-- API persists `ProductImage` metadata after confirm
+- Preferred: admin uploads file to `POST /api/v1/admin/uploads/image` (multipart); API streams to Cloudinary and returns `{ url, publicId }`.
+- Fallback: signed upload params from `POST /api/v1/admin/uploads/sign`, then browser → Cloudinary.
+- API persists `ProductImage` metadata on product create/update.
+- Requires `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` on the backend.
 
 ## Email (Resend)
 

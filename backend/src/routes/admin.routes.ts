@@ -14,8 +14,9 @@ import {
   adminUpdateBrandController,
   adminDeleteBrandController,
 } from '../controllers/catalog.controller';
-import { signUploadController } from '../controllers/upload.controller';
+import { signUploadController, uploadImageController } from '../controllers/upload.controller';
 import { authenticate, requirePermissions } from '../middlewares/auth';
+import { productImageUpload } from '../middlewares/upload';
 import { validate } from '../middlewares/validate';
 import {
   createProductSchema,
@@ -44,6 +45,12 @@ const router = Router();
 router.use(authenticate);
 
 router.post('/uploads/sign', requirePermissions('products:write'), signUploadController);
+router.post(
+  '/uploads/image',
+  requirePermissions('products:write'),
+  productImageUpload.single('file'),
+  uploadImageController,
+);
 
 router.get(
   '/products',

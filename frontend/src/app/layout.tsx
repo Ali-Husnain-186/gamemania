@@ -17,8 +17,8 @@ const bangers = Bangers({
 
 export const metadata: Metadata = {
   title: {
-    default: 'GAME MANIA | Trade. Play. Repeat.',
-    template: '%s | GAME MANIA',
+    default: 'GAMEMANIA UK / Trade.Play.Repeat',
+    template: '%s | GAMEMANIA UK',
   },
   description:
     'Built by Gamers, For Gamers. Buy games, consoles and accessories. Trade in for store credit or cash. Free UK shipping on orders £60+. 3-month warranty on all products.',

@@ -180,56 +180,60 @@ export default function AdminCategoriesPage() {
       ) : null}
 
       <Panel className="overflow-hidden">
-        <table className="w-full min-w-[640px] text-left text-sm">
-          <thead>
-            <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Slug</th>
-              <th className="px-4 py-3">Sort</th>
-              <th className="px-4 py-3">Products</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3" />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((c) => (
-              <tr key={c.id} className="border-b border-[var(--admin-border)]/70 last:border-0">
-                <td className="px-4 py-3 font-medium">{c.name}</td>
-                <td className="px-4 py-3 font-mono text-xs text-[var(--admin-muted)]">{c.slug}</td>
-                <td className="px-4 py-3">{c.sortOrder}</td>
-                <td className="px-4 py-3">{c._count?.products ?? 0}</td>
-                <td className="px-4 py-3">{c.isActive ? 'Active' : 'Hidden'}</td>
-                <td className="px-4 py-3 text-right">
-                  <button
-                    type="button"
-                    className="mr-3 text-[var(--admin-accent)] hover:underline"
-                    onClick={() => openEdit(c)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className="text-[var(--admin-danger)] hover:underline"
-                    disabled={pending}
-                    onClick={() => {
-                      if (!window.confirm(`Delete category “${c.name}”?`)) return;
-                      startTransition(async () => {
-                        try {
-                          await apiDelete(`/admin/categories/${c.id}`);
-                          await load();
-                        } catch (err) {
-                          setError(err instanceof ApiError ? err.message : 'Delete failed');
-                        }
-                      });
-                    }}
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
+                <th className="px-4 py-3">Name</th>
+                <th className="px-4 py-3">Slug</th>
+                <th className="px-4 py-3">Sort</th>
+                <th className="px-4 py-3">Products</th>
+                <th className="px-4 py-3">Status</th>
+                <th className="px-4 py-3" />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((c) => (
+                <tr key={c.id} className="border-b border-[var(--admin-border)]/70 last:border-0">
+                  <td className="px-4 py-3 font-medium">{c.name}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-[var(--admin-muted)]">
+                    {c.slug}
+                  </td>
+                  <td className="px-4 py-3">{c.sortOrder}</td>
+                  <td className="px-4 py-3">{c._count?.products ?? 0}</td>
+                  <td className="px-4 py-3">{c.isActive ? 'Active' : 'Hidden'}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      type="button"
+                      className="mr-3 text-[var(--admin-accent)] hover:underline"
+                      onClick={() => openEdit(c)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="text-[var(--admin-danger)] hover:underline"
+                      disabled={pending}
+                      onClick={() => {
+                        if (!window.confirm(`Delete category “${c.name}”?`)) return;
+                        startTransition(async () => {
+                          try {
+                            await apiDelete(`/admin/categories/${c.id}`);
+                            await load();
+                          } catch (err) {
+                            setError(err instanceof ApiError ? err.message : 'Delete failed');
+                          }
+                        });
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Panel>
     </>
   );

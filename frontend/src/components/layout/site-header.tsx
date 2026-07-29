@@ -44,10 +44,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
-      <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between gap-2 px-3 sm:h-[4.5rem] sm:gap-4 sm:px-4 md:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-2.5 sm:h-[4.25rem] sm:gap-3 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="flex min-w-0 flex-1 items-center gap-2.5 outline-none focus-visible:outline-none sm:gap-3 md:flex-none"
+          className="flex min-w-0 shrink items-center gap-1.5 outline-none focus-visible:outline-none sm:gap-2.5"
           aria-label="GAMEMANIA UK home"
         >
           <Image
@@ -55,15 +55,15 @@ export function SiteHeader() {
             alt=""
             width={64}
             height={64}
-            className="h-11 w-11 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-14 sm:w-14"
+            className="h-9 w-9 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-12 sm:w-12 md:h-14 md:w-14"
             priority
           />
-          <span className="gm-display truncate text-[1.35rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_2px_0_#000] sm:text-[1.75rem] md:text-[2rem]">
+          <span className="gm-display whitespace-nowrap text-[0.82rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] sm:text-[1.15rem] md:text-[1.55rem] lg:text-[1.85rem]">
             GAMEMANIA UK
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-5 md:flex lg:gap-6" aria-label="Primary">
+        <nav className="ml-auto hidden items-center gap-4 lg:flex lg:gap-6" aria-label="Primary">
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -80,26 +80,26 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 lg:ml-0">
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 gm-focus"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 sm:h-9 sm:w-9 gm-focus"
             aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
           >
             {isDark ? (
-              <Sun className="h-4 w-4" aria-hidden />
+              <Sun className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
             ) : (
-              <Moon className="h-4 w-4" aria-hidden />
+              <Moon className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
             )}
           </button>
 
           <Link
             href="/cart"
-            className="relative inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 gm-focus"
+            className="relative inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 sm:h-9 sm:w-9 gm-focus"
             aria-label={`Cart${itemCount ? `, ${itemCount} items` : ''}`}
           >
-            <ShoppingBag className="h-4 w-4" aria-hidden />
+            <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
             {itemCount > 0 ? (
               <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--gm-magenta)] px-1 text-[10px] font-bold text-white">
                 {itemCount > 99 ? '99+' : itemCount}
@@ -111,14 +111,14 @@ export function SiteHeader() {
             <>
               <Link
                 href="/account"
-                className="hidden rounded-full border-2 border-white px-4 py-2 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] sm:inline-flex"
+                className="hidden rounded-full border-2 border-white px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
               >
                 Account
               </Link>
               <button
                 type="button"
                 onClick={() => void handleSignOut()}
-                className="hidden rounded-sm px-3 py-2 text-xs font-bold uppercase tracking-wide text-white/85 transition hover:text-[var(--gm-yellow)] sm:inline-flex gm-focus"
+                className="hidden rounded-sm px-2 py-1.5 text-xs font-bold uppercase tracking-wide text-white/85 transition hover:text-[var(--gm-yellow)] md:inline-flex gm-focus"
               >
                 Sign out
               </button>
@@ -127,13 +127,13 @@ export function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden rounded-full border-2 border-white px-4 py-2 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] sm:inline-flex"
+                className="hidden rounded-full border-2 border-white px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
-                className="btn-primary hidden px-4 py-2 text-xs sm:inline-flex"
+                className="btn-primary hidden px-3 py-1.5 text-xs md:inline-flex"
               >
                 Create account
               </Link>
@@ -142,16 +142,16 @@ export function SiteHeader() {
 
           <button
             type="button"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-2 border-white/45 text-white md:hidden gm-focus"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white lg:hidden sm:h-9 sm:w-9 gm-focus"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
             onClick={() => setOpen((v) => !v)}
           >
             {open ? (
-              <X className="h-4 w-4" aria-hidden />
+              <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
             ) : (
-              <Menu className="h-4 w-4" aria-hidden />
+              <Menu className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
             )}
           </button>
         </div>
@@ -160,7 +160,7 @@ export function SiteHeader() {
       {open ? (
         <nav
           id="mobile-nav"
-          className="border-t-2 border-white/20 bg-[#01A6C2] px-4 py-4 md:hidden"
+          className="border-t-2 border-white/20 bg-[#01A6C2] px-4 py-4 lg:hidden"
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">

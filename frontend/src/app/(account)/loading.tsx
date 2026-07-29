@@ -1,0 +1,5 @@
+import { BrandLoader } from '@/components/ui/brand-loader';
+
+export default function AccountLoading() {
+  return <BrandLoader variant="page" size="md" label="Loading account…" />;
+}

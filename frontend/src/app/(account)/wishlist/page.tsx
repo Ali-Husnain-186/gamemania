@@ -8,6 +8,7 @@ import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import { EmptyState } from '@/components/shared/empty-state';
 import { ErrorState } from '@/components/shared/error-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 type WishlistRow = {
   id: string;
@@ -50,11 +51,12 @@ export default function WishlistPage() {
       <p className="mt-2 text-sm text-[var(--gm-muted)]">Titles you are watching.</p>
 
       {listQuery.isLoading ? (
-        <div className="mt-8 space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-20 animate-pulse rounded-lg bg-[var(--gm-bg-elevated)]" />
-          ))}
-        </div>
+        <BrandLoader
+          variant="page"
+          size="sm"
+          label="Loading wishlist…"
+          className="!min-h-[30vh] !py-10"
+        />
       ) : listQuery.isError ? (
         <div className="mt-8">
           <ErrorState message="Could not load wishlist." onRetry={() => void listQuery.refetch()} />

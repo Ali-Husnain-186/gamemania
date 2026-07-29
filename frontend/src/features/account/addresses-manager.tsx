@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from '@/lib/api';
 import { ErrorState } from '@/components/shared/error-state';
 import { EmptyState } from '@/components/shared/empty-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 type Address = {
   id: string;
@@ -114,9 +115,11 @@ export function AddressesManager() {
       </p>
 
       {listQuery.isLoading ? (
-        <div
-          className="mt-8 h-24 animate-pulse rounded-xl bg-[var(--gm-border)]"
-          aria-busy="true"
+        <BrandLoader
+          variant="page"
+          size="sm"
+          label="Loading addresses…"
+          className="!min-h-[24vh] !py-8"
         />
       ) : listQuery.isError ? (
         <div className="mt-8">

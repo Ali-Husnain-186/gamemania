@@ -7,6 +7,7 @@ import { apiGet } from '@/lib/api';
 import { ProductCard } from '@/features/catalog/product-card';
 import { EmptyState } from '@/components/shared/empty-state';
 import { ErrorState } from '@/components/shared/error-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import type { Category, Product } from '@/types/catalog';
 
 const PLATFORMS = ['PS5', 'PS4', 'SWITCH', 'XBOX_SERIES', 'PC', 'RETRO'];
@@ -273,14 +274,12 @@ export function ShopClient() {
 
         <div>
           {productsQuery.isLoading ? (
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-[3/4] animate-pulse rounded-xl bg-[var(--gm-bg-elevated)]"
-                />
-              ))}
-            </div>
+            <BrandLoader
+              variant="page"
+              size="md"
+              label="Loading products…"
+              className="!min-h-[40vh] !py-10"
+            />
           ) : productsQuery.isError ? (
             <ErrorState
               message={

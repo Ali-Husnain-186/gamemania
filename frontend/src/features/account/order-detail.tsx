@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { apiGet } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { ErrorState } from '@/components/shared/error-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 type OrderDetail = {
   orderNumber: string;
@@ -44,10 +45,12 @@ export function OrderDetail({ orderNumber }: { orderNumber: string }) {
 
   if (orderQuery.isLoading) {
     return (
-      <div className="animate-pulse space-y-3" aria-busy="true">
-        <div className="h-8 w-48 rounded bg-[var(--gm-border)]" />
-        <div className="h-40 rounded-xl bg-[var(--gm-border)]" />
-      </div>
+      <BrandLoader
+        variant="page"
+        size="sm"
+        label="Loading order…"
+        className="!min-h-[28vh] !py-8"
+      />
     );
   }
 

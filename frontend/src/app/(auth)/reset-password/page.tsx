@@ -1,15 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { ResetPasswordForm } from '@/features/auth/components/reset-password-form';
 
 export const metadata: Metadata = {
   title: 'Reset password',
 };
-
-function FormFallback() {
-  return <div className="h-48 animate-pulse rounded-md bg-[var(--gm-border)]" aria-busy="true" />;
-}
 
 export default function ResetPasswordPage() {
   // Intentionally not wrapped in RedirectIfAuthenticated — users (incl. Google-only)
@@ -19,7 +16,7 @@ export default function ResetPasswordPage() {
       <h1 className="gm-display text-4xl text-[var(--gm-yellow)]">Reset password</h1>
       <p className="mt-2 text-sm text-[var(--gm-muted)]">Choose a new password for your account.</p>
       <div className="mt-8 rounded-2xl border-2 border-[var(--gm-magenta)] bg-black/40 p-5">
-        <Suspense fallback={<FormFallback />}>
+        <Suspense fallback={<BrandLoader variant="inline" size="sm" label="Loading…" />}>
           <ResetPasswordForm />
         </Suspense>
       </div>

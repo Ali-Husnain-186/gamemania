@@ -4,6 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImagePlus, Loader2, X } from 'lucide-react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
@@ -579,7 +580,14 @@ export default function ProductsPage() {
 
       <Panel className="overflow-hidden">
         {loading ? (
-          <p className="p-6 text-sm text-[var(--admin-muted)]">Loading products…</p>
+          <div className="flex justify-center p-10">
+            <BrandLoader
+              variant="inline"
+              size="sm"
+              label="Loading products…"
+              showWordmark={false}
+            />
+          </div>
         ) : products.length === 0 ? (
           <p className="p-6 text-sm text-[var(--admin-muted)]">No products found.</p>
         ) : (

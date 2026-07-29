@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { isStaffRole } from '@/lib/roles';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -27,24 +28,24 @@ export function AdminGuard({ children }: { children: React.ReactNode }) {
 
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
-        Checking staff access…
+      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)]">
+        <BrandLoader variant="inline" size="md" label="Checking staff access…" />
       </div>
     );
   }
 
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
-        Redirecting to sign in…
+      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)]">
+        <BrandLoader variant="inline" size="sm" label="Redirecting to sign in…" />
       </div>
     );
   }
 
   if (!staff) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)] text-[var(--admin-muted)]">
-        Staff access required. Redirecting…
+      <div className="flex min-h-screen items-center justify-center bg-[var(--admin-bg)]">
+        <BrandLoader variant="inline" size="sm" label="Staff access required…" />
       </div>
     );
   }

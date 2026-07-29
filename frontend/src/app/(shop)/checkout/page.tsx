@@ -1,17 +1,12 @@
 'use client';
 
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { CheckoutClient } from './checkout-client';
 
 export default function CheckoutPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="mx-auto max-w-3xl px-4 py-16 text-sm text-[var(--gm-muted)]">
-          Loading checkout…
-        </div>
-      }
-    >
+    <Suspense fallback={<BrandLoader variant="page" size="md" label="Loading checkout…" />}>
       <CheckoutClient />
     </Suspense>
   );

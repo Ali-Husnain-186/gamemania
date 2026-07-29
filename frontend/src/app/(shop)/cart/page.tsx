@@ -7,6 +7,7 @@ import { formatGBP } from '@/lib/format';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import { EmptyState } from '@/components/shared/empty-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 export default function CartPage() {
   const setCart = useCartStore((s) => s.setCart);
@@ -51,11 +52,12 @@ export default function CartPage() {
       </p>
 
       {cartQuery.isLoading ? (
-        <div className="mt-8 space-y-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-20 animate-pulse rounded-lg bg-[var(--gm-bg-elevated)]" />
-          ))}
-        </div>
+        <BrandLoader
+          variant="page"
+          size="sm"
+          label="Loading cart…"
+          className="!min-h-[30vh] !py-10"
+        />
       ) : !cart?.items?.length ? (
         <div className="mt-8">
           <EmptyState

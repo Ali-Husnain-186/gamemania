@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth';
@@ -7,10 +8,6 @@ import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth
 export const metadata: Metadata = {
   title: 'Create account',
 };
-
-function AuthFormFallback() {
-  return <div className="h-56 animate-pulse rounded-md bg-[var(--gm-border)]" aria-busy="true" />;
-}
 
 export default function RegisterPage() {
   return (
@@ -21,7 +18,7 @@ export default function RegisterPage() {
           Join GAME MANIA to checkout faster, track orders, and receive trade-in store credit.
         </p>
         <div className="mt-8 rounded-2xl border-2 border-[var(--gm-magenta)] bg-black/40 p-5">
-          <Suspense fallback={<AuthFormFallback />}>
+          <Suspense fallback={<BrandLoader variant="inline" size="sm" label="Loading…" />}>
             <RegisterForm />
           </Suspense>
         </div>

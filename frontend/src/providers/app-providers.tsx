@@ -3,6 +3,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useState } from 'react';
+import { NavigationLoader } from '@/components/ui/navigation-loader';
 import { AuthProvider } from '@/providers/auth-provider';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -28,7 +29,10 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
     >
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <NavigationLoader />
+          {children}
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

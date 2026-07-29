@@ -6,6 +6,7 @@ import { apiGet } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { ErrorState } from '@/components/shared/error-state';
 import { EmptyState } from '@/components/shared/empty-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 type Order = {
   orderNumber: string;
@@ -27,11 +28,12 @@ export function OrdersList() {
       <p className="mt-2 text-sm text-[var(--gm-muted)]">Your recent GAME MANIA purchases.</p>
 
       {ordersQuery.isLoading ? (
-        <div className="mt-8 space-y-3" aria-busy="true">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="h-20 animate-pulse rounded-xl bg-[var(--gm-border)]" />
-          ))}
-        </div>
+        <BrandLoader
+          variant="page"
+          size="sm"
+          label="Loading orders…"
+          className="!min-h-[28vh] !py-8"
+        />
       ) : ordersQuery.isError ? (
         <div className="mt-8">
           <ErrorState

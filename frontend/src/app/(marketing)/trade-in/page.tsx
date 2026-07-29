@@ -8,6 +8,7 @@ import { useMemo, useState } from 'react';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { ErrorState } from '@/components/shared/error-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 type TradeOption = {
   id: string;
@@ -243,7 +244,9 @@ export default function TradeInPage() {
           </p>
 
           {treeQuery.isLoading ? (
-            <p className="mt-8 text-sm text-[var(--gm-muted)]">Loading trade catalog…</p>
+            <div className="mt-8">
+              <BrandLoader variant="inline" size="sm" label="Loading trade catalog…" />
+            </div>
           ) : (
             <div className="mt-8 space-y-4">
               <Select

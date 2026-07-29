@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { GoogleCallbackClient } from './google-callback-client';
 
 export const metadata: Metadata = {
@@ -11,7 +12,7 @@ export default function AuthCallbackPage() {
     <Suspense
       fallback={
         <main className="mx-auto flex min-h-[50vh] w-full max-w-md items-center justify-center px-4">
-          <div className="h-8 w-48 animate-pulse rounded bg-[var(--gm-border)]" aria-busy="true" />
+          <BrandLoader variant="inline" size="md" label="Signing you in…" />
         </main>
       }
     >

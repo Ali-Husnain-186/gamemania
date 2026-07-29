@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { defaultPostLoginPath, isStaffRole } from '@/lib/roles';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -66,22 +67,11 @@ export function RequireAuth({ children }: { children: React.ReactNode }) {
   }, [status, isAuthenticated, router, pathname]);
 
   if (status === 'loading') {
-    return (
-      <div className="mx-auto max-w-lg px-4 py-16 md:px-6">
-        <div className="animate-pulse space-y-3" aria-busy="true" aria-label="Loading account">
-          <div className="h-8 w-40 rounded bg-[var(--gm-border)]" />
-          <div className="h-24 rounded-lg bg-[var(--gm-border)]" />
-        </div>
-      </div>
-    );
+    return <BrandLoader variant="page" size="md" label="Loading account…" />;
   }
 
   if (!isAuthenticated) {
-    return (
-      <div className="mx-auto max-w-lg px-4 py-16 md:px-6">
-        <p className="text-sm text-[var(--gm-muted)]">Redirecting to sign in…</p>
-      </div>
-    );
+    return <BrandLoader variant="page" size="sm" label="Redirecting to sign in…" />;
   }
 
   return <>{children}</>;
@@ -101,19 +91,11 @@ export function RedirectIfAuthenticated({ children }: { children: React.ReactNod
   }, [status, isAuthenticated, user?.role]);
 
   if (status === 'loading') {
-    return (
-      <div className="mx-auto flex min-h-[50vh] max-w-md items-center justify-center px-4">
-        <div className="h-8 w-40 animate-pulse rounded bg-[var(--gm-border)]" aria-busy="true" />
-      </div>
-    );
+    return <BrandLoader variant="page" size="md" label="Checking session…" />;
   }
 
   if (isAuthenticated) {
-    return (
-      <div className="mx-auto flex min-h-[50vh] max-w-md items-center justify-center px-4">
-        <p className="text-sm text-[var(--gm-muted)]">Taking you to the shop…</p>
-      </div>
-    );
+    return <BrandLoader variant="page" size="sm" label="Taking you there…" />;
   }
 
   return <>{children}</>;

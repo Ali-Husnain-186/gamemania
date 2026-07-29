@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiDelete, apiGet, ApiError } from '@/lib/api';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
@@ -77,7 +78,9 @@ export default function CustomersPage() {
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
       <Panel className="overflow-hidden">
         {loading ? (
-          <p className="p-6 text-sm text-[var(--admin-muted)]">Loading…</p>
+          <p className="flex justify-center p-8">
+            <BrandLoader variant="inline" size="sm" label="Loading…" showWordmark={false} />
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] text-left text-sm">

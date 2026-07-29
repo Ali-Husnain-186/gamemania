@@ -9,6 +9,7 @@ import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import type { Product } from '@/types/catalog';
 import { ErrorState } from '@/components/shared/error-state';
+import { BrandLoader } from '@/components/ui/brand-loader';
 
 export default function ProductDetailPage() {
   const params = useParams<{ slug: string }>();
@@ -69,11 +70,7 @@ export default function ProductDetailPage() {
   const thumbs = gallery.filter((img) => img.url && img.url !== mainUrl).slice(0, 3);
 
   if (productQuery.isLoading) {
-    return (
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <div className="aspect-square animate-pulse rounded-lg bg-[var(--gm-bg-elevated)]" />
-      </div>
-    );
+    return <BrandLoader variant="page" size="md" label="Loading product…" />;
   }
 
   if (productQuery.isError || !productQuery.data) {

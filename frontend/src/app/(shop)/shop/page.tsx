@@ -1,13 +1,10 @@
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { ShopClient } from './shop-client';
 
 export default function ShopPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="mx-auto max-w-6xl px-4 py-10 text-[var(--gm-muted)]">Loading shop…</div>
-      }
-    >
+    <Suspense fallback={<BrandLoader variant="page" size="lg" label="Loading shop…" />}>
       <ShopClient />
     </Suspense>
   );

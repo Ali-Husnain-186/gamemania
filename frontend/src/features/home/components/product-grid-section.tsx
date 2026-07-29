@@ -1,10 +1,10 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiGet } from '@/lib/api';
 import type { Product } from '@/types/catalog';
 import { MarketplaceProductCard } from './marketplace-product-card';
-import { ProductSkeleton } from './product-skeleton';
 import { SectionHeading } from './section-heading';
 
 type ProductGridSectionProps = {
@@ -42,7 +42,14 @@ export function ProductGridSection({
       />
       <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
         {query.isLoading ? (
-          <ProductSkeleton count={8} />
+          <div className="col-span-full">
+            <BrandLoader
+              variant="page"
+              size="sm"
+              label="Loading products…"
+              className="!min-h-[28vh] !py-8"
+            />
+          </div>
         ) : products.length === 0 ? (
           <p className="col-span-full text-sm text-[var(--gm-muted)]">
             Products will appear here once the catalog is loaded.

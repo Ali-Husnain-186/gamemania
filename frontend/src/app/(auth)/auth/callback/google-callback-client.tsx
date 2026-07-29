@@ -2,6 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiPost, setAccessToken } from '@/lib/api';
 import { safeReturnUrl } from '@/features/auth/components/require-auth';
 import { useAuth } from '@/providers/auth-provider';
@@ -56,12 +57,8 @@ export function GoogleCallbackClient() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10 text-center">
-      <div
-        className="mx-auto h-8 w-48 animate-pulse rounded bg-[var(--gm-border)]"
-        aria-busy="true"
-      />
-      <p className="mt-4 text-sm text-[var(--gm-muted)]">Finishing Google sign-in…</p>
+    <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
+      <BrandLoader variant="inline" size="md" label="Finishing Google sign-in…" />
     </main>
   );
 }

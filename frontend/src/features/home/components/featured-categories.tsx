@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { apiGet } from '@/lib/api';
 import type { Category } from '@/types/catalog';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { SectionHeading } from './section-heading';
 
 const FALLBACK_IMAGE = '/brand/playstation.png';
@@ -26,14 +27,12 @@ export function FeaturedCategories() {
         description="Jump straight into the platforms and gear you love."
       />
       {categoriesQuery.isLoading ? (
-        <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-[260px] animate-pulse rounded-2xl bg-[var(--gm-bg-elevated)] sm:h-[300px]"
-            />
-          ))}
-        </div>
+        <BrandLoader
+          variant="page"
+          size="sm"
+          label="Loading categories…"
+          className="!min-h-[28vh] !py-8"
+        />
       ) : categoriesQuery.isError ? (
         <div className="space-y-3">
           <p className="text-sm text-[var(--gm-danger)]">Could not load categories.</p>

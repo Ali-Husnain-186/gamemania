@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { BrandLoader } from '@/components/ui/brand-loader';
 import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth';
@@ -7,10 +8,6 @@ import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth
 export const metadata: Metadata = {
   title: 'Sign in',
 };
-
-function AuthFormFallback() {
-  return <div className="h-48 animate-pulse rounded-md bg-[var(--gm-border)]" aria-busy="true" />;
-}
 
 export default function LoginPage() {
   return (
@@ -21,7 +18,7 @@ export default function LoginPage() {
           Welcome back — shop, track orders, and manage store credit.
         </p>
         <div className="mt-8 rounded-2xl border-2 border-[var(--gm-magenta)] bg-black/40 p-5">
-          <Suspense fallback={<AuthFormFallback />}>
+          <Suspense fallback={<BrandLoader variant="inline" size="sm" label="Loading…" />}>
             <LoginForm />
           </Suspense>
         </div>

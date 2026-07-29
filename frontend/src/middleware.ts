@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { isStaffRole } from '@/lib/roles';
 
 const CUSTOMER_PROTECTED = ['/account', '/wishlist'];
-const AUTH_PATHS = ['/login', '/register', '/auth'];
+const AUTH_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/auth'];
 
 function isCustomerProtected(pathname: string): boolean {
   return CUSTOMER_PROTECTED.some(
@@ -82,6 +82,8 @@ export const config = {
     '/faq',
     '/login',
     '/register',
+    '/forgot-password',
+    '/reset-password',
     '/auth/:path*',
     '/admin',
     '/admin/:path*',

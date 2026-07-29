@@ -5,7 +5,12 @@ import { created, ok } from '../utils/apiResponse';
 import { clearRefreshCookie, setRefreshCookie } from '../utils/cookies';
 import * as authService from '../services/auth.service';
 import * as googleAuthService from '../services/google-auth.service';
-import type { LoginInput, RegisterInput } from '../validators/auth.validators';
+import type {
+  LoginInput,
+  RegisterInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
+} from '../validators/auth.validators';
 
 function sessionMeta(req: Request) {
   return {
@@ -83,6 +88,34 @@ export async function meController(req: Request, res: Response, next: NextFuncti
   try {
     const user = await authService.me(req.user!.id);
     ok(res, { user });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function forgotPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const body = req.body as ForgotPasswordInput;
+    const result = await authService.requestPasswordReset(body);
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resetPasswordController(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const body = req.body as ResetPasswordInput;
+    const result = await authService.resetPassword(body);
+    ok(res, result);
   } catch (err) {
     next(err);
   }

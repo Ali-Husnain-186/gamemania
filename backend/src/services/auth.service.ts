@@ -4,7 +4,14 @@ import { ConflictError, UnauthorizedError, ValidationError } from '../exceptions
 import { toPublicUser, userRoleInclude } from '../dto/user.dto';
 import { hashPassword, verifyPassword } from '../utils/password';
 import { hashToken, parseDurationMs, signAccessToken, signRefreshToken } from '../utils/tokens';
-import type { LoginInput, RegisterInput } from '../validators/auth.validators';
+import { sendMail } from './email.service';
+import type {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+} from '../validators/auth.validators';
+import crypto from 'crypto';
 
 type SessionMeta = {
   userAgent?: string;
@@ -175,4 +182,109 @@ export async function me(userId: string) {
   }
 
   return toPublicUser(user);
+}
+
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+/** Always returns the same message — do not reveal whether the email exists. */
+export async function requestPasswordReset(input: ForgotPasswordInput) {
+  const email = input.email.trim().toLowerCase();
+  const generic = {
+    message:
+      'If an account exists for that email, we have sent a password reset link. Check your inbox and spam folder.',
+  };
+
+  const user = await prisma.user.findFirst({
+    where: { email, deletedAt: null, isActive: true },
+  });
+
+  if (!user) {
+    return generic;
+  }
+
+  // Invalidate previous unused tokens
+  await prisma.passwordResetToken.updateMany({
+    where: { userId: user.id, usedAt: null },
+    data: { usedAt: new Date() },
+  });
+
+  const rawToken = crypto.randomBytes(32).toString('base64url');
+  const tokenHash = hashToken(rawToken);
+  const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MS);
+
+  await prisma.passwordResetToken.create({
+    data: {
+      userId: user.id,
+      tokenHash,
+      expiresAt,
+    },
+  });
+
+  const resetUrl = new URL('/reset-password', env.FRONTEND_URL);
+  resetUrl.searchParams.set('token', rawToken);
+
+  const result = await sendMail({
+    to: user.email,
+    subject: 'Reset your GAME MANIA password',
+    text: [
+      'You requested a password reset for your GAME MANIA account.',
+      '',
+      `Open this link to choose a new password (expires in 1 hour):`,
+      resetUrl.toString(),
+      '',
+      'If you did not request this, you can ignore this email.',
+    ].join('\n'),
+    html: `
+      <p>You requested a password reset for your <strong>GAME MANIA</strong> account.</p>
+      <p><a href="${resetUrl.toString()}">Reset your password</a> (link expires in 1 hour).</p>
+      <p>If you did not request this, you can ignore this email.</p>
+    `,
+  });
+
+  if (!result.sent) {
+    console.error('[auth:password-reset] email failed', result.error);
+    // Still return generic success to the client; log for ops.
+  }
+
+  return generic;
+}
+
+export async function resetPassword(input: ResetPasswordInput) {
+  const tokenHash = hashToken(input.token.trim());
+  const row = await prisma.passwordResetToken.findUnique({
+    where: { tokenHash },
+    include: { user: true },
+  });
+
+  if (!row || row.usedAt || row.expiresAt < new Date()) {
+    throw new ValidationError('This reset link is invalid or has expired. Request a new one.');
+  }
+
+  if (!row.user.isActive || row.user.deletedAt) {
+    throw new ValidationError('This account cannot reset its password.');
+  }
+
+  const passwordHash = await hashPassword(input.password);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.user.update({
+      where: { id: row.userId },
+      data: { passwordHash },
+    });
+    await tx.passwordResetToken.update({
+      where: { id: row.id },
+      data: { usedAt: new Date() },
+    });
+    await tx.passwordResetToken.updateMany({
+      where: { userId: row.userId, usedAt: null },
+      data: { usedAt: new Date() },
+    });
+    // Force re-login on all devices
+    await tx.session.updateMany({
+      where: { userId: row.userId, revokedAt: null },
+      data: { revokedAt: new Date() },
+    });
+  });
+
+  return { message: 'Password updated. You can sign in with your new password.' };
 }

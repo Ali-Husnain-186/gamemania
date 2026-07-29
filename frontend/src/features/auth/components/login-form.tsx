@@ -3,6 +3,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import Link from 'next/link';
 import { ApiError } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
 import { AuthDivider, GoogleAuthButton } from '@/features/auth/components/google-auth-button';
@@ -76,6 +77,14 @@ export function LoginForm() {
               {errors.password.message}
             </p>
           ) : null}
+          <p className="mt-2 text-right">
+            <Link
+              href="/forgot-password"
+              className="text-xs font-bold text-[var(--gm-cyan)] underline"
+            >
+              Forgot password?
+            </Link>
+          </p>
         </label>
 
         {oauthError ? (

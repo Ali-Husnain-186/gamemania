@@ -56,6 +56,8 @@ function mapProduct(product: {
   sku: string;
   description: string | null;
   shortDescription: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   price: number;
   compareAtPrice: number | null;
   platform: string | null;
@@ -86,6 +88,8 @@ function mapProduct(product: {
     sku: product.sku,
     description: product.description,
     shortDescription: product.shortDescription,
+    metaTitle: product.metaTitle ?? null,
+    metaDescription: product.metaDescription ?? null,
     price: product.price,
     compareAtPrice: product.compareAtPrice,
     categoryId: product.category?.id ?? null,

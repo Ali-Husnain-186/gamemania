@@ -25,6 +25,8 @@ export type Product = {
   sku?: string;
   description?: string | null;
   shortDescription?: string | null;
+  metaTitle?: string | null;
+  metaDescription?: string | null;
   /** Price in pence */
   price: number;
   compareAtPrice?: number | null;

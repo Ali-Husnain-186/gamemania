@@ -2,11 +2,13 @@
 
 Production-ready UK gaming marketplace — buy games, consoles, and accessories, trade in devices, earn rewards, and manage everything from a dedicated admin panel.
 
-| Surface    | URL (production)           | App                                 | Local                        |
-| ---------- | -------------------------- | ----------------------------------- | ---------------------------- |
-| Storefront | https://YOUR_DOMAIN        | `frontend/`                         | http://localhost:3000        |
-| Admin      | https://YOUR_DOMAIN/admin  | `frontend/` (`/admin`, staff roles) | http://localhost:3000/admin  |
-| API        | https://YOUR_DOMAIN/api/v1 | `backend/`                          | http://localhost:5000/api/v1 |
+**Live site:** [https://gamemaniaauk.co.uk/](https://gamemaniaauk.co.uk/)
+
+| Surface    | URL (production)                  | App                                 | Local                        |
+| ---------- | --------------------------------- | ----------------------------------- | ---------------------------- |
+| Storefront | https://gamemaniaauk.co.uk        | `frontend/`                         | http://localhost:3000        |
+| Admin      | https://gamemaniaauk.co.uk/admin  | `frontend/` (`/admin`, staff roles) | http://localhost:3000/admin  |
+| API        | https://gamemaniaauk.co.uk/api/v1 | `backend/`                          | http://localhost:5000/api/v1 |
 
 ## Tech stack
 
@@ -49,10 +51,7 @@ cd backend; npm install; npm run prisma:migrate; npm run prisma:seed; npm run de
 cd frontend; npm install; npm run dev                                                 # :3000 (store + /admin)
 ```
 
-**Staff admin login:** `Info@gamemaniauk.co.uk` / `Private08!` → http://localhost:3000/admin  
-(Staff accounts stay on the admin panel only — they are redirected away from the storefront.)
-
-**Demo customer:** `demo@gamemania.com` / `ChangeMe123!`
+Staff admin is at `/admin` (staff roles only). Seed accounts are created by `prisma:seed` — credentials are not published in this README.
 
 Optional DB check: `npm run db:check` from the repo root.
 

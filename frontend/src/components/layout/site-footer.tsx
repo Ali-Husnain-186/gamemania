@@ -100,7 +100,7 @@ export function SiteFooter() {
           <p className="gm-display text-sm text-[var(--gm-yellow)]">Customer support</p>
           <ul className="mt-3 space-y-2 text-sm font-semibold">
             {supportLinks.map((l) => (
-              <li key={l.href}>
+              <li key={`${l.href}-${l.label}`}>
                 <Link href={l.href} className="hover:text-[var(--gm-cyan)] gm-focus rounded-sm">
                   {l.label}
                 </Link>
@@ -118,7 +118,7 @@ export function SiteFooter() {
           <p className="gm-display text-sm text-[var(--gm-yellow)]">Legal</p>
           <ul className="mt-3 space-y-2 text-sm font-semibold">
             {legalLinks.map((l) => (
-              <li key={l.href}>
+              <li key={`${l.href}-${l.label}`}>
                 <Link href={l.href} className="hover:text-[var(--gm-cyan)] gm-focus rounded-sm">
                   {l.label}
                 </Link>

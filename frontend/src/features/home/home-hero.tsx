@@ -57,39 +57,43 @@ export function HomeHero() {
 
   return (
     <section className="relative w-full bg-black">
-      {/* Hero image + copy only — CTA sits in its own bar below so it never covers content */}
-      <div className="relative w-full">
+      {/* Cropped hero on small screens so copy stays readable; wider aspect on desktop */}
+      <div className="relative isolate aspect-[3/4] w-full overflow-hidden sm:aspect-[16/11] md:aspect-[21/10] lg:aspect-[2.4/1]">
         <Image
           src="/brand/hero-main.jpg"
           alt="GAME MANIA gaming setup"
-          width={2560}
-          height={1440}
+          fill
           priority
-          quality={100}
+          quality={90}
           sizes="100vw"
-          className="block h-auto w-full"
+          className="object-cover object-[center_28%] sm:object-center"
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/40 to-black/85"
+          aria-hidden
         />
 
-        <div className="absolute inset-0 z-10 flex flex-col items-center px-4 pt-[8%] sm:px-6 sm:pt-[9%] lg:pt-[8%]">
-          <div className="pointer-events-none w-full max-w-3xl text-center">
-            <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.28em] text-white sm:mb-3 sm:text-xs [text-shadow:0_2px_8px_rgba(0,0,0,0.9)]">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center px-4 py-8 text-center sm:px-6 sm:py-10">
+          <div className="w-full max-w-3xl">
+            <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.22em] text-white/95 sm:mb-3 sm:text-[11px] sm:tracking-[0.28em] md:text-xs">
               Built by Gamers, For Gamers
             </p>
 
-            <h1 className="gm-display text-[clamp(1.75rem,6.2vw,4.5rem)] leading-[0.95] text-white [text-shadow:0_3px_14px_rgba(0,0,0,0.95)]">
+            <h1 className="gm-display text-[clamp(2rem,9vw,4.75rem)] leading-[0.92] text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)]">
               Trade. Play.
               <br />
               <span className="text-[var(--gm-yellow)]">Repeat.</span>
             </h1>
 
-            <p className="gm-display mt-3 text-[clamp(0.75rem,2vw,1.2rem)] tracking-[0.1em] text-[var(--gm-cyan)] sm:mt-4 [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
-              Games • Consoles • Accessories • Trade In
+            <p className="gm-display mx-auto mt-3 max-w-[18rem] text-[0.7rem] leading-snug tracking-[0.08em] text-[var(--gm-cyan)] sm:mt-4 sm:max-w-none sm:text-[0.95rem] sm:tracking-[0.12em] md:text-[1.15rem]">
+              <span className="sm:hidden">Games • Consoles • Trade In</span>
+              <span className="hidden sm:inline">Games • Consoles • Accessories • Trade In</span>
             </p>
           </div>
         </div>
       </div>
 
-      {/* CTA bar — always below the image, never overlays trust strip */}
+      {/* CTA bar — always below hero media */}
       <div className="border-t border-[var(--gm-cyan)]/20 bg-black px-4 py-4 sm:px-6 sm:py-5">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
           <AnimatePresence mode="wait">
@@ -102,14 +106,14 @@ export function HomeHero() {
             >
               <Link
                 href={active.href}
-                className="btn-primary inline-flex min-w-[10rem] justify-center px-7 py-3 text-sm sm:min-w-[10.5rem] sm:px-8 sm:py-3.5 sm:text-base"
+                className="btn-primary inline-flex min-h-11 min-w-[11rem] justify-center px-6 py-2.5 text-sm sm:min-w-[11.5rem] sm:px-8 sm:py-3.5 sm:text-base"
               >
                 {active.cta}
               </Link>
             </motion.div>
           </AnimatePresence>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             {slides.map((s, i) => (
               <button
                 key={s.label}
@@ -129,7 +133,7 @@ export function HomeHero() {
       </div>
 
       <div className="border-t border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)]">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-3 py-4 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-3 lg:grid-cols-5">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 px-4 py-4 sm:grid-cols-2 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-3 lg:grid-cols-5">
           {trustItems.map((item) => {
             const inner = (
               <>
@@ -146,11 +150,15 @@ export function HomeHero() {
               </>
             );
             return item.href ? (
-              <Link key={item.title} href={item.href} className="flex items-start gap-2.5 gm-focus">
+              <Link
+                key={item.title}
+                href={item.href}
+                className="flex items-start gap-2.5 rounded-lg px-1 py-1 gm-focus"
+              >
                 {inner}
               </Link>
             ) : (
-              <div key={item.title} className="flex items-start gap-2.5">
+              <div key={item.title} className="flex items-start gap-2.5 px-1 py-1">
                 {inner}
               </div>
             );

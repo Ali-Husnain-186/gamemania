@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 
 export const SITE_NAME = 'GAMEMANIA UK';
-export const SITE_TAGLINE = 'Trade. Play. Repeat.';
+export const SITE_TAGLINE = 'Trade.Play.Repeat';
+export const SITE_TITLE = `${SITE_NAME} / ${SITE_TAGLINE}`;
 export const DEFAULT_DESCRIPTION =
   'Buy games, consoles and accessories in the UK. Trade in for store credit or cash. Free UK shipping on orders £60+. Genuine products with a 3-month warranty.';
 

@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { buildPageMetadata, SITE_NAME, SITE_TAGLINE } from '@/lib/seo';
+import { buildPageMetadata, SITE_TITLE } from '@/lib/seo';
 import { HomePageClient } from './home-page-client';
 
 export const metadata: Metadata = buildPageMetadata({
-  title: `${SITE_NAME} / ${SITE_TAGLINE}`,
+  title: SITE_TITLE,
   description:
     'Built by Gamers, For Gamers. Shop PlayStation, Nintendo, PC and retro games in the UK. Trade in consoles and games for cash or store credit. Free delivery on orders over £60.',
   path: '/',

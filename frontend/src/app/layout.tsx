@@ -6,7 +6,7 @@ import {
   DEFAULT_DESCRIPTION,
   DEFAULT_OG_IMAGE,
   SITE_NAME,
-  SITE_TAGLINE,
+  SITE_TITLE,
   absoluteUrl,
   getSiteUrl,
   organizationJsonLd,
@@ -31,7 +31,7 @@ const siteUrl = getSiteUrl();
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${SITE_NAME} / ${SITE_TAGLINE}`,
+    default: SITE_TITLE,
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: absoluteUrl('/'),
     siteName: SITE_NAME,
-    title: `${SITE_NAME} / ${SITE_TAGLINE}`,
+    title: SITE_TITLE,
     description: DEFAULT_DESCRIPTION,
     images: [
       {
@@ -83,7 +83,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} / ${SITE_TAGLINE}`,
+    title: SITE_TITLE,
     description: DEFAULT_DESCRIPTION,
     images: [DEFAULT_OG_IMAGE],
   },

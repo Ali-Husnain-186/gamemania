@@ -20,7 +20,13 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="gm_theme">
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="dark"
+      enableSystem={false}
+      storageKey="gm_theme"
+      disableTransitionOnChange
+    >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>{children}</AuthProvider>
       </QueryClientProvider>

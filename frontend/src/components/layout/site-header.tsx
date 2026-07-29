@@ -100,7 +100,7 @@ export function SiteHeader() {
             aria-label={`Cart${itemCount ? `, ${itemCount} items` : ''}`}
           >
             <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-            {itemCount > 0 ? (
+            {mounted && itemCount > 0 ? (
               <span className="absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-[var(--gm-magenta)] px-1 text-[10px] font-bold text-white">
                 {itemCount > 99 ? '99+' : itemCount}
               </span>

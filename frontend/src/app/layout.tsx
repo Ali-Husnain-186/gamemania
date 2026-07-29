@@ -37,7 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${nunito.variable} ${bangers.variable}`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-screen flex-col antialiased">
+      <body className="flex min-h-screen flex-col antialiased" suppressHydrationWarning>
         <AppProviders>
           <SiteChrome>{children}</SiteChrome>
         </AppProviders>

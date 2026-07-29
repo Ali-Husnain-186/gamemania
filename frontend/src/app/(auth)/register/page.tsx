@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Suspense } from 'react';
+import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth';
 
@@ -27,9 +27,9 @@ export default function RegisterPage() {
         </div>
         <p className="mt-6 text-center text-sm text-[var(--gm-muted)]">
           Already have an account?{' '}
-          <Link href="/login" className="font-bold text-[var(--gm-cyan)] underline">
-            Sign in
-          </Link>
+          <Suspense fallback={<span className="font-bold text-[var(--gm-cyan)]">Sign in</span>}>
+            <AuthSwitchLink href="/login">Sign in</AuthSwitchLink>
+          </Suspense>
         </p>
         <p className="mt-4 text-center text-xs font-bold uppercase tracking-wider text-[var(--gm-cyan)]">
           Code GAMEMANIA10 · 10% off online

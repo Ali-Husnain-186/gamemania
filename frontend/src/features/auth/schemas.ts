@@ -2,7 +2,8 @@ import { z } from 'zod';
 
 export const loginSchema = z.object({
   email: z.string().email('Enter a valid email'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  // Login only needs a non-empty password; length rules apply on register/reset
+  password: z.string().min(1, 'Enter your password'),
 });
 
 export const registerSchema = z.object({

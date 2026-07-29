@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { Suspense } from 'react';
+import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { LoginForm } from '@/features/auth/components/login-form';
 import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth';
 
@@ -27,9 +27,11 @@ export default function LoginPage() {
         </div>
         <p className="mt-6 text-center text-sm text-[var(--gm-muted)]">
           New here?{' '}
-          <Link href="/register" className="font-bold text-[var(--gm-cyan)] underline">
-            Create account
-          </Link>
+          <Suspense
+            fallback={<span className="font-bold text-[var(--gm-cyan)]">Create account</span>}
+          >
+            <AuthSwitchLink href="/register">Create account</AuthSwitchLink>
+          </Suspense>
         </p>
       </main>
     </RedirectIfAuthenticated>

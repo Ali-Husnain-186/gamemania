@@ -133,7 +133,7 @@ export function HomeHero() {
       </div>
 
       <div className="border-t border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)]">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-3 px-4 py-4 sm:grid-cols-2 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-3 lg:grid-cols-5">
+        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5 md:grid-cols-3 lg:grid-cols-5">
           {trustItems.map((item) => {
             const inner = (
               <>

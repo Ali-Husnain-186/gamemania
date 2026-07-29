@@ -34,6 +34,17 @@ export function FeaturedCategories() {
             />
           ))}
         </div>
+      ) : categoriesQuery.isError ? (
+        <div className="space-y-3">
+          <p className="text-sm text-[var(--gm-danger)]">Could not load categories.</p>
+          <button
+            type="button"
+            className="btn-cyan-outline px-4 py-2 text-xs"
+            onClick={() => void categoriesQuery.refetch()}
+          >
+            Try again
+          </button>
+        </div>
       ) : categories.length === 0 ? (
         <p className="text-sm text-[var(--gm-muted)]">Categories coming soon.</p>
       ) : (

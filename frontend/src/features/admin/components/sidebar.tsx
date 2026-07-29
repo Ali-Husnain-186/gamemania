@@ -72,6 +72,20 @@ export function AdminSidebar() {
     setOpen(false);
   }, [pathname]);
 
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   async function handleLogout() {
     await logout();
     window.location.assign('/');
@@ -104,12 +118,14 @@ export function AdminSidebar() {
 
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-[var(--admin-border)] bg-[var(--admin-panel)] px-3 py-3 lg:hidden">
+      {/* Mobile top bar — stays above drawer scrim so the toggle remains usable */}
+      <div className="sticky top-0 z-[60] flex items-center justify-between border-b border-[var(--admin-border)] bg-[var(--admin-panel)] px-3 py-3 lg:hidden">
         <button
           type="button"
           className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[var(--admin-border)] text-[var(--admin-fg)]"
           aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="admin-mobile-nav"
           onClick={() => setOpen((v) => !v)}
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
@@ -127,7 +143,10 @@ export function AdminSidebar() {
             aria-label="Close menu"
             onClick={() => setOpen(false)}
           />
-          <aside className="absolute inset-y-0 left-0 flex w-[min(18rem,88vw)] flex-col bg-[var(--admin-panel)] text-[var(--admin-fg)] shadow-xl">
+          <aside
+            id="admin-mobile-nav"
+            className="absolute inset-y-0 left-0 flex w-[min(18rem,88vw)] flex-col bg-[var(--admin-panel)] text-[var(--admin-fg)] shadow-xl"
+          >
             {brand}
             <NavLinks onNavigate={() => setOpen(false)} />
             {logoutBtn}

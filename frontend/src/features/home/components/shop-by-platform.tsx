@@ -8,31 +8,31 @@ import { SectionHeading } from './section-heading';
 const platforms = [
   {
     name: 'PlayStation',
-    href: '/shop?q=playstation',
+    href: '/shop?category=playstation',
     image: '/brand/playstation.png',
     count: '120+ games',
   },
   {
     name: 'Nintendo',
-    href: '/shop?q=nintendo',
+    href: '/shop?category=nintendo',
     image: '/brand/nintendo.png',
     count: '80+ games',
   },
   {
     name: 'PC',
-    href: '/shop?q=pc',
+    href: '/shop?category=pc-gaming',
     image: '/brand/pcgames.png',
     count: '60+ titles',
   },
   {
     name: 'Retro',
-    href: '/shop?q=retro',
+    href: '/shop?category=retro',
     image: '/brand/retrogames.png',
     count: '45+ classics',
   },
   {
     name: 'Accessories',
-    href: '/shop?q=accessories',
+    href: '/shop?category=accessories',
     image: '/brand/accessories.png',
     count: 'Gear & more',
   },

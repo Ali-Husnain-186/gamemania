@@ -47,7 +47,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-2.5 sm:h-[4.25rem] sm:gap-3 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="flex min-w-0 shrink items-center gap-1.5 outline-none focus-visible:outline-none sm:gap-2.5"
+          className="flex min-w-0 shrink items-center gap-1.5 rounded-sm gm-focus sm:gap-2.5"
           aria-label="GAMEMANIA UK home"
         >
           <Image

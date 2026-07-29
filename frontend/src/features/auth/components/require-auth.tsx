@@ -5,6 +5,29 @@ import { usePathname, useRouter } from 'next/navigation';
 import { defaultPostLoginPath, isStaffRole } from '@/lib/roles';
 import { useAuth } from '@/providers/auth-provider';
 
+const AUTH_ONLY_PREFIXES = [
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/auth',
+] as const;
+
+/** Path-only sanitizer for OAuth (role unknown yet). Allows /admin deep links. */
+export function sanitizeReturnPath(path: string | null | undefined, fallback = '/account'): string {
+  if (!path || !path.startsWith('/') || path.startsWith('//')) {
+    return fallback;
+  }
+  if (
+    AUTH_ONLY_PREFIXES.some(
+      (p) => path === p || path.startsWith(`${p}/`) || path.startsWith(`${p}?`),
+    )
+  ) {
+    return fallback;
+  }
+  return path;
+}
+
 function safeReturnUrl(
   path: string | null | undefined,
   role?: string | { name?: string } | null,
@@ -18,7 +41,12 @@ function safeReturnUrl(
   if (!path || !path.startsWith('/') || path.startsWith('//')) {
     return defaultPostLoginPath(role);
   }
-  if (path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/admin')) {
+  if (
+    AUTH_ONLY_PREFIXES.some(
+      (p) => path === p || path.startsWith(`${p}/`) || path.startsWith(`${p}?`),
+    ) ||
+    path.startsWith('/admin')
+  ) {
     return defaultPostLoginPath(role);
   }
   return path;

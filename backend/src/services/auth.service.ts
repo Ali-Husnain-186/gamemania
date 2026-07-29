@@ -223,20 +223,29 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
   const resetUrl = new URL('/reset-password', env.FRONTEND_URL);
   resetUrl.searchParams.set('token', rawToken);
 
+  const settingFirstPassword = !user.passwordHash;
+  const subject = settingFirstPassword
+    ? 'Set a GAME MANIA password'
+    : 'Reset your GAME MANIA password';
+  const intro = settingFirstPassword
+    ? 'You can set a password for your GAME MANIA account (e.g. if you usually sign in with Google).'
+    : 'You requested a password reset for your GAME MANIA account.';
+  const ctaLabel = settingFirstPassword ? 'Set your password' : 'Reset your password';
+
   const result = await sendMail({
     to: user.email,
-    subject: 'Reset your GAME MANIA password',
+    subject,
     text: [
-      'You requested a password reset for your GAME MANIA account.',
+      intro,
       '',
-      `Open this link to choose a new password (expires in 1 hour):`,
+      `Open this link to choose a password (expires in 1 hour):`,
       resetUrl.toString(),
       '',
       'If you did not request this, you can ignore this email.',
     ].join('\n'),
     html: `
-      <p>You requested a password reset for your <strong>GAME MANIA</strong> account.</p>
-      <p><a href="${resetUrl.toString()}">Reset your password</a> (link expires in 1 hour).</p>
+      <p>${intro}</p>
+      <p><a href="${resetUrl.toString()}">${ctaLabel}</a> (link expires in 1 hour).</p>
       <p>If you did not request this, you can ignore this email.</p>
     `,
   });

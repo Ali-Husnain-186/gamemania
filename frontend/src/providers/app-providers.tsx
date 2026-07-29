@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from 'next-themes';
 import { useState } from 'react';
 import { NavigationLoader } from '@/components/ui/navigation-loader';
+import { AppToaster } from '@/lib/toast';
 import { AuthProvider } from '@/providers/auth-provider';
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <AppToaster />
           <NavigationLoader />
           {children}
         </AuthProvider>

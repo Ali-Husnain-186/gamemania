@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { useAuth } from '@/providers/auth-provider';
 import { AuthDivider, GoogleAuthButton } from '@/features/auth/components/google-auth-button';
 import { safeReturnUrl } from '@/features/auth/components/require-auth';
@@ -29,11 +30,12 @@ export function LoginForm() {
     try {
       const user = await login(values);
       const target = safeReturnUrl(returnUrl, user.role);
+      notify.success('Welcome back');
       window.location.assign(target);
     } catch (err) {
-      setError('root', {
-        message: err instanceof ApiError ? err.message : 'Login failed',
-      });
+      const message = err instanceof ApiError ? err.message : 'Login failed';
+      setError('root', { message });
+      notify.error(message);
     }
   }
 

@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
+import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import type { Product } from '@/types/catalog';
@@ -37,16 +38,26 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
       setQuickOpen(false);
+      notify.success('Added to cart');
       router.push('/checkout');
     },
+    onError: () => notify.error('Could not add to cart'),
   });
 
   const wishlistMutation = useMutation({
     mutationFn: () => apiPost('/wishlist', { productId: product.id }),
-    onSuccess: () => setWishMsg('Saved'),
+    onSuccess: () => {
+      setWishMsg('Saved');
+      notify.success('Saved to wishlist');
+    },
     onError: () => {
-      if (!getAccessToken()) setWishMsg('Sign in to save');
-      else setWishMsg('Could not save');
+      if (!getAccessToken()) {
+        setWishMsg('Sign in to save');
+        notify.info('Sign in to save wishlist items');
+      } else {
+        setWishMsg('Could not save');
+        notify.error('Could not save to wishlist');
+      }
     },
   });
 

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiDelete, apiGet, apiPatch } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
+import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import { EmptyState } from '@/components/shared/empty-state';
@@ -28,7 +29,9 @@ export default function CartPage() {
     onSuccess: (cart) => {
       setCart(cart);
       queryClient.setQueryData(['cart'], cart);
+      notify.success('Cart updated');
     },
+    onError: () => notify.error('Could not update cart'),
   });
 
   const removeMutation = useMutation({
@@ -36,7 +39,9 @@ export default function CartPage() {
     onSuccess: (cart) => {
       setCart(cart);
       queryClient.setQueryData(['cart'], cart);
+      notify.success('Item removed');
     },
+    onError: () => notify.error('Could not remove item'),
   });
 
   const cart = cartQuery.data;

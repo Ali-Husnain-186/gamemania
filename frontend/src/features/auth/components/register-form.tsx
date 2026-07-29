@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { useAuth } from '@/providers/auth-provider';
 import { AuthDivider, GoogleAuthButton } from '@/features/auth/components/google-auth-button';
 import { safeReturnUrl } from '@/features/auth/components/require-auth';
@@ -31,11 +32,12 @@ export function RegisterForm() {
         firstName: values.firstName || undefined,
         lastName: values.lastName || undefined,
       });
+      notify.success('Account created');
       window.location.assign(safeReturnUrl(returnUrl, user.role));
     } catch (err) {
-      setError('root', {
-        message: err instanceof ApiError ? err.message : 'Registration failed',
-      });
+      const message = err instanceof ApiError ? err.message : 'Registration failed';
+      setError('root', { message });
+      notify.error(message);
     }
   }
 

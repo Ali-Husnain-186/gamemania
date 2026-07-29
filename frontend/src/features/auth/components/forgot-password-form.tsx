@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { apiPost, ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { forgotPasswordSchema, type ForgotPasswordFormValues } from '../schemas';
 
 export function ForgotPasswordForm() {
@@ -28,10 +29,11 @@ export function ForgotPasswordForm() {
       setDoneMessage(
         res.message || 'If an account exists for that email, we have sent a password reset link.',
       );
+      notify.success('Check your email for the reset link');
     } catch (err) {
-      setError('root', {
-        message: err instanceof ApiError ? err.message : 'Could not send reset email',
-      });
+      const message = err instanceof ApiError ? err.message : 'Could not send reset email';
+      setError('root', { message });
+      notify.error(message);
     }
   }
 

@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { apiPost, ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { resetPasswordSchema, type ResetPasswordFormValues } from '../schemas';
 
 export function ResetPasswordForm() {
@@ -45,10 +46,11 @@ export function ResetPasswordForm() {
         password: values.password,
       });
       setDone(true);
+      notify.success('Password updated — you can sign in now');
     } catch (err) {
-      setError('root', {
-        message: err instanceof ApiError ? err.message : 'Could not reset password',
-      });
+      const message = err instanceof ApiError ? err.message : 'Could not reset password';
+      setError('root', { message });
+      notify.error(message);
     }
   }
 

@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useState, useTransition } from 'react';
 import { CreditCard, Lock } from 'lucide-react';
 import { ApiError, apiGet, apiPost } from '@/lib/api';
 import { formatGbpFromPence } from '@/lib/money';
+import { notify } from '@/lib/toast';
 import { useAuth } from '@/providers/auth-provider';
 
 type SavedAddress = {
@@ -252,8 +253,11 @@ export function CheckoutClient() {
           return;
         }
         setError(data.paymentMessage ?? 'Could not start secure payment.');
+        notify.error(data.paymentMessage ?? 'Could not start secure payment.');
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'Could not start secure payment');
+        const message = err instanceof ApiError ? err.message : 'Could not start secure payment';
+        setError(message);
+        notify.error(message);
       }
     });
   }
@@ -262,6 +266,7 @@ export function CheckoutClient() {
     e.preventDefault();
     if (!email.trim()) {
       setError('Please enter your email.');
+      notify.error('Please enter your email.');
       return;
     }
     if (
@@ -271,6 +276,7 @@ export function CheckoutClient() {
       !shipping.postcode.trim()
     ) {
       setError('Please fill in your delivery details.');
+      notify.error('Please fill in your delivery details.');
       return;
     }
 
@@ -325,8 +331,14 @@ export function CheckoutClient() {
           data.paymentMessage ??
             'Could not open secure payment. Please try again or contact support.',
         );
+        notify.error(
+          data.paymentMessage ??
+            'Could not open secure payment. Please try again or contact support.',
+        );
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'Could not place order');
+        const message = err instanceof ApiError ? err.message : 'Could not place order';
+        setError(message);
+        notify.error(message);
       }
     });
   }

@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiDelete, apiGet, apiPatch, ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { formatGbp } from '@/lib/utils';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
@@ -55,9 +56,12 @@ export default function OrdersPage() {
     startTransition(async () => {
       try {
         await apiPatch(`/admin/orders/${id}`, { status });
+        notify.success('Order status updated');
         await load();
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'Update failed');
+        const message = err instanceof ApiError ? err.message : 'Update failed';
+        setError(message);
+        notify.error(message);
       }
     });
   }
@@ -67,9 +71,12 @@ export default function OrdersPage() {
     startTransition(async () => {
       try {
         await apiDelete(`/admin/orders/${id}`);
+        notify.success('Order deleted');
         await load();
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'Delete failed');
+        const message = err instanceof ApiError ? err.message : 'Delete failed';
+        setError(message);
+        notify.error(message);
       }
     });
   }

@@ -7,6 +7,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
+import { notify } from '@/lib/toast';
 import { ErrorState } from '@/components/shared/error-state';
 import { BrandLoader } from '@/components/ui/brand-loader';
 
@@ -95,6 +96,8 @@ export default function TradeInPage() {
 
   const quoteMutation = useMutation({
     mutationFn: () => apiPost<Quote>('/trade-in/quote', { modelOptionId: optionId }),
+    onSuccess: () => notify.success('Quote ready'),
+    onError: (e) => notify.error(e instanceof Error ? e.message : 'Could not get quote'),
   });
 
   const submitMutation = useMutation({
@@ -110,8 +113,13 @@ export default function TradeInPage() {
           ? 'Request submitted. Once approved & paid, store credit is applied to your account.'
           : 'Request submitted. Once approved, cash is sent by manual bank transfer.',
       );
+      notify.success('Trade-in request submitted');
     },
-    onError: (e) => setStatusMsg(e instanceof Error ? e.message : 'Submit failed'),
+    onError: (e) => {
+      const message = e instanceof Error ? e.message : 'Submit failed';
+      setStatusMsg(message);
+      notify.error(message);
+    },
   });
 
   if (treeQuery.isError) {

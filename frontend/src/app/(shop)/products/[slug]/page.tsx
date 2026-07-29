@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
+import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import type { Product } from '@/types/catalog';
@@ -29,8 +30,10 @@ export default function ProductDetailPage() {
     onSuccess: (cart) => {
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
+      notify.success('Added to cart');
       router.push('/checkout');
     },
+    onError: () => notify.error('Could not add to cart'),
   });
 
   const tradeMutation = useMutation({
@@ -44,12 +47,19 @@ export default function ProductDetailPage() {
     onSuccess: (cart) => {
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
+      notify.success('Trade-in added to cart');
       router.push('/cart');
     },
+    onError: () => notify.error('Could not add trade-in'),
   });
 
   const wishlistMutation = useMutation({
     mutationFn: (productId: string) => apiPost('/wishlist', { productId }),
+    onSuccess: () => notify.success('Saved to wishlist'),
+    onError: () => {
+      if (!getAccessToken()) notify.info('Sign in to save wishlist items');
+      else notify.error('Could not save to wishlist');
+    },
   });
 
   const gallery = useMemo(() => {

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 
 type Category = {
@@ -38,6 +39,7 @@ export default function AdminCategoriesPage() {
       setError(null);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to load categories');
+      notify.error(err instanceof ApiError ? err.message : 'Failed to load categories');
     }
   }
 
@@ -79,9 +81,12 @@ export default function AdminCategoriesPage() {
         if (editingId) await apiPatch(`/admin/categories/${editingId}`, body);
         else await apiPost('/admin/categories', body);
         setShowForm(false);
+        notify.success(editingId ? 'Category updated' : 'Category created');
         await load();
       } catch (err) {
-        setError(err instanceof ApiError ? err.message : 'Save failed');
+        const message = err instanceof ApiError ? err.message : 'Save failed';
+        setError(message);
+        notify.error(message);
       }
     });
   }
@@ -219,9 +224,12 @@ export default function AdminCategoriesPage() {
                         startTransition(async () => {
                           try {
                             await apiDelete(`/admin/categories/${c.id}`);
+                            notify.success('Category deleted');
                             await load();
                           } catch (err) {
-                            setError(err instanceof ApiError ? err.message : 'Delete failed');
+                            const message = err instanceof ApiError ? err.message : 'Delete failed';
+                            setError(message);
+                            notify.error(message);
                           }
                         });
                       }}

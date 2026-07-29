@@ -1,6 +1,11 @@
 import { prisma } from '../config/prisma';
 import { env } from '../config/env';
-import { ConflictError, UnauthorizedError, ValidationError } from '../exceptions/AppError';
+import {
+  ConflictError,
+  UnauthorizedError,
+  ValidationError,
+  AppError,
+} from '../exceptions/AppError';
 import { toPublicUser, userRoleInclude } from '../dto/user.dto';
 import { hashPassword, verifyPassword } from '../utils/password';
 import { hashToken, parseDurationMs, signAccessToken, signRefreshToken } from '../utils/tokens';
@@ -193,6 +198,18 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
     message:
       'If an account exists for that email, we have sent a password reset link. Check your inbox and spam folder.',
   };
+
+  // Guard against stale Prisma clients missing PasswordResetToken after schema updates
+  if (!prisma.passwordResetToken) {
+    console.error(
+      '[auth:password-reset] prisma.passwordResetToken is undefined — run npm run db:generate and restart the API',
+    );
+    throw new AppError(
+      'Password reset is temporarily unavailable. Please try again in a moment.',
+      503,
+      'PASSWORD_RESET_UNAVAILABLE',
+    );
+  }
 
   const user = await prisma.user.findFirst({
     where: { email, deletedAt: null, isActive: true },

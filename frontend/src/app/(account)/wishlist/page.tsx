@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiDelete, apiGet, apiPost } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
+import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
 import { EmptyState } from '@/components/shared/empty-state';
@@ -34,15 +35,21 @@ export default function WishlistPage() {
 
   const removeMutation = useMutation({
     mutationFn: (productId: string) => apiDelete<WishlistRow[]>(`/wishlist/${productId}`),
-    onSuccess: (data) => queryClient.setQueryData(['wishlist'], data),
+    onSuccess: (data) => {
+      queryClient.setQueryData(['wishlist'], data);
+      notify.success('Removed from wishlist');
+    },
+    onError: () => notify.error('Could not remove item'),
   });
 
   const addCartMutation = useMutation({
     mutationFn: (productId: string) => apiPost<Cart>('/cart/items', { productId, quantity: 1 }),
     onSuccess: (cart) => {
       setCart(cart);
+      notify.success('Added to cart');
       window.location.assign('/checkout');
     },
+    onError: () => notify.error('Could not add to cart'),
   });
 
   return (

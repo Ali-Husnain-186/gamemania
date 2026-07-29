@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { ApiError, apiDelete, apiGet, apiPatch, apiPost } from '@/lib/api';
+import { notify } from '@/lib/toast';
 import { ErrorState } from '@/components/shared/error-state';
 import { EmptyState } from '@/components/shared/empty-state';
 import { BrandLoader } from '@/components/ui/brand-loader';
@@ -74,9 +75,12 @@ export function AddressesManager() {
       setEditingId(null);
       setFormError(null);
       await queryClient.invalidateQueries({ queryKey: ['addresses'] });
+      notify.success(editingId ? 'Address updated' : 'Address saved');
     },
     onError: (err) => {
-      setFormError(err instanceof ApiError ? err.message : 'Could not save address');
+      const message = err instanceof ApiError ? err.message : 'Could not save address';
+      setFormError(message);
+      notify.error(message);
     },
   });
 
@@ -84,7 +88,9 @@ export function AddressesManager() {
     mutationFn: (id: string) => apiDelete(`/users/me/addresses/${id}`),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ['addresses'] });
+      notify.success('Address deleted');
     },
+    onError: () => notify.error('Could not delete address'),
   });
 
   function startEdit(address: Address) {

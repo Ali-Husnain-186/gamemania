@@ -9,6 +9,7 @@ import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
 import { formatGbp } from '@/lib/utils';
+import { notify } from '@/lib/toast';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 import {
   emptyImageSlots,
@@ -277,6 +278,7 @@ export default function ProductsPage() {
           await apiPost('/admin/products', body);
         }
         setShowForm(false);
+        notify.success(editingId ? 'Product updated' : 'Product created');
         await load();
       } catch (err) {
         const fieldMap = fieldErrorsFromApi(err);
@@ -297,7 +299,9 @@ export default function ProductsPage() {
             setFormError(key as keyof ProductFormValues, { type: 'server', message });
           }
         }
-        setError(firstApiErrorMessage(err, 'Save failed'));
+        const message = firstApiErrorMessage(err, 'Save failed');
+        setError(message);
+        notify.error(message);
       }
     });
   }

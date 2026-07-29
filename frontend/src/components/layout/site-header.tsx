@@ -58,7 +58,7 @@ export function SiteHeader() {
             className="h-9 w-9 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-12 sm:w-12 md:h-14 md:w-14"
             priority
           />
-          <span className="gm-display whitespace-nowrap text-[0.82rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] sm:text-[1.15rem] md:text-[1.55rem] lg:text-[1.85rem]">
+          <span className="gm-display hidden whitespace-nowrap text-[1.15rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] md:inline md:text-[1.55rem] lg:text-[1.85rem]">
             GAMEMANIA UK
           </span>
         </Link>

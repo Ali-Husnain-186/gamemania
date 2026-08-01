@@ -115,15 +115,33 @@ export async function listProducts(query: ProductListQuery, admin = false) {
     ...(admin ? {} : { status: 'ACTIVE' }),
   };
 
-  if (query.q) {
+  if (query.q && query.category) {
+    where.AND = [
+      {
+        OR: [
+          { name: { contains: query.q, mode: 'insensitive' } },
+          { sku: { contains: query.q, mode: 'insensitive' } },
+          { shortDescription: { contains: query.q, mode: 'insensitive' } },
+        ],
+      },
+      {
+        OR: [
+          { category: { slug: query.category } },
+          { category: { parent: { slug: query.category } } },
+        ],
+      },
+    ];
+  } else if (query.q) {
     where.OR = [
       { name: { contains: query.q, mode: 'insensitive' } },
       { sku: { contains: query.q, mode: 'insensitive' } },
       { shortDescription: { contains: query.q, mode: 'insensitive' } },
     ];
-  }
-  if (query.category) {
-    where.category = { slug: query.category };
+  } else if (query.category) {
+    where.OR = [
+      { category: { slug: query.category } },
+      { category: { parent: { slug: query.category } } },
+    ];
   }
   if (query.brand) {
     where.brand = { slug: query.brand };

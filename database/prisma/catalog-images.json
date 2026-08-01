@@ -1,0 +1,2784 @@
+{
+  "ps5-slim-disc": [
+    {
+      "url": "/catalog/consoles/ps5-slim-disc-1.svg",
+      "altText": "ps5-slim-disc",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-slim-disc-2.svg",
+      "altText": "ps5-slim-disc",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-slim-disc-3.svg",
+      "altText": "ps5-slim-disc",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps5-slim-digital": [
+    {
+      "url": "/catalog/consoles/ps5-slim-digital-1.svg",
+      "altText": "ps5-slim-digital",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-slim-digital-2.svg",
+      "altText": "ps5-slim-digital",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-slim-digital-3.svg",
+      "altText": "ps5-slim-digital",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps5-original-disc": [
+    {
+      "url": "/catalog/consoles/ps5-original-disc-1.svg",
+      "altText": "ps5-original-disc",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-original-disc-2.svg",
+      "altText": "ps5-original-disc",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-original-disc-3.svg",
+      "altText": "ps5-original-disc",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps5-original-digital": [
+    {
+      "url": "/catalog/consoles/ps5-original-digital-1.svg",
+      "altText": "ps5-original-digital",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-original-digital-2.svg",
+      "altText": "ps5-original-digital",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps5-original-digital-3.svg",
+      "altText": "ps5-original-digital",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps4-console": [
+    {
+      "url": "/catalog/consoles/ps4-console-1.svg",
+      "altText": "ps4-console",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps4-console-2.svg",
+      "altText": "ps4-console",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps4-console-3.svg",
+      "altText": "ps4-console",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps3-console": [
+    {
+      "url": "/catalog/consoles/ps3-console-1.svg",
+      "altText": "ps3-console",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps3-console-2.svg",
+      "altText": "ps3-console",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps3-console-3.svg",
+      "altText": "ps3-console",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps2-console": [
+    {
+      "url": "/catalog/consoles/ps2-console-1.svg",
+      "altText": "ps2-console",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps2-console-2.svg",
+      "altText": "ps2-console",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/ps2-console-3.svg",
+      "altText": "ps2-console",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "xbox-series-x": [
+    {
+      "url": "/catalog/consoles/xbox-series-x-1.svg",
+      "altText": "xbox-series-x",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-x-2.svg",
+      "altText": "xbox-series-x",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-x-3.svg",
+      "altText": "xbox-series-x",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "xbox-series-s": [
+    {
+      "url": "/catalog/consoles/xbox-series-s-1.svg",
+      "altText": "xbox-series-s",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-s-2.svg",
+      "altText": "xbox-series-s",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-s-3.svg",
+      "altText": "xbox-series-s",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-oled": [
+    {
+      "url": "/catalog/consoles/switch-oled-1.svg",
+      "altText": "switch-oled",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-2.svg",
+      "altText": "switch-oled",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-3.svg",
+      "altText": "switch-oled",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-oled-mario": [
+    {
+      "url": "/catalog/consoles/switch-oled-mario-1.svg",
+      "altText": "switch-oled-mario",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-mario-2.svg",
+      "altText": "switch-oled-mario",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-mario-3.svg",
+      "altText": "switch-oled-mario",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-oled-zelda": [
+    {
+      "url": "/catalog/consoles/switch-oled-zelda-1.svg",
+      "altText": "switch-oled-zelda",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-zelda-2.svg",
+      "altText": "switch-oled-zelda",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-oled-zelda-3.svg",
+      "altText": "switch-oled-zelda",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-2-console": [
+    {
+      "url": "/catalog/consoles/switch-2-console-1.svg",
+      "altText": "switch-2-console",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-2-console-2.svg",
+      "altText": "switch-2-console",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/switch-2-console-3.svg",
+      "altText": "switch-2-console",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps5-game-ea-sports-fc-26": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-ea-sports-fc-26+1",
+      "altText": "ps5-game-ea-sports-fc-26",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-ea-sports-fc-26+2",
+      "altText": "ps5-game-ea-sports-fc-26",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-ea-sports-fc-26+3",
+      "altText": "ps5-game-ea-sports-fc-26",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-call-of-duty-black-ops-7": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-call-of-duty-black-+1",
+      "altText": "ps5-game-call-of-duty-black-ops-7",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-call-of-duty-black-+2",
+      "altText": "ps5-game-call-of-duty-black-ops-7",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-call-of-duty-black-+3",
+      "altText": "ps5-game-call-of-duty-black-ops-7",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-call-of-duty-black-ops-6": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-call-of-duty-black-+1",
+      "altText": "ps5-game-call-of-duty-black-ops-6",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-call-of-duty-black-+2",
+      "altText": "ps5-game-call-of-duty-black-ops-6",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-call-of-duty-black-+3",
+      "altText": "ps5-game-call-of-duty-black-ops-6",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-grand-theft-auto-v-ps5": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-grand-theft-auto-v-+1",
+      "altText": "ps5-game-grand-theft-auto-v-ps5",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-grand-theft-auto-v-+2",
+      "altText": "ps5-game-grand-theft-auto-v-ps5",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-grand-theft-auto-v-+3",
+      "altText": "ps5-game-grand-theft-auto-v-ps5",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-hogwarts-legacy": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-hogwarts-legacy+1",
+      "altText": "ps5-game-hogwarts-legacy",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-hogwarts-legacy+2",
+      "altText": "ps5-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-hogwarts-legacy+3",
+      "altText": "ps5-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-marvels-spider-man-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-marvels-spider-man-+1",
+      "altText": "ps5-game-marvels-spider-man-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-marvels-spider-man-+2",
+      "altText": "ps5-game-marvels-spider-man-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-marvels-spider-man-+3",
+      "altText": "ps5-game-marvels-spider-man-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-marvels-wolverine": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-marvels-wolverine+1",
+      "altText": "ps5-game-marvels-wolverine",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-marvels-wolverine+2",
+      "altText": "ps5-game-marvels-wolverine",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-marvels-wolverine+3",
+      "altText": "ps5-game-marvels-wolverine",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-god-of-war-ragnar-k": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-god-of-war-ragnar-k+1",
+      "altText": "ps5-game-god-of-war-ragnar-k",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-god-of-war-ragnar-k+2",
+      "altText": "ps5-game-god-of-war-ragnar-k",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-god-of-war-ragnar-k+3",
+      "altText": "ps5-game-god-of-war-ragnar-k",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-the-last-of-us-part-i": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-the-last-of-us-part+1",
+      "altText": "ps5-game-the-last-of-us-part-i",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-the-last-of-us-part+2",
+      "altText": "ps5-game-the-last-of-us-part-i",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-the-last-of-us-part+3",
+      "altText": "ps5-game-the-last-of-us-part-i",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-the-last-of-us-part-ii-remastered": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-the-last-of-us-part+1",
+      "altText": "ps5-game-the-last-of-us-part-ii-remastered",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-the-last-of-us-part+2",
+      "altText": "ps5-game-the-last-of-us-part-ii-remastered",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-the-last-of-us-part+3",
+      "altText": "ps5-game-the-last-of-us-part-ii-remastered",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-horizon-forbidden-west": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-horizon-forbidden-w+1",
+      "altText": "ps5-game-horizon-forbidden-west",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-horizon-forbidden-w+2",
+      "altText": "ps5-game-horizon-forbidden-west",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-horizon-forbidden-w+3",
+      "altText": "ps5-game-horizon-forbidden-west",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-gran-turismo-7": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-gran-turismo-7+1",
+      "altText": "ps5-game-gran-turismo-7",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-gran-turismo-7+2",
+      "altText": "ps5-game-gran-turismo-7",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-gran-turismo-7+3",
+      "altText": "ps5-game-gran-turismo-7",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-elden-ring": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-elden-ring+1",
+      "altText": "ps5-game-elden-ring",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-elden-ring+2",
+      "altText": "ps5-game-elden-ring",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-elden-ring+3",
+      "altText": "ps5-game-elden-ring",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-mortal-kombat-1": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-mortal-kombat-1+1",
+      "altText": "ps5-game-mortal-kombat-1",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-mortal-kombat-1+2",
+      "altText": "ps5-game-mortal-kombat-1",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-mortal-kombat-1+3",
+      "altText": "ps5-game-mortal-kombat-1",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-assassins-creed-shadows": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-assassins-creed-sha+1",
+      "altText": "ps5-game-assassins-creed-shadows",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-assassins-creed-sha+2",
+      "altText": "ps5-game-assassins-creed-shadows",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-assassins-creed-sha+3",
+      "altText": "ps5-game-assassins-creed-shadows",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-resident-evil-4-remake": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-resident-evil-4-rem+1",
+      "altText": "ps5-game-resident-evil-4-remake",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-resident-evil-4-rem+2",
+      "altText": "ps5-game-resident-evil-4-remake",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-resident-evil-4-rem+3",
+      "altText": "ps5-game-resident-evil-4-remake",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-final-fantasy-vii-rebirth": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-final-fantasy-vii-r+1",
+      "altText": "ps5-game-final-fantasy-vii-rebirth",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-final-fantasy-vii-r+2",
+      "altText": "ps5-game-final-fantasy-vii-rebirth",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-final-fantasy-vii-r+3",
+      "altText": "ps5-game-final-fantasy-vii-rebirth",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-silent-hill-2-remake": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-silent-hill-2-remak+1",
+      "altText": "ps5-game-silent-hill-2-remake",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-silent-hill-2-remak+2",
+      "altText": "ps5-game-silent-hill-2-remake",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-silent-hill-2-remak+3",
+      "altText": "ps5-game-silent-hill-2-remake",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-dragon-ball-sparking-zero": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-dragon-ball-sparkin+1",
+      "altText": "ps5-game-dragon-ball-sparking-zero",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-dragon-ball-sparkin+2",
+      "altText": "ps5-game-dragon-ball-sparking-zero",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-dragon-ball-sparkin+3",
+      "altText": "ps5-game-dragon-ball-sparking-zero",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps5-game-helldivers-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps5-game-helldivers-2+1",
+      "altText": "ps5-game-helldivers-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps5-game-helldivers-2+2",
+      "altText": "ps5-game-helldivers-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps5-game-helldivers-2+3",
+      "altText": "ps5-game-helldivers-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-fifa-23": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-fifa-23+1",
+      "altText": "ps4-game-fifa-23",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-fifa-23+2",
+      "altText": "ps4-game-fifa-23",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-fifa-23+3",
+      "altText": "ps4-game-fifa-23",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-ea-sports-fc-24": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-ea-sports-fc-24+1",
+      "altText": "ps4-game-ea-sports-fc-24",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-ea-sports-fc-24+2",
+      "altText": "ps4-game-ea-sports-fc-24",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-ea-sports-fc-24+3",
+      "altText": "ps4-game-ea-sports-fc-24",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-grand-theft-auto-v": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-grand-theft-auto-v+1",
+      "altText": "ps4-game-grand-theft-auto-v",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-grand-theft-auto-v+2",
+      "altText": "ps4-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-grand-theft-auto-v+3",
+      "altText": "ps4-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-red-dead-redemption-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-red-dead-redemption+1",
+      "altText": "ps4-game-red-dead-redemption-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-red-dead-redemption+2",
+      "altText": "ps4-game-red-dead-redemption-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-red-dead-redemption+3",
+      "altText": "ps4-game-red-dead-redemption-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-call-of-duty-modern-warfare": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-call-of-duty-modern+1",
+      "altText": "ps4-game-call-of-duty-modern-warfare",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-call-of-duty-modern+2",
+      "altText": "ps4-game-call-of-duty-modern-warfare",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-call-of-duty-modern+3",
+      "altText": "ps4-game-call-of-duty-modern-warfare",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-call-of-duty-black-ops-cold-war": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-call-of-duty-black-+1",
+      "altText": "ps4-game-call-of-duty-black-ops-cold-war",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-call-of-duty-black-+2",
+      "altText": "ps4-game-call-of-duty-black-ops-cold-war",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-call-of-duty-black-+3",
+      "altText": "ps4-game-call-of-duty-black-ops-cold-war",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-call-of-duty-modern-warfare-ii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-call-of-duty-modern+1",
+      "altText": "ps4-game-call-of-duty-modern-warfare-ii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-call-of-duty-modern+2",
+      "altText": "ps4-game-call-of-duty-modern-warfare-ii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-call-of-duty-modern+3",
+      "altText": "ps4-game-call-of-duty-modern-warfare-ii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-marvels-spider-man": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-marvels-spider-man+1",
+      "altText": "ps4-game-marvels-spider-man",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-marvels-spider-man+2",
+      "altText": "ps4-game-marvels-spider-man",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-marvels-spider-man+3",
+      "altText": "ps4-game-marvels-spider-man",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-god-of-war": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-god-of-war+1",
+      "altText": "ps4-game-god-of-war",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-god-of-war+2",
+      "altText": "ps4-game-god-of-war",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-god-of-war+3",
+      "altText": "ps4-game-god-of-war",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-the-last-of-us-remastered": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-the-last-of-us-rema+1",
+      "altText": "ps4-game-the-last-of-us-remastered",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-the-last-of-us-rema+2",
+      "altText": "ps4-game-the-last-of-us-remastered",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-the-last-of-us-rema+3",
+      "altText": "ps4-game-the-last-of-us-remastered",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-the-last-of-us-part-ii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-the-last-of-us-part+1",
+      "altText": "ps4-game-the-last-of-us-part-ii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-the-last-of-us-part+2",
+      "altText": "ps4-game-the-last-of-us-part-ii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-the-last-of-us-part+3",
+      "altText": "ps4-game-the-last-of-us-part-ii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-horizon-zero-dawn": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-horizon-zero-dawn+1",
+      "altText": "ps4-game-horizon-zero-dawn",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-horizon-zero-dawn+2",
+      "altText": "ps4-game-horizon-zero-dawn",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-horizon-zero-dawn+3",
+      "altText": "ps4-game-horizon-zero-dawn",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-horizon-forbidden-west": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-horizon-forbidden-w+1",
+      "altText": "ps4-game-horizon-forbidden-west",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-horizon-forbidden-w+2",
+      "altText": "ps4-game-horizon-forbidden-west",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-horizon-forbidden-w+3",
+      "altText": "ps4-game-horizon-forbidden-west",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-ghost-of-tsushima": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-ghost-of-tsushima+1",
+      "altText": "ps4-game-ghost-of-tsushima",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-ghost-of-tsushima+2",
+      "altText": "ps4-game-ghost-of-tsushima",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-ghost-of-tsushima+3",
+      "altText": "ps4-game-ghost-of-tsushima",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-uncharted-4-a-thief-s-end": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-uncharted-4-a-thief+1",
+      "altText": "ps4-game-uncharted-4-a-thief-s-end",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-uncharted-4-a-thief+2",
+      "altText": "ps4-game-uncharted-4-a-thief-s-end",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-uncharted-4-a-thief+3",
+      "altText": "ps4-game-uncharted-4-a-thief-s-end",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-minecraft-ps4-edition": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-minecraft-ps4-editi+1",
+      "altText": "ps4-game-minecraft-ps4-edition",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-minecraft-ps4-editi+2",
+      "altText": "ps4-game-minecraft-ps4-edition",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-minecraft-ps4-editi+3",
+      "altText": "ps4-game-minecraft-ps4-edition",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-gran-turismo-sport": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-gran-turismo-sport+1",
+      "altText": "ps4-game-gran-turismo-sport",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-gran-turismo-sport+2",
+      "altText": "ps4-game-gran-turismo-sport",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-gran-turismo-sport+3",
+      "altText": "ps4-game-gran-turismo-sport",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-resident-evil-village": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-resident-evil-villa+1",
+      "altText": "ps4-game-resident-evil-village",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-resident-evil-villa+2",
+      "altText": "ps4-game-resident-evil-village",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-resident-evil-villa+3",
+      "altText": "ps4-game-resident-evil-village",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-assassins-creed-valhalla": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-assassins-creed-val+1",
+      "altText": "ps4-game-assassins-creed-valhalla",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-assassins-creed-val+2",
+      "altText": "ps4-game-assassins-creed-valhalla",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-assassins-creed-val+3",
+      "altText": "ps4-game-assassins-creed-valhalla",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps4-game-hogwarts-legacy": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps4-game-hogwarts-legacy+1",
+      "altText": "ps4-game-hogwarts-legacy",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps4-game-hogwarts-legacy+2",
+      "altText": "ps4-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps4-game-hogwarts-legacy+3",
+      "altText": "ps4-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-ea-sports-fc-26": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-ea-sports-f+1",
+      "altText": "xbox_series-game-ea-sports-fc-26",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-ea-sports-f+2",
+      "altText": "xbox_series-game-ea-sports-fc-26",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-ea-sports-f+3",
+      "altText": "xbox_series-game-ea-sports-fc-26",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-call-of-duty-black-ops-6": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-call-of-dut+1",
+      "altText": "xbox_series-game-call-of-duty-black-ops-6",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-call-of-dut+2",
+      "altText": "xbox_series-game-call-of-duty-black-ops-6",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-call-of-dut+3",
+      "altText": "xbox_series-game-call-of-duty-black-ops-6",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-call-of-duty-modern-warfare-iii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-call-of-dut+1",
+      "altText": "xbox_series-game-call-of-duty-modern-warfare-iii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-call-of-dut+2",
+      "altText": "xbox_series-game-call-of-duty-modern-warfare-iii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-call-of-dut+3",
+      "altText": "xbox_series-game-call-of-duty-modern-warfare-iii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-grand-theft-auto-v": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-grand-theft+1",
+      "altText": "xbox_series-game-grand-theft-auto-v",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-grand-theft+2",
+      "altText": "xbox_series-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-grand-theft+3",
+      "altText": "xbox_series-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-hogwarts-legacy": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-hogwarts-le+1",
+      "altText": "xbox_series-game-hogwarts-legacy",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-hogwarts-le+2",
+      "altText": "xbox_series-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-hogwarts-le+3",
+      "altText": "xbox_series-game-hogwarts-legacy",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-forza-horizon-5": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-forza-horiz+1",
+      "altText": "xbox_series-game-forza-horizon-5",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-forza-horiz+2",
+      "altText": "xbox_series-game-forza-horizon-5",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-forza-horiz+3",
+      "altText": "xbox_series-game-forza-horizon-5",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-halo-infinite": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-halo-infini+1",
+      "altText": "xbox_series-game-halo-infinite",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-halo-infini+2",
+      "altText": "xbox_series-game-halo-infinite",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-halo-infini+3",
+      "altText": "xbox_series-game-halo-infinite",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-starfield": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-starfield+1",
+      "altText": "xbox_series-game-starfield",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-starfield+2",
+      "altText": "xbox_series-game-starfield",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-starfield+3",
+      "altText": "xbox_series-game-starfield",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-red-dead-redemption-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-red-dead-re+1",
+      "altText": "xbox_series-game-red-dead-redemption-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-red-dead-re+2",
+      "altText": "xbox_series-game-red-dead-redemption-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-red-dead-re+3",
+      "altText": "xbox_series-game-red-dead-redemption-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-cyberpunk-2077": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-cyberpunk-2+1",
+      "altText": "xbox_series-game-cyberpunk-2077",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-cyberpunk-2+2",
+      "altText": "xbox_series-game-cyberpunk-2077",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-cyberpunk-2+3",
+      "altText": "xbox_series-game-cyberpunk-2077",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-assassins-creed-shadows": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-assassins-c+1",
+      "altText": "xbox_series-game-assassins-creed-shadows",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-assassins-c+2",
+      "altText": "xbox_series-game-assassins-creed-shadows",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-assassins-c+3",
+      "altText": "xbox_series-game-assassins-creed-shadows",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-assassins-creed-valhalla": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-assassins-c+1",
+      "altText": "xbox_series-game-assassins-creed-valhalla",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-assassins-c+2",
+      "altText": "xbox_series-game-assassins-creed-valhalla",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-assassins-c+3",
+      "altText": "xbox_series-game-assassins-creed-valhalla",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-mortal-kombat-1": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-mortal-komb+1",
+      "altText": "xbox_series-game-mortal-kombat-1",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-mortal-komb+2",
+      "altText": "xbox_series-game-mortal-kombat-1",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-mortal-komb+3",
+      "altText": "xbox_series-game-mortal-kombat-1",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-elden-ring": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-elden-ring+1",
+      "altText": "xbox_series-game-elden-ring",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-elden-ring+2",
+      "altText": "xbox_series-game-elden-ring",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-elden-ring+3",
+      "altText": "xbox_series-game-elden-ring",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-minecraft": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-minecraft+1",
+      "altText": "xbox_series-game-minecraft",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-minecraft+2",
+      "altText": "xbox_series-game-minecraft",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-minecraft+3",
+      "altText": "xbox_series-game-minecraft",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-resident-evil-4-remake": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-resident-ev+1",
+      "altText": "xbox_series-game-resident-evil-4-remake",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-resident-ev+2",
+      "altText": "xbox_series-game-resident-evil-4-remake",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-resident-ev+3",
+      "altText": "xbox_series-game-resident-evil-4-remake",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-wwe-2k26": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-wwe-2k26+1",
+      "altText": "xbox_series-game-wwe-2k26",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-wwe-2k26+2",
+      "altText": "xbox_series-game-wwe-2k26",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-wwe-2k26+3",
+      "altText": "xbox_series-game-wwe-2k26",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-wwe-2k25": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-wwe-2k25+1",
+      "altText": "xbox_series-game-wwe-2k25",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-wwe-2k25+2",
+      "altText": "xbox_series-game-wwe-2k25",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-wwe-2k25+3",
+      "altText": "xbox_series-game-wwe-2k25",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-nba-2k26": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-nba-2k26+1",
+      "altText": "xbox_series-game-nba-2k26",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-nba-2k26+2",
+      "altText": "xbox_series-game-nba-2k26",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-nba-2k26+3",
+      "altText": "xbox_series-game-nba-2k26",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "xbox_series-game-hogwarts-legacy-xbox": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=xbox_series-game-hogwarts-le+1",
+      "altText": "xbox_series-game-hogwarts-legacy-xbox",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=xbox_series-game-hogwarts-le+2",
+      "altText": "xbox_series-game-hogwarts-legacy-xbox",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=xbox_series-game-hogwarts-le+3",
+      "altText": "xbox_series-game-hogwarts-legacy-xbox",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-grand-theft-auto-v": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-grand-theft-auto-v+1",
+      "altText": "ps3-game-grand-theft-auto-v",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-grand-theft-auto-v+2",
+      "altText": "ps3-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-grand-theft-auto-v+3",
+      "altText": "ps3-game-grand-theft-auto-v",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-red-dead-redemption": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-red-dead-redemption+1",
+      "altText": "ps3-game-red-dead-redemption",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-red-dead-redemption+2",
+      "altText": "ps3-game-red-dead-redemption",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-red-dead-redemption+3",
+      "altText": "ps3-game-red-dead-redemption",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-call-of-duty-black-ops": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-call-of-duty-black-+1",
+      "altText": "ps3-game-call-of-duty-black-ops",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-call-of-duty-black-+2",
+      "altText": "ps3-game-call-of-duty-black-ops",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-call-of-duty-black-+3",
+      "altText": "ps3-game-call-of-duty-black-ops",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-call-of-duty-modern-warfare-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-call-of-duty-modern+1",
+      "altText": "ps3-game-call-of-duty-modern-warfare-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-call-of-duty-modern+2",
+      "altText": "ps3-game-call-of-duty-modern-warfare-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-call-of-duty-modern+3",
+      "altText": "ps3-game-call-of-duty-modern-warfare-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-call-of-duty-modern-warfare-3": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-call-of-duty-modern+1",
+      "altText": "ps3-game-call-of-duty-modern-warfare-3",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-call-of-duty-modern+2",
+      "altText": "ps3-game-call-of-duty-modern-warfare-3",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-call-of-duty-modern+3",
+      "altText": "ps3-game-call-of-duty-modern-warfare-3",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-fifa-19": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-fifa-19+1",
+      "altText": "ps3-game-fifa-19",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-fifa-19+2",
+      "altText": "ps3-game-fifa-19",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-fifa-19+3",
+      "altText": "ps3-game-fifa-19",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-fifa-18": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-fifa-18+1",
+      "altText": "ps3-game-fifa-18",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-fifa-18+2",
+      "altText": "ps3-game-fifa-18",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-fifa-18+3",
+      "altText": "ps3-game-fifa-18",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-the-last-of-us": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-the-last-of-us+1",
+      "altText": "ps3-game-the-last-of-us",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-the-last-of-us+2",
+      "altText": "ps3-game-the-last-of-us",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-the-last-of-us+3",
+      "altText": "ps3-game-the-last-of-us",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-uncharted-2-among-thieves": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-uncharted-2-among-t+1",
+      "altText": "ps3-game-uncharted-2-among-thieves",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-uncharted-2-among-t+2",
+      "altText": "ps3-game-uncharted-2-among-thieves",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-uncharted-2-among-t+3",
+      "altText": "ps3-game-uncharted-2-among-thieves",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-uncharted-3-drakes-deception": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-uncharted-3-drakes-+1",
+      "altText": "ps3-game-uncharted-3-drakes-deception",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-uncharted-3-drakes-+2",
+      "altText": "ps3-game-uncharted-3-drakes-deception",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-uncharted-3-drakes-+3",
+      "altText": "ps3-game-uncharted-3-drakes-deception",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-gran-turismo-6": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-gran-turismo-6+1",
+      "altText": "ps3-game-gran-turismo-6",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-gran-turismo-6+2",
+      "altText": "ps3-game-gran-turismo-6",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-gran-turismo-6+3",
+      "altText": "ps3-game-gran-turismo-6",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-skyrim": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-skyrim+1",
+      "altText": "ps3-game-skyrim",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-skyrim+2",
+      "altText": "ps3-game-skyrim",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-skyrim+3",
+      "altText": "ps3-game-skyrim",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-minecraft-ps3-edition": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-minecraft-ps3-editi+1",
+      "altText": "ps3-game-minecraft-ps3-edition",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-minecraft-ps3-editi+2",
+      "altText": "ps3-game-minecraft-ps3-edition",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-minecraft-ps3-editi+3",
+      "altText": "ps3-game-minecraft-ps3-edition",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-batman-arkham-city": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-batman-arkham-city+1",
+      "altText": "ps3-game-batman-arkham-city",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-batman-arkham-city+2",
+      "altText": "ps3-game-batman-arkham-city",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-batman-arkham-city+3",
+      "altText": "ps3-game-batman-arkham-city",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-batman-arkham-asylum": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-batman-arkham-asylu+1",
+      "altText": "ps3-game-batman-arkham-asylum",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-batman-arkham-asylu+2",
+      "altText": "ps3-game-batman-arkham-asylum",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-batman-arkham-asylu+3",
+      "altText": "ps3-game-batman-arkham-asylum",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-god-of-war-iii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-god-of-war-iii+1",
+      "altText": "ps3-game-god-of-war-iii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-god-of-war-iii+2",
+      "altText": "ps3-game-god-of-war-iii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-god-of-war-iii+3",
+      "altText": "ps3-game-god-of-war-iii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-metal-gear-solid-4": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-metal-gear-solid-4+1",
+      "altText": "ps3-game-metal-gear-solid-4",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-metal-gear-solid-4+2",
+      "altText": "ps3-game-metal-gear-solid-4",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-metal-gear-solid-4+3",
+      "altText": "ps3-game-metal-gear-solid-4",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-littlebigplanet-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-littlebigplanet-2+1",
+      "altText": "ps3-game-littlebigplanet-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-littlebigplanet-2+2",
+      "altText": "ps3-game-littlebigplanet-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-littlebigplanet-2+3",
+      "altText": "ps3-game-littlebigplanet-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-far-cry-3": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-far-cry-3+1",
+      "altText": "ps3-game-far-cry-3",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-far-cry-3+2",
+      "altText": "ps3-game-far-cry-3",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-far-cry-3+3",
+      "altText": "ps3-game-far-cry-3",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps3-game-assassins-creed-iv-black-flag": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps3-game-assassins-creed-iv-+1",
+      "altText": "ps3-game-assassins-creed-iv-black-flag",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps3-game-assassins-creed-iv-+2",
+      "altText": "ps3-game-assassins-creed-iv-black-flag",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps3-game-assassins-creed-iv-+3",
+      "altText": "ps3-game-assassins-creed-iv-black-flag",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-grand-theft-auto-san-andreas": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-grand-theft-auto-sa+1",
+      "altText": "ps2-game-grand-theft-auto-san-andreas",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-grand-theft-auto-sa+2",
+      "altText": "ps2-game-grand-theft-auto-san-andreas",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-grand-theft-auto-sa+3",
+      "altText": "ps2-game-grand-theft-auto-san-andreas",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-grand-theft-auto-vice-city": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-grand-theft-auto-vi+1",
+      "altText": "ps2-game-grand-theft-auto-vice-city",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-grand-theft-auto-vi+2",
+      "altText": "ps2-game-grand-theft-auto-vice-city",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-grand-theft-auto-vi+3",
+      "altText": "ps2-game-grand-theft-auto-vice-city",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-grand-theft-auto-iii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-grand-theft-auto-ii+1",
+      "altText": "ps2-game-grand-theft-auto-iii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-grand-theft-auto-ii+2",
+      "altText": "ps2-game-grand-theft-auto-iii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-grand-theft-auto-ii+3",
+      "altText": "ps2-game-grand-theft-auto-iii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-gran-turismo-4": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-gran-turismo-4+1",
+      "altText": "ps2-game-gran-turismo-4",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-gran-turismo-4+2",
+      "altText": "ps2-game-gran-turismo-4",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-gran-turismo-4+3",
+      "altText": "ps2-game-gran-turismo-4",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-gran-turismo-3": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-gran-turismo-3+1",
+      "altText": "ps2-game-gran-turismo-3",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-gran-turismo-3+2",
+      "altText": "ps2-game-gran-turismo-3",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-gran-turismo-3+3",
+      "altText": "ps2-game-gran-turismo-3",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-fifa-14": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-fifa-14+1",
+      "altText": "ps2-game-fifa-14",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-fifa-14+2",
+      "altText": "ps2-game-fifa-14",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-fifa-14+3",
+      "altText": "ps2-game-fifa-14",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-fifa-13": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-fifa-13+1",
+      "altText": "ps2-game-fifa-13",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-fifa-13+2",
+      "altText": "ps2-game-fifa-13",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-fifa-13+3",
+      "altText": "ps2-game-fifa-13",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-call-of-duty-world-at-war-final-fronts": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-call-of-duty-world-+1",
+      "altText": "ps2-game-call-of-duty-world-at-war-final-fronts",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-call-of-duty-world-+2",
+      "altText": "ps2-game-call-of-duty-world-at-war-final-fronts",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-call-of-duty-world-+3",
+      "altText": "ps2-game-call-of-duty-world-at-war-final-fronts",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-call-of-duty-3": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-call-of-duty-3+1",
+      "altText": "ps2-game-call-of-duty-3",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-call-of-duty-3+2",
+      "altText": "ps2-game-call-of-duty-3",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-call-of-duty-3+3",
+      "altText": "ps2-game-call-of-duty-3",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-need-for-speed-underground-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-need-for-speed-unde+1",
+      "altText": "ps2-game-need-for-speed-underground-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-need-for-speed-unde+2",
+      "altText": "ps2-game-need-for-speed-underground-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-need-for-speed-unde+3",
+      "altText": "ps2-game-need-for-speed-underground-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-need-for-speed-most-wanted": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-need-for-speed-most+1",
+      "altText": "ps2-game-need-for-speed-most-wanted",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-need-for-speed-most+2",
+      "altText": "ps2-game-need-for-speed-most-wanted",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-need-for-speed-most+3",
+      "altText": "ps2-game-need-for-speed-most-wanted",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-need-for-speed-carbon": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-need-for-speed-carb+1",
+      "altText": "ps2-game-need-for-speed-carbon",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-need-for-speed-carb+2",
+      "altText": "ps2-game-need-for-speed-carbon",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-need-for-speed-carb+3",
+      "altText": "ps2-game-need-for-speed-carbon",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-spider-man-2": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-spider-man-2+1",
+      "altText": "ps2-game-spider-man-2",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-spider-man-2+2",
+      "altText": "ps2-game-spider-man-2",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-spider-man-2+3",
+      "altText": "ps2-game-spider-man-2",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-wwe-smackdown-here-comes-the-pain": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-wwe-smackdown-here-+1",
+      "altText": "ps2-game-wwe-smackdown-here-comes-the-pain",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-wwe-smackdown-here-+2",
+      "altText": "ps2-game-wwe-smackdown-here-comes-the-pain",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-wwe-smackdown-here-+3",
+      "altText": "ps2-game-wwe-smackdown-here-comes-the-pain",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-wwe-smackdown-vs-raw-2007": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-wwe-smackdown-vs-ra+1",
+      "altText": "ps2-game-wwe-smackdown-vs-raw-2007",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-wwe-smackdown-vs-ra+2",
+      "altText": "ps2-game-wwe-smackdown-vs-raw-2007",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-wwe-smackdown-vs-ra+3",
+      "altText": "ps2-game-wwe-smackdown-vs-raw-2007",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-god-of-war": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-god-of-war+1",
+      "altText": "ps2-game-god-of-war",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-god-of-war+2",
+      "altText": "ps2-game-god-of-war",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-god-of-war+3",
+      "altText": "ps2-game-god-of-war",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-god-of-war-ii": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-god-of-war-ii+1",
+      "altText": "ps2-game-god-of-war-ii",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-god-of-war-ii+2",
+      "altText": "ps2-game-god-of-war-ii",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-god-of-war-ii+3",
+      "altText": "ps2-game-god-of-war-ii",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-tekken-5": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-tekken-5+1",
+      "altText": "ps2-game-tekken-5",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-tekken-5+2",
+      "altText": "ps2-game-tekken-5",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-tekken-5+3",
+      "altText": "ps2-game-tekken-5",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-kingdom-hearts": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-kingdom-hearts+1",
+      "altText": "ps2-game-kingdom-hearts",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-kingdom-hearts+2",
+      "altText": "ps2-game-kingdom-hearts",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-kingdom-hearts+3",
+      "altText": "ps2-game-kingdom-hearts",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "ps2-game-resident-evil-4": [
+    {
+      "url": "https://placehold.co/800x800/0f172a/22d3ee?text=ps2-game-resident-evil-4+1",
+      "altText": "ps2-game-resident-evil-4",
+      "isPrimary": true,
+      "sortOrder": 0
+    },
+    {
+      "url": "https://placehold.co/800x800/1e1b4b/f472b6?text=ps2-game-resident-evil-4+2",
+      "altText": "ps2-game-resident-evil-4",
+      "isPrimary": false,
+      "sortOrder": 1
+    },
+    {
+      "url": "https://placehold.co/800x800/14532d/86efac?text=ps2-game-resident-evil-4+3",
+      "altText": "ps2-game-resident-evil-4",
+      "isPrimary": false,
+      "sortOrder": 2
+    }
+  ],
+  "dualsense-white": [
+    {
+      "url": "/catalog/controllers/dualsense-white-1.svg",
+      "altText": "dualsense-white",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-white-2.svg",
+      "altText": "dualsense-white",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-white-3.svg",
+      "altText": "dualsense-white",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-midnight-black": [
+    {
+      "url": "/catalog/controllers/dualsense-midnight-black-1.svg",
+      "altText": "dualsense-midnight-black",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-midnight-black-2.svg",
+      "altText": "dualsense-midnight-black",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-midnight-black-3.svg",
+      "altText": "dualsense-midnight-black",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-cosmic-red": [
+    {
+      "url": "/catalog/controllers/dualsense-cosmic-red-1.svg",
+      "altText": "dualsense-cosmic-red",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-cosmic-red-2.svg",
+      "altText": "dualsense-cosmic-red",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-cosmic-red-3.svg",
+      "altText": "dualsense-cosmic-red",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-starlight-blue": [
+    {
+      "url": "/catalog/controllers/dualsense-starlight-blue-1.svg",
+      "altText": "dualsense-starlight-blue",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-starlight-blue-2.svg",
+      "altText": "dualsense-starlight-blue",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-starlight-blue-3.svg",
+      "altText": "dualsense-starlight-blue",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-galactic-purple": [
+    {
+      "url": "/catalog/controllers/dualsense-galactic-purple-1.svg",
+      "altText": "dualsense-galactic-purple",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-galactic-purple-2.svg",
+      "altText": "dualsense-galactic-purple",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-galactic-purple-3.svg",
+      "altText": "dualsense-galactic-purple",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-nova-pink": [
+    {
+      "url": "/catalog/controllers/dualsense-nova-pink-1.svg",
+      "altText": "dualsense-nova-pink",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-nova-pink-2.svg",
+      "altText": "dualsense-nova-pink",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-nova-pink-3.svg",
+      "altText": "dualsense-nova-pink",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-volcanic-red": [
+    {
+      "url": "/catalog/controllers/dualsense-volcanic-red-1.svg",
+      "altText": "dualsense-volcanic-red",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-volcanic-red-2.svg",
+      "altText": "dualsense-volcanic-red",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-volcanic-red-3.svg",
+      "altText": "dualsense-volcanic-red",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-cobalt-blue": [
+    {
+      "url": "/catalog/controllers/dualsense-cobalt-blue-1.svg",
+      "altText": "dualsense-cobalt-blue",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-cobalt-blue-2.svg",
+      "altText": "dualsense-cobalt-blue",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-cobalt-blue-3.svg",
+      "altText": "dualsense-cobalt-blue",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-sterling-silver": [
+    {
+      "url": "/catalog/controllers/dualsense-sterling-silver-1.svg",
+      "altText": "dualsense-sterling-silver",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-sterling-silver-2.svg",
+      "altText": "dualsense-sterling-silver",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-sterling-silver-3.svg",
+      "altText": "dualsense-sterling-silver",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-chroma-teal": [
+    {
+      "url": "/catalog/controllers/dualsense-chroma-teal-1.svg",
+      "altText": "dualsense-chroma-teal",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-chroma-teal-2.svg",
+      "altText": "dualsense-chroma-teal",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-chroma-teal-3.svg",
+      "altText": "dualsense-chroma-teal",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualsense-chroma-indigo": [
+    {
+      "url": "/catalog/controllers/dualsense-chroma-indigo-1.svg",
+      "altText": "dualsense-chroma-indigo",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-chroma-indigo-2.svg",
+      "altText": "dualsense-chroma-indigo",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualsense-chroma-indigo-3.svg",
+      "altText": "dualsense-chroma-indigo",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualshock4-black": [
+    {
+      "url": "/catalog/controllers/dualshock4-black-1.svg",
+      "altText": "dualshock4-black",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-black-2.svg",
+      "altText": "dualshock4-black",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-black-3.svg",
+      "altText": "dualshock4-black",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualshock4-white": [
+    {
+      "url": "/catalog/controllers/dualshock4-white-1.svg",
+      "altText": "dualshock4-white",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-white-2.svg",
+      "altText": "dualshock4-white",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-white-3.svg",
+      "altText": "dualshock4-white",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "dualshock4-red": [
+    {
+      "url": "/catalog/controllers/dualshock4-red-1.svg",
+      "altText": "dualshock4-red",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-red-2.svg",
+      "altText": "dualshock4-red",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/dualshock4-red-3.svg",
+      "altText": "dualshock4-red",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-joycon-blue-red": [
+    {
+      "url": "/catalog/controllers/switch2-joycon-blue-red-1.svg",
+      "altText": "switch2-joycon-blue-red",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-blue-red-2.svg",
+      "altText": "switch2-joycon-blue-red",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-blue-red-3.svg",
+      "altText": "switch2-joycon-blue-red",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-joycon-black": [
+    {
+      "url": "/catalog/controllers/switch2-joycon-black-1.svg",
+      "altText": "switch2-joycon-black",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-black-2.svg",
+      "altText": "switch2-joycon-black",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-black-3.svg",
+      "altText": "switch2-joycon-black",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-joycon-white": [
+    {
+      "url": "/catalog/controllers/switch2-joycon-white-1.svg",
+      "altText": "switch2-joycon-white",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-white-2.svg",
+      "altText": "switch2-joycon-white",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-white-3.svg",
+      "altText": "switch2-joycon-white",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-joycon-other-official-colours": [
+    {
+      "url": "/catalog/controllers/switch2-joycon-other-official-colours-1.svg",
+      "altText": "switch2-joycon-other-official-colours",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-other-official-colours-2.svg",
+      "altText": "switch2-joycon-other-official-colours",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/controllers/switch2-joycon-other-official-colours-3.svg",
+      "altText": "switch2-joycon-other-official-colours",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "cable-figure-8": [
+    {
+      "url": "/catalog/cables/cable-figure-8-1.svg",
+      "altText": "cable-figure-8",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-figure-8-2.svg",
+      "altText": "cable-figure-8",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-figure-8-3.svg",
+      "altText": "cable-figure-8",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "cable-hdmi": [
+    {
+      "url": "/catalog/cables/cable-hdmi-1.svg",
+      "altText": "cable-hdmi",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-hdmi-2.svg",
+      "altText": "cable-hdmi",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-hdmi-3.svg",
+      "altText": "cable-hdmi",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "cable-usbc": [
+    {
+      "url": "/catalog/cables/cable-usbc-1.svg",
+      "altText": "cable-usbc",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-usbc-2.svg",
+      "altText": "cable-usbc",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/cables/cable-usbc-3.svg",
+      "altText": "cable-usbc",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ]
+}

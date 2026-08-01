@@ -1,7 +1,42 @@
 import { PrismaClient, CouponType, ProductCondition, ProductStatus } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import * as fs from 'fs';
+import * as path from 'path';
+import { CATALOG_CATEGORY_CHILDREN, getAllCatalogProducts } from './catalog-data';
 
 const prisma = new PrismaClient();
+
+type SeedImage = {
+  url: string;
+  altText?: string;
+  isPrimary?: boolean;
+  sortOrder?: number;
+  publicId?: string | null;
+};
+
+function loadCatalogImages(): Record<string, SeedImage[]> {
+  try {
+    const file = path.join(__dirname, 'catalog-images.json');
+    if (fs.existsSync(file)) {
+      return JSON.parse(fs.readFileSync(file, 'utf8')) as Record<string, SeedImage[]>;
+    }
+  } catch {
+    /* ignore */
+  }
+  return {};
+}
+
+function imagesForKey(key: string, name: string, map: Record<string, SeedImage[]>): SeedImage[] {
+  const found = map[key];
+  if (found?.length) return found.slice(0, 4);
+  const label = encodeURIComponent(name.slice(0, 24));
+  return [0, 1, 2].map((n) => ({
+    url: `https://placehold.co/800x800/0f172a/22d3ee?text=${label}+${n + 1}`,
+    altText: name,
+    isPrimary: n === 0,
+    sortOrder: n,
+  }));
+}
 
 async function main() {
   console.log('Seeding GAME-MANIA...');
@@ -278,10 +313,6 @@ async function main() {
     });
   }
 
-  const playstation = videoGames;
-  const nintendoCat = videoGames;
-  const controllers = accessories;
-
   const sony = await prisma.brand.upsert({
     where: { slug: 'sony' },
     update: {},
@@ -294,10 +325,154 @@ async function main() {
     create: { name: 'Nintendo', slug: 'nintendo' },
   });
 
+  const microsoft = await prisma.brand.upsert({
+    where: { slug: 'microsoft' },
+    update: { isActive: true },
+    create: { name: 'Microsoft', slug: 'microsoft' },
+  });
+
+  for (const child of CATALOG_CATEGORY_CHILDREN) {
+    const parent = categoriesBySlug[child.parentSlug];
+    if (!parent) continue;
+    const row = await prisma.category.upsert({
+      where: { slug: child.slug },
+      update: {
+        name: child.name,
+        description: child.description,
+        imageUrl: child.imageUrl,
+        sortOrder: child.sortOrder,
+        isActive: true,
+        parentId: parent.id,
+      },
+      create: {
+        name: child.name,
+        slug: child.slug,
+        description: child.description,
+        imageUrl: child.imageUrl,
+        sortOrder: child.sortOrder,
+        isActive: true,
+        parentId: parent.id,
+      },
+    });
+    categoriesBySlug[child.slug] = row;
+  }
+
+  const brandsBySlug: Record<string, { id: string }> = {
+    sony,
+    nintendo,
+    microsoft,
+  };
+
+  const imageMap = loadCatalogImages();
+  const catalogProducts = getAllCatalogProducts();
+  let catalogUpserts = 0;
+
+  for (const item of catalogProducts) {
+    const category = categoriesBySlug[item.categorySlug];
+    const brand = brandsBySlug[item.brandSlug];
+    if (!category || !brand) {
+      console.warn('Skip catalog row (missing category/brand):', item.sku);
+      continue;
+    }
+
+    const imgs = imagesForKey(item.imageKey, item.name, imageMap);
+    const condition =
+      item.condition === 'NEW' ? ProductCondition.NEW : ProductCondition.PRE_OWNED_GOOD;
+
+    const existing = await prisma.product.findUnique({ where: { sku: item.sku } });
+    if (existing) {
+      await prisma.product.update({
+        where: { sku: item.sku },
+        data: {
+          name: item.name,
+          slug: item.slug,
+          shortDescription: item.shortDescription,
+          description: item.description,
+          price: item.price,
+          categoryId: category.id,
+          brandId: brand.id,
+          platform: item.platform,
+          condition,
+          status: ProductStatus.ACTIVE,
+          isFeatured: Boolean(item.isFeatured),
+          tradeInCashPence: item.tradeInCashPence,
+          tradeInCreditPence: item.tradeInCreditPence,
+          inventory: {
+            upsert: {
+              create: { quantity: item.quantity, reserved: 0, lowStockThreshold: 2 },
+              update: { quantity: item.quantity },
+            },
+          },
+        },
+      });
+      await prisma.productImage.deleteMany({ where: { productId: existing.id } });
+      await prisma.productImage.createMany({
+        data: imgs.map((img, i) => ({
+          productId: existing.id,
+          url: img.url,
+          publicId: img.publicId ?? null,
+          altText: img.altText ?? item.name,
+          isPrimary: img.isPrimary ?? i === 0,
+          sortOrder: img.sortOrder ?? i,
+        })),
+      });
+    } else {
+      await prisma.product.create({
+        data: {
+          name: item.name,
+          slug: item.slug,
+          sku: item.sku,
+          shortDescription: item.shortDescription,
+          description: item.description,
+          price: item.price,
+          categoryId: category.id,
+          brandId: brand.id,
+          platform: item.platform,
+          condition,
+          status: ProductStatus.ACTIVE,
+          isFeatured: Boolean(item.isFeatured),
+          tradeInCashPence: item.tradeInCashPence,
+          tradeInCreditPence: item.tradeInCreditPence,
+          inventory: { create: { quantity: item.quantity, reserved: 0, lowStockThreshold: 2 } },
+          images: {
+            create: imgs.map((img, i) => ({
+              url: img.url,
+              publicId: img.publicId ?? null,
+              altText: img.altText ?? item.name,
+              isPrimary: img.isPrimary ?? i === 0,
+              sortOrder: img.sortOrder ?? i,
+            })),
+          },
+        },
+      });
+    }
+    catalogUpserts += 1;
+  }
+  console.log(`Catalog products upserted: ${catalogUpserts}`);
+
+  // Backfill trade-in prices on any older rows still missing them
+  const missingTradeIn = await prisma.product.findMany({
+    where: {
+      OR: [{ tradeInCashPence: null }, { tradeInCreditPence: null }],
+    },
+    select: { id: true, price: true, tradeInCashPence: true, tradeInCreditPence: true },
+  });
+  for (const row of missingTradeIn) {
+    const cash = row.tradeInCashPence ?? Math.max(100, Math.floor(row.price * 0.35));
+    const credit = row.tradeInCreditPence ?? Math.max(100, Math.floor(row.price * 0.4));
+    await prisma.product.update({
+      where: { id: row.id },
+      data: { tradeInCashPence: cash, tradeInCreditPence: credit },
+    });
+  }
+  if (missingTradeIn.length) {
+    console.log(`Backfilled trade-in prices on ${missingTradeIn.length} product(s).`);
+  }
+
   const sampleProduct = await prisma.product.upsert({
     where: { sku: 'GM-PS5-DEMO-001' },
     update: {
-      categoryId: videoGames.id,
+      categoryId: categoriesBySlug['playstation-5-games']?.id ?? videoGames.id,
       tradeInCashPence: 1500,
       tradeInCreditPence: 1800,
     },
@@ -309,7 +484,7 @@ async function main() {
       description: 'This is a seeded demo product used to verify catalog APIs and storefront wiring.',
       price: 5499,
       compareAtPrice: 5999,
-      categoryId: videoGames.id,
+      categoryId: categoriesBySlug['playstation-5-games']?.id ?? videoGames.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
@@ -334,7 +509,7 @@ async function main() {
   await prisma.product.upsert({
     where: { sku: 'GM-NSW-DEMO-001' },
     update: {
-      categoryId: videoGames.id,
+      categoryId: categoriesBySlug['nintendo-consoles']?.id ?? videoGames.id,
       tradeInCashPence: 1200,
       tradeInCreditPence: 1500,
     },
@@ -345,7 +520,7 @@ async function main() {
       shortDescription: 'Second sample product for filters and listing.',
       description: 'Seeded Switch title for development.',
       price: 4499,
-      categoryId: videoGames.id,
+      categoryId: categoriesBySlug['nintendo-consoles']?.id ?? videoGames.id,
       brandId: nintendo.id,
       platform: 'SWITCH',
       condition: ProductCondition.NEW,
@@ -368,7 +543,7 @@ async function main() {
   await prisma.product.upsert({
     where: { sku: 'GM-PS5-CONSOLE-001' },
     update: {
-      categoryId: gameConsoles.id,
+      categoryId: categoriesBySlug['playstation-consoles']?.id ?? gameConsoles.id,
       tradeInCashPence: 22000,
       tradeInCreditPence: 25000,
     },
@@ -379,7 +554,7 @@ async function main() {
       shortDescription: 'Demo console SKU for high-value shipping tests.',
       description: 'Seeded console product.',
       price: 47999,
-      categoryId: gameConsoles.id,
+      categoryId: categoriesBySlug['playstation-consoles']?.id ?? gameConsoles.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
@@ -387,8 +562,50 @@ async function main() {
       tradeInCashPence: 22000,
       tradeInCreditPence: 25000,
       inventory: { create: { quantity: 8, reserved: 0, lowStockThreshold: 2 } },
+      images: {
+        create: [
+          {
+            url: '/catalog/consoles/ps5-slim-disc-1.svg',
+            altText: 'PlayStation 5 Console (Demo)',
+            isPrimary: true,
+            sortOrder: 0,
+          },
+          {
+            url: '/catalog/consoles/ps5-slim-disc-2.svg',
+            altText: 'PlayStation 5 Console (Demo)',
+            isPrimary: false,
+            sortOrder: 1,
+          },
+        ],
+      },
     },
   });
+
+  // Ensure demo console always has gallery images
+  const demoConsole = await prisma.product.findUnique({
+    where: { sku: 'GM-PS5-CONSOLE-001' },
+    include: { images: true },
+  });
+  if (demoConsole && demoConsole.images.length === 0) {
+    await prisma.productImage.createMany({
+      data: [
+        {
+          productId: demoConsole.id,
+          url: '/catalog/consoles/ps5-slim-disc-1.svg',
+          altText: 'PlayStation 5 Console (Demo)',
+          isPrimary: true,
+          sortOrder: 0,
+        },
+        {
+          productId: demoConsole.id,
+          url: '/catalog/consoles/ps5-slim-disc-2.svg',
+          altText: 'PlayStation 5 Console (Demo)',
+          isPrimary: false,
+          sortOrder: 1,
+        },
+      ],
+    });
+  }
 
   await prisma.coupon.upsert({
     where: { code: 'WELCOME10' },
@@ -691,7 +908,11 @@ For questions, contact Info@gamemaniauk.co.uk.`;
 
   const dualSense = await prisma.product.upsert({
     where: { sku: 'GM-CTRL-DUALSENSE-001' },
-    update: { categoryId: controllers.id },
+    update: {
+      categoryId: categoriesBySlug['playstation-accessories']?.id ?? accessories.id,
+      tradeInCashPence: 1500,
+      tradeInCreditPence: 1900,
+    },
     create: {
       name: 'DualSense Wireless Controller (Demo)',
       slug: 'dualsense-wireless-controller-demo',
@@ -699,12 +920,14 @@ For questions, contact Info@gamemaniauk.co.uk.`;
       shortDescription: 'Accessory SKU for cart and free-shipping tests.',
       description: 'Seeded accessory product.',
       price: 6499,
-      categoryId: controllers.id,
+      categoryId: categoriesBySlug['playstation-accessories']?.id ?? accessories.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
       status: ProductStatus.ACTIVE,
       isFeatured: true,
+      tradeInCashPence: 1500,
+      tradeInCreditPence: 1900,
       inventory: { create: { quantity: 50, reserved: 0, lowStockThreshold: 5 } },
       images: {
         create: [

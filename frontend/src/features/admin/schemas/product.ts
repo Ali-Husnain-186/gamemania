@@ -46,6 +46,7 @@ export const productFormSchema = z.object({
     .min(1, 'Store credit trade-in price is required')
     .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
   platform: z.string().optional(),
+  condition: z.enum(['NEW', 'PRE_OWNED_EXCELLENT', 'PRE_OWNED_GOOD', 'PRE_OWNED_FAIR']),
 });
 
 export type ProductFormValues = z.infer<typeof productFormSchema>;

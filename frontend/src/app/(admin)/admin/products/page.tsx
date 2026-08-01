@@ -37,6 +37,7 @@ type Product = {
   tradeInCashPence?: number | null;
   tradeInCreditPence?: number | null;
   platform?: string | null;
+  condition?: string | null;
   images?: Array<{
     url: string;
     publicId?: string | null;
@@ -65,6 +66,7 @@ const defaults: ProductFormValues = {
   tradeInCashPounds: '',
   tradeInCreditPounds: '',
   platform: '',
+  condition: 'NEW',
 };
 
 function slotsFromProductImages(images?: Product['images']): ProductImageSlot[] {
@@ -174,6 +176,7 @@ export default function ProductsPage() {
       tradeInCreditPounds:
         p.tradeInCreditPence != null ? penceToPoundsInput(p.tradeInCreditPence) : '',
       platform: p.platform ?? '',
+      condition: (p.condition as ProductFormValues['condition']) || 'NEW',
     });
     setError(null);
     setShowForm(true);
@@ -270,6 +273,7 @@ export default function ProductsPage() {
             ? poundsToPence(values.tradeInCreditPounds)
             : null,
           platform: values.platform?.trim() || null,
+          condition: values.condition,
         };
 
         if (editingId) {
@@ -442,6 +446,19 @@ export default function ProductsPage() {
                   placeholder="PS5, SWITCH, PC…"
                   {...register('platform')}
                 />
+              </label>
+
+              <label className="block text-xs text-[var(--admin-muted)]">
+                Condition
+                <select
+                  className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                  {...register('condition')}
+                >
+                  <option value="NEW">New</option>
+                  <option value="PRE_OWNED_EXCELLENT">Used — Excellent</option>
+                  <option value="PRE_OWNED_GOOD">Used — Good</option>
+                  <option value="PRE_OWNED_FAIR">Used — Fair</option>
+                </select>
               </label>
 
               <label className="block text-xs text-[var(--admin-muted)]">

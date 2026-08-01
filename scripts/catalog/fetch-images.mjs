@@ -568,6 +568,10 @@ const SEARCH_OVERRIDES = {
   'ps5-game-silent-hill-2-remake': 'SILENT HILL 2',
   'ps5-game-gran-turismo-7': 'Gran Turismo 7',
   'ps5-game-marvels-wolverine': "Marvel's Wolverine",
+  'ps5-game-grand-theft-auto-vi': 'Grand Theft Auto VI',
+  'xbox_series-game-grand-theft-auto-vi': 'Grand Theft Auto VI',
+  'ps5-game-ea-sports-fc-27': 'EA Sports FC 27',
+  'xbox_series-game-ea-sports-fc-27': 'EA Sports FC 27',
   'ps5-game-god-of-war-ragnar-k': 'God of War Ragnarok',
   'ps3-game-gran-turismo-6': 'Gran Turismo 6',
   'ps2-game-gran-turismo-4': 'Gran Turismo 4',
@@ -584,6 +588,10 @@ const WIKI_TITLE_OVERRIDES = {
   'ps2-game-spider-man-2-2004': 'Spider-Man 2 (2004 video game)',
   'ps5-game-marvels-spider-man-2': "Marvel's Spider-Man 2",
   'ps5-game-marvels-wolverine': "Marvel's Wolverine",
+  'ps5-game-grand-theft-auto-vi': 'Grand Theft Auto VI',
+  'xbox_series-game-grand-theft-auto-vi': 'Grand Theft Auto VI',
+  'ps5-game-ea-sports-fc-27': 'EA Sports FC',
+  'xbox_series-game-ea-sports-fc-27': 'EA Sports FC',
   'ps4-game-marvels-spider-man': "Marvel's Spider-Man (2018 video game)",
   'ps3-game-the-last-of-us': 'The Last of Us',
   'ps2-game-god-of-war': 'God of War (2005 video game)',
@@ -661,6 +669,8 @@ const IMAGE_ALIASES = {
     'switch-game-the-legend-of-zelda-tears-of-the-kingdom',
   'switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition':
     'switch-game-the-legend-of-zelda-breath-of-the-wild',
+  'xbox_series-game-grand-theft-auto-vi': 'ps5-game-grand-theft-auto-vi',
+  'xbox_series-game-ea-sports-fc-27': 'ps5-game-ea-sports-fc-27',
 };
 
 const BAD_WIKI_FILE =

@@ -485,13 +485,6 @@
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
-    },
-    {
-      "url": "/catalog/games/ps5-game-marvels-wolverine/ps5-game-marvels-wolverine-1.jpg",
-      "altText": "marvels wolverine",
-      "isPrimary": false,
-      "sortOrder": 2,
-      "publicId": null
     }
   ],
   "ps5-game-god-of-war-ragnar-k": [
@@ -4467,6 +4460,98 @@
       "altText": "switch2 game the legend of zelda tears of the kingdom switch 2 edition",
       "isPrimary": false,
       "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "ps5-game-ea-sports-fc-27": [
+    {
+      "url": "/catalog/games/ps5-game-ea-sports-fc-27/ps5-game-ea-sports-fc-27-showcase.jpg",
+      "altText": "ps5 game ea sports fc 27 product showcase",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-ea-sports-fc-27/ps5-game-ea-sports-fc-27-1.jpg",
+      "altText": "ea sports fc 27",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    }
+  ],
+  "ps5-game-grand-theft-auto-vi": [
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-showcase.jpg",
+      "altText": "ps5 game grand theft auto vi product showcase",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-1.jpg",
+      "altText": "Grand Theft Auto: Vice City – The Definitive Edition",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-2.jpg",
+      "altText": "Grand Theft Auto: Vice City – The Definitive Edition",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-3.jpg",
+      "altText": "Grand Theft Auto: Vice City – The Definitive Edition",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "xbox_series-game-grand-theft-auto-vi": [
+    {
+      "url": "/catalog/games/xbox_series-game-grand-theft-auto-vi/xbox_series-game-grand-theft-auto-vi-showcase.jpg",
+      "altText": "xbox_series game grand theft auto vi product showcase",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-1.jpg",
+      "altText": "xbox_series game grand theft auto vi",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-2.jpg",
+      "altText": "xbox_series game grand theft auto vi",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-3.jpg",
+      "altText": "xbox_series game grand theft auto vi",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "xbox_series-game-ea-sports-fc-27": [
+    {
+      "url": "/catalog/games/xbox_series-game-ea-sports-fc-27/xbox_series-game-ea-sports-fc-27-showcase.jpg",
+      "altText": "xbox_series game ea sports fc 27 product showcase",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps5-game-ea-sports-fc-27/ps5-game-ea-sports-fc-27-1.jpg",
+      "altText": "xbox_series game ea sports fc 27",
+      "isPrimary": false,
+      "sortOrder": 1,
       "publicId": null
     }
   ]

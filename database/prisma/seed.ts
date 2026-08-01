@@ -402,6 +402,7 @@ async function main() {
           status: ProductStatus.ACTIVE,
           deletedAt: null,
           isFeatured: Boolean(item.isFeatured),
+          isPreorder: Boolean(item.isPreorder),
           tradeInCashPence: item.tradeInCashPence,
           tradeInCreditPence: item.tradeInCreditPence,
           inventory: {
@@ -438,6 +439,7 @@ async function main() {
           condition,
           status: ProductStatus.ACTIVE,
           isFeatured: Boolean(item.isFeatured),
+          isPreorder: Boolean(item.isPreorder),
           tradeInCashPence: item.tradeInCashPence,
           tradeInCreditPence: item.tradeInCreditPence,
           inventory: { create: { quantity: item.quantity, reserved: 0, lowStockThreshold: 2 } },
@@ -665,139 +667,290 @@ async function main() {
     },
   });
 
-  // Trade-in sample tree
-  const ps = await prisma.tradeConsole.upsert({
-    where: { slug: 'playstation' },
-    update: { isActive: true },
-    create: { name: 'PlayStation', slug: 'playstation' },
-  });
+  // Trade-in catalog — upsert options so re-seed never duplicates storage/condition rows
+  type TradeOptSeed = {
+    storage: string;
+    condition: ProductCondition;
+    baseCashPence: number;
+    baseCreditPence: number;
+  };
+  type TradeModelSeed = { name: string; slug: string; options: TradeOptSeed[] };
+  type TradeDeviceSeed = { name: string; slug: string; models: TradeModelSeed[] };
+  type TradeConsoleSeed = { name: string; slug: string; devices: TradeDeviceSeed[] };
 
-  const ps5 = await prisma.tradeDevice.upsert({
-    where: { consoleId_slug: { consoleId: ps.id, slug: 'ps5' } },
-    update: {},
-    create: { consoleId: ps.id, name: 'PlayStation 5', slug: 'ps5' },
-  });
-
-  const ps5Disc = await prisma.tradeModel.upsert({
-    where: { deviceId_slug: { deviceId: ps5.id, slug: 'ps5-disc' } },
-    update: {},
-    create: { deviceId: ps5.id, name: 'PS5 Disc Edition', slug: 'ps5-disc' },
-  });
-
-  await prisma.tradeModelOption.createMany({
-    data: [
-      {
-        modelId: ps5Disc.id,
-        storage: '825GB',
-        condition: ProductCondition.PRE_OWNED_EXCELLENT,
-        baseCashPence: 25000,
-        baseCreditPence: 28000,
-      },
-      {
-        modelId: ps5Disc.id,
-        storage: '825GB',
-        condition: ProductCondition.PRE_OWNED_GOOD,
-        baseCashPence: 22000,
-        baseCreditPence: 24500,
-      },
-      {
-        modelId: ps5Disc.id,
-        storage: '825GB',
-        condition: ProductCondition.PRE_OWNED_FAIR,
-        baseCashPence: 18000,
-        baseCreditPence: 20000,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  const nintendoTrade = await prisma.tradeConsole.upsert({
-    where: { slug: 'nintendo' },
-    update: { isActive: true },
-    create: { name: 'Nintendo', slug: 'nintendo' },
-  });
-
-  const switchDevice = await prisma.tradeDevice.upsert({
-    where: { consoleId_slug: { consoleId: nintendoTrade.id, slug: 'switch' } },
-    update: {},
-    create: { consoleId: nintendoTrade.id, name: 'Nintendo Switch', slug: 'switch' },
-  });
-
-  const switchOled = await prisma.tradeModel.upsert({
-    where: { deviceId_slug: { deviceId: switchDevice.id, slug: 'switch-oled' } },
-    update: {},
-    create: { deviceId: switchDevice.id, name: 'Switch OLED', slug: 'switch-oled' },
-  });
-
-  await prisma.tradeModelOption.createMany({
-    data: [
-      {
-        modelId: switchOled.id,
-        storage: '64GB',
-        condition: ProductCondition.PRE_OWNED_EXCELLENT,
-        baseCashPence: 16000,
-        baseCreditPence: 18500,
-      },
-      {
-        modelId: switchOled.id,
-        storage: '64GB',
-        condition: ProductCondition.PRE_OWNED_GOOD,
-        baseCashPence: 14000,
-        baseCreditPence: 16000,
-      },
-      {
-        modelId: switchOled.id,
-        storage: '64GB',
-        condition: ProductCondition.PRE_OWNED_FAIR,
-        baseCashPence: 11000,
-        baseCreditPence: 13000,
-      },
-    ],
-    skipDuplicates: true,
-  });
-
-  const switch2Device = await prisma.tradeDevice.upsert({
-    where: { consoleId_slug: { consoleId: nintendoTrade.id, slug: 'switch-2' } },
-    update: {},
-    create: { consoleId: nintendoTrade.id, name: 'Nintendo Switch 2', slug: 'switch-2' },
-  });
-
-  const switch2Console = await prisma.tradeModel.upsert({
-    where: { deviceId_slug: { deviceId: switch2Device.id, slug: 'switch-2-console' } },
-    update: {},
-    create: {
-      deviceId: switch2Device.id,
-      name: 'Switch 2 Console',
-      slug: 'switch-2-console',
+  const condOpts = (
+    storage: string,
+    excellent: [number, number],
+    good: [number, number],
+    fair: [number, number],
+  ): TradeOptSeed[] => [
+    {
+      storage,
+      condition: ProductCondition.PRE_OWNED_EXCELLENT,
+      baseCashPence: excellent[0],
+      baseCreditPence: excellent[1],
     },
-  });
+    {
+      storage,
+      condition: ProductCondition.PRE_OWNED_GOOD,
+      baseCashPence: good[0],
+      baseCreditPence: good[1],
+    },
+    {
+      storage,
+      condition: ProductCondition.PRE_OWNED_FAIR,
+      baseCashPence: fair[0],
+      baseCreditPence: fair[1],
+    },
+  ];
 
-  await prisma.tradeModelOption.createMany({
-    data: [
-      {
-        modelId: switch2Console.id,
-        storage: '256GB',
-        condition: ProductCondition.PRE_OWNED_EXCELLENT,
-        baseCashPence: 28000,
-        baseCreditPence: 32000,
+  const ps5StorageOpts = (baseCash: number, baseCredit: number): TradeOptSeed[] => [
+    ...condOpts(
+      '825GB',
+      [baseCash, baseCredit],
+      [baseCash - 3000, baseCredit - 3500],
+      [baseCash - 7000, baseCredit - 8000],
+    ),
+    ...condOpts(
+      '1TB',
+      [baseCash + 2000, baseCredit + 2500],
+      [baseCash - 1000, baseCredit - 1000],
+      [baseCash - 5000, baseCredit - 5500],
+    ),
+    ...condOpts(
+      '2TB',
+      [baseCash + 5000, baseCredit + 6000],
+      [baseCash + 2000, baseCredit + 2500],
+      [baseCash - 2000, baseCredit - 2000],
+    ),
+  ];
+
+  const TRADE_SEED: TradeConsoleSeed[] = [
+    {
+      name: 'PlayStation',
+      slug: 'playstation',
+      devices: [
+        {
+          name: 'PlayStation 5',
+          slug: 'ps5',
+          models: [
+            { name: 'PS5 Slim Disc', slug: 'ps5-slim-disc', options: ps5StorageOpts(28000, 32000) },
+            { name: 'PS5 Slim Digital', slug: 'ps5-slim-digital', options: ps5StorageOpts(24000, 27500) },
+            {
+              name: 'PS5 Original Disc',
+              slug: 'ps5-original-disc',
+              options: ps5StorageOpts(26000, 30000),
+            },
+            {
+              name: 'PS5 Original Digital',
+              slug: 'ps5-original-digital',
+              options: ps5StorageOpts(22000, 25500),
+            },
+          ],
+        },
+        {
+          name: 'PlayStation 4',
+          slug: 'ps4',
+          models: [
+            {
+              name: 'PS4 Slim',
+              slug: 'ps4-slim',
+              options: [
+                ...condOpts('500GB', [7000, 8500], [5500, 6800], [4000, 5000]),
+                ...condOpts('1TB', [8500, 10000], [7000, 8500], [5000, 6200]),
+              ],
+            },
+            {
+              name: 'PS4 Pro',
+              slug: 'ps4-pro',
+              options: [
+                ...condOpts('1TB', [11000, 13000], [9000, 11000], [7000, 8500]),
+                ...condOpts('2TB', [13000, 15000], [10500, 12500], [8000, 9500]),
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Xbox',
+      slug: 'xbox',
+      devices: [
+        {
+          name: 'Xbox Series',
+          slug: 'xbox-series',
+          models: [
+            {
+              name: 'Xbox Series S',
+              slug: 'xbox-series-s',
+              options: [
+                ...condOpts('512GB', [14000, 16500], [11500, 13500], [8500, 10000]),
+                ...condOpts('1TB', [16500, 19000], [14000, 16500], [10500, 12500]),
+              ],
+            },
+            {
+              name: 'Xbox Series X',
+              slug: 'xbox-series-x',
+              options: [
+                ...condOpts('1TB', [22000, 25500], [18500, 21500], [14500, 17000]),
+                ...condOpts('2TB', [25000, 29000], [21000, 24500], [16500, 19500]),
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Nintendo',
+      slug: 'nintendo',
+      devices: [
+        {
+          name: 'Nintendo Switch',
+          slug: 'switch',
+          models: [
+            {
+              name: 'Switch OLED',
+              slug: 'switch-oled',
+              options: condOpts('64GB', [16000, 18500], [14000, 16000], [11000, 13000]),
+            },
+          ],
+        },
+        {
+          name: 'Nintendo Switch 2',
+          slug: 'switch-2',
+          models: [
+            {
+              name: 'Switch 2 Console',
+              slug: 'switch-2-console',
+              options: condOpts('256GB', [28000, 32000], [25000, 28500], [21000, 24000]),
+            },
+          ],
+        },
+      ],
+    },
+  ];
+
+  const keepConsoleSlugs = new Set(TRADE_SEED.map((c) => c.slug));
+  const keepDeviceSlugs = new Set(TRADE_SEED.flatMap((c) => c.devices.map((d) => d.slug)));
+  const keepModelSlugs = new Set(
+    TRADE_SEED.flatMap((c) => c.devices.flatMap((d) => d.models.map((m) => m.slug))),
+  );
+
+  async function upsertTradeOption(modelId: string, opt: TradeOptSeed) {
+    const existing = await prisma.tradeModelOption.findFirst({
+      where: {
+        modelId,
+        storage: opt.storage,
+        condition: opt.condition,
       },
-      {
-        modelId: switch2Console.id,
-        storage: '256GB',
-        condition: ProductCondition.PRE_OWNED_GOOD,
-        baseCashPence: 25000,
-        baseCreditPence: 28500,
+      orderBy: { createdAt: 'asc' },
+    });
+
+    if (existing) {
+      await prisma.tradeModelOption.update({
+        where: { id: existing.id },
+        data: {
+          baseCashPence: opt.baseCashPence,
+          baseCreditPence: opt.baseCreditPence,
+          isActive: true,
+        },
+      });
+      // Soft-deactivate any duplicate rows for the same storage/condition
+      await prisma.tradeModelOption.updateMany({
+        where: {
+          modelId,
+          storage: opt.storage,
+          condition: opt.condition,
+          id: { not: existing.id },
+        },
+        data: { isActive: false },
+      });
+      return;
+    }
+
+    await prisma.tradeModelOption.create({
+      data: {
+        modelId,
+        storage: opt.storage,
+        condition: opt.condition,
+        baseCashPence: opt.baseCashPence,
+        baseCreditPence: opt.baseCreditPence,
+        isActive: true,
       },
-      {
-        modelId: switch2Console.id,
-        storage: '256GB',
-        condition: ProductCondition.PRE_OWNED_FAIR,
-        baseCashPence: 21000,
-        baseCreditPence: 24000,
-      },
-    ],
-    skipDuplicates: true,
-  });
+    });
+  }
+
+  for (const consoleDef of TRADE_SEED) {
+    const consoleRow = await prisma.tradeConsole.upsert({
+      where: { slug: consoleDef.slug },
+      update: { name: consoleDef.name, isActive: true },
+      create: { name: consoleDef.name, slug: consoleDef.slug, isActive: true },
+    });
+
+    for (const deviceDef of consoleDef.devices) {
+      const deviceRow = await prisma.tradeDevice.upsert({
+        where: { consoleId_slug: { consoleId: consoleRow.id, slug: deviceDef.slug } },
+        update: { name: deviceDef.name, isActive: true },
+        create: {
+          consoleId: consoleRow.id,
+          name: deviceDef.name,
+          slug: deviceDef.slug,
+          isActive: true,
+        },
+      });
+
+      for (const modelDef of deviceDef.models) {
+        const modelRow = await prisma.tradeModel.upsert({
+          where: { deviceId_slug: { deviceId: deviceRow.id, slug: modelDef.slug } },
+          update: { name: modelDef.name, isActive: true },
+          create: {
+            deviceId: deviceRow.id,
+            name: modelDef.name,
+            slug: modelDef.slug,
+            isActive: true,
+          },
+        });
+
+        const keepKeys = new Set(modelDef.options.map((o) => `${o.storage}::${o.condition}`));
+        for (const opt of modelDef.options) {
+          await upsertTradeOption(modelRow.id, opt);
+        }
+
+        const existingOpts = await prisma.tradeModelOption.findMany({
+          where: { modelId: modelRow.id },
+        });
+        for (const row of existingOpts) {
+          if (!keepKeys.has(`${row.storage}::${row.condition}`)) {
+            await prisma.tradeModelOption.update({
+              where: { id: row.id },
+              data: { isActive: false },
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // Hide legacy trade rows no longer in the catalog (e.g. old generic PS5 Disc)
+  for (const m of await prisma.tradeModel.findMany({ select: { id: true, slug: true } })) {
+    if (!keepModelSlugs.has(m.slug)) {
+      await prisma.tradeModel.update({ where: { id: m.id }, data: { isActive: false } });
+    }
+  }
+  for (const d of await prisma.tradeDevice.findMany({ select: { id: true, slug: true } })) {
+    if (!keepDeviceSlugs.has(d.slug)) {
+      await prisma.tradeDevice.update({ where: { id: d.id }, data: { isActive: false } });
+    }
+  }
+  for (const c of await prisma.tradeConsole.findMany({ select: { id: true, slug: true } })) {
+    if (!keepConsoleSlugs.has(c.slug)) {
+      await prisma.tradeConsole.update({ where: { id: c.id }, data: { isActive: false } });
+    }
+  }
+
+  console.log(
+    `Trade-in catalog: ${TRADE_SEED.length} consoles, ${keepDeviceSlugs.size} devices, ${keepModelSlugs.size} models`,
+  );
 
   await prisma.cmsPage.upsert({
     where: { slug: 'about' },

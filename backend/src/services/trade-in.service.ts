@@ -10,7 +10,7 @@ function generateRequestNumber(): string {
 }
 
 export async function getConsolesTree() {
-  return prisma.tradeConsole.findMany({
+  const consoles = await prisma.tradeConsole.findMany({
     where: { isActive: true },
     orderBy: { name: 'asc' },
     include: {
@@ -24,7 +24,7 @@ export async function getConsolesTree() {
             include: {
               options: {
                 where: { isActive: true },
-                orderBy: { storage: 'asc' },
+                orderBy: [{ storage: 'asc' }, { condition: 'asc' }],
                 include: {
                   accessories: true,
                 },
@@ -35,6 +35,26 @@ export async function getConsolesTree() {
       },
     },
   });
+
+  // Guard against any legacy duplicate option rows still present before migrate/seed
+  return consoles.map((consoleRow) => ({
+    ...consoleRow,
+    devices: consoleRow.devices.map((device) => ({
+      ...device,
+      models: device.models.map((model) => {
+        const seen = new Set<string>();
+        return {
+          ...model,
+          options: model.options.filter((opt) => {
+            const key = `${opt.storage}::${opt.condition}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          }),
+        };
+      }),
+    })),
+  }));
 }
 
 async function loadOption(modelOptionId: string) {

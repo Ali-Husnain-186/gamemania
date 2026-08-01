@@ -95,10 +95,16 @@ export function TradeInClient() {
     () => devices.find((d) => d.id === deviceId)?.models ?? [],
     [devices, deviceId],
   );
-  const options = useMemo(
-    () => models.find((m) => m.id === modelId)?.options ?? [],
-    [models, modelId],
-  );
+  const options = useMemo(() => {
+    const raw = models.find((m) => m.id === modelId)?.options ?? [];
+    const seen = new Set<string>();
+    return raw.filter((o) => {
+      const key = `${o.storage}::${o.condition}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [models, modelId]);
 
   const quoteMutation = useMutation({
     mutationFn: () => apiPost<Quote>('/trade-in/quote', { modelOptionId: optionId }),

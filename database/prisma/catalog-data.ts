@@ -22,6 +22,7 @@ export type CatalogProductDef = {
   imageKey: string;
   quantity: number;
   isFeatured?: boolean;
+  isPreorder?: boolean;
 };
 
 type Family = {
@@ -40,6 +41,7 @@ type Family = {
   /** Used-only (e.g. PS2/PS3 — no sealed New stock) */
   usedOnly?: boolean;
   featured?: boolean;
+  isPreorder?: boolean;
   qtyNew?: number;
   qtyUsed?: number;
 };
@@ -86,6 +88,7 @@ function expandFamily(f: Family): CatalogProductDef[] {
       imageKey: f.key,
       quantity: qty,
       isFeatured: Boolean(f.featured) && (condition === 'NEW' || f.usedOnly),
+      isPreorder: Boolean(f.isPreorder),
     };
   };
 
@@ -271,7 +274,7 @@ function gameFamily(
   brandSlug: string,
   newPrice: number,
   usedPrice: number,
-  opts?: { usedOnly?: boolean; newOnly?: boolean },
+  opts?: { usedOnly?: boolean; newOnly?: boolean; featured?: boolean; isPreorder?: boolean },
 ): Family {
   return {
     key: `${platform.toLowerCase()}-game-${slugify(name)}`,
@@ -286,6 +289,8 @@ function gameFamily(
     tradeInCredit: Math.round(usedPrice * 0.42),
     usedOnly: opts?.usedOnly,
     bothConditions: opts?.newOnly ? false : undefined,
+    featured: opts?.featured,
+    isPreorder: opts?.isPreorder,
   };
 }
 
@@ -297,9 +302,11 @@ function gameOpts(_name: string, platform: string): { usedOnly?: boolean; newOnl
 
 const PS5_GAMES = [
   'EA Sports FC 26',
+  'EA Sports FC 27',
   'Call of Duty: Black Ops 7',
   'Call of Duty: Black Ops 6',
   'Grand Theft Auto V (PS5)',
+  'Grand Theft Auto VI',
   'Hogwarts Legacy',
   "Marvel's Spider-Man 2",
   "Marvel's Wolverine",
@@ -324,7 +331,11 @@ const PS5_GAMES = [
     'sony',
     5499 - (i % 5) * 200,
     3299 - (i % 5) * 100,
-    gameOpts(n, 'PS5'),
+    {
+      ...gameOpts(n, 'PS5'),
+      isPreorder: n === "Marvel's Wolverine" || n === 'Grand Theft Auto VI' || n === 'EA Sports FC 27',
+      featured: n === "Marvel's Wolverine" || n === 'Grand Theft Auto VI' || n === 'EA Sports FC 27',
+    },
   ),
 );
 
@@ -363,9 +374,11 @@ const PS4_GAMES = [
 
 const XBOX_GAMES = [
   'EA Sports FC 26',
+  'EA Sports FC 27',
   'Call of Duty: Black Ops 6',
   'Call of Duty: Modern Warfare III',
   'Grand Theft Auto V',
+  'Grand Theft Auto VI',
   'Hogwarts Legacy',
   'Forza Horizon 5',
   'Halo Infinite',
@@ -390,7 +403,11 @@ const XBOX_GAMES = [
     'microsoft',
     4999 - (i % 5) * 200,
     2999 - (i % 5) * 100,
-    gameOpts(n, 'XBOX_SERIES'),
+    {
+      ...gameOpts(n, 'XBOX_SERIES'),
+      isPreorder: n === 'Grand Theft Auto VI' || n === 'EA Sports FC 27',
+      featured: n === 'Grand Theft Auto VI' || n === 'EA Sports FC 27',
+    },
   ),
 );
 

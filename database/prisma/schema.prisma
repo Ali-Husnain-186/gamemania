@@ -620,6 +620,7 @@ model TradeModelOption {
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
 
+  @@unique([modelId, storage, condition])
   @@index([modelId])
   @@map("trade_model_options")
 }

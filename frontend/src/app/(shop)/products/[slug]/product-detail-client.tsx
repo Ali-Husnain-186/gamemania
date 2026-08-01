@@ -117,7 +117,7 @@ export function ProductDetailClient() {
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
       <div className="grid gap-10 md:grid-cols-2">
         <div>
-          <div className="aspect-square overflow-hidden rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]">
+          <div className="aspect-square overflow-hidden rounded-lg border border-[var(--gm-border)] bg-white">
             {mainImage?.url ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -134,7 +134,7 @@ export function ProductDetailClient() {
                   key={img.url}
                   type="button"
                   onClick={() => setActiveUrl(img.url)}
-                  className="aspect-square overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] transition hover:ring-2 hover:ring-[var(--gm-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gm-accent)]"
+                  className="aspect-square overflow-hidden rounded-md border border-[var(--gm-border)] bg-white transition hover:ring-2 hover:ring-[var(--gm-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--gm-accent)]"
                   aria-label="View product image"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

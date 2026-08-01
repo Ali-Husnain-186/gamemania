@@ -24,7 +24,7 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         className="group block gm-focus rounded-lg"
         aria-label={`View ${product.name}`}
       >
-        <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] transition group-hover:border-[var(--gm-cyan)]">
+        <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-[var(--gm-border)] bg-white transition group-hover:border-[var(--gm-cyan)]">
           {image?.url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img

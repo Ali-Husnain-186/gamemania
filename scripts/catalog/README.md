@@ -8,8 +8,13 @@
 | 2        | **Steam CDN**     | High-quality `library_600x900` + hero art               | No                      |
 | 3        | **Wikipedia**     | Console exclusives + hardware product photos            | No                      |
 
-Images are **downloaded** into `frontend/public/catalog/` (2–4 per SKU family).  
-Do **not** scrape competitor shops.
+Images are **downloaded** into `frontend/public/catalog/` (2–4 per SKU family), then
+`node scripts/catalog/build-showcase.mjs` builds **white-background showcase** primaries:
+
+- **Games** → physical case mockup with platform banner (PS5 / PS4 / Xbox / Switch)
+- **Hardware** → product cutout on white (Amazon / CeX style)
+
+Do **not** scrape competitor shops (CeX, Amazon, etc.).
 
 ## Free IGDB (recommended for exclusives)
 

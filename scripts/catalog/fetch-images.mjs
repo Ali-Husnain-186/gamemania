@@ -38,63 +38,93 @@ const PLATFORM_IGDB = {
 /** Wikipedia titles / file names for hardware families */
 const HARDWARE_WIKI = {
   'ps5-slim-disc': {
-    pages: ['PlayStation 5', 'PlayStation 5 Slim'],
+    pages: [],
     files: [
       'Black and white Playstation 5 base edition with controller.png',
       'PlayStation 5 and DualSense with transparent background.png',
-      'PS5DigitalEdition.png',
     ],
+    filesOnly: true,
   },
   'ps5-slim-digital': {
-    pages: ['PlayStation 5', 'PlayStation 5 Digital Edition'],
+    pages: [],
     files: [
       'PS5DigitalEdition.png',
       'PlayStation 5 and DualSense with transparent background.png',
     ],
+    filesOnly: true,
   },
   'ps5-original-disc': {
-    pages: ['PlayStation 5'],
+    pages: [],
     files: [
       'Black and white Playstation 5 base edition with controller.png',
-      'PlayStation 5 and DualSense with transparent background.png',
       'PlayStation 5 and DualSense (2).jpg',
     ],
+    filesOnly: true,
   },
   'ps5-original-digital': {
-    pages: ['PlayStation 5 Digital Edition', 'PlayStation 5'],
+    pages: [],
     files: ['PS5DigitalEdition.png', 'PlayStation 5 and DualSense with transparent background.png'],
+    filesOnly: true,
   },
   'ps4-console': {
-    pages: ['PlayStation 4'],
-    files: ['PS4-Console-wDualshock4.jpg', 'Sony-PlayStation-4-PS4-Console-wDualShock4.jpg'],
+    pages: [],
+    files: [
+      'PlayStation 4 Slim 8504.jpg',
+      'The PlayStation 4. (9021900367).jpg',
+      'DualShock 4.jpg',
+    ],
+    filesOnly: true,
   },
   'ps3-console': {
-    pages: ['PlayStation 3'],
-    files: ['PS3 Console and Game Controllers.jpg', 'PlayStation_3_and_DualShock_3.jpg'],
+    pages: [],
+    files: [
+      'Sony-PlayStation-3-CECHA01-Console-BR.jpg',
+      'DualShock3-in-Hand.jpg',
+    ],
+    filesOnly: true,
   },
   'ps2-console': {
-    pages: ['PlayStation 2'],
-    files: ['PlayStation 2.png', 'PS2-Slim-Console.png'],
+    pages: [],
+    files: [
+      'Sony-PlayStation-2-70001-Console-BR.jpg',
+      'PS2-Fat-Console-Back-Ntwrk.jpg',
+    ],
+    filesOnly: true,
   },
   'xbox-series-x': {
-    pages: ['Xbox Series X and Series S'],
+    pages: [],
     files: ['Xbox Series X.png', 'Xbox_Series_X_console.png'],
+    filesOnly: true,
   },
   'xbox-series-s': {
-    pages: ['Xbox Series X and Series S'],
+    pages: [],
     files: ['Xbox Series S.png', 'Xbox_Series_S.png'],
+    filesOnly: true,
   },
   'switch-oled': {
-    pages: ['Nintendo Switch'],
-    files: ['Nintendo Switch OLED model.jpg', 'Nintendo-Switch-wJoyConRB.jpg'],
+    pages: [],
+    files: [
+      'Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg',
+      'Nintendo-Switch-Console-Docked-wJoyConRB.jpg',
+      'Nintendo-Switch-Console-Bare-FL-B.jpg',
+    ],
+    filesOnly: true,
   },
   'switch-oled-mario': {
-    pages: ['Nintendo Switch'],
-    files: ['Nintendo Switch OLED model.jpg', 'Nintendo-Switch-wJoyConRB.jpg'],
+    pages: [],
+    files: [
+      'Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg',
+      'Nintendo-Switch-Console-Docked-wJoyConRB.jpg',
+    ],
+    filesOnly: true,
   },
   'switch-oled-zelda': {
-    pages: ['Nintendo Switch'],
-    files: ['Nintendo Switch OLED model.jpg', 'Nintendo-Switch-wJoyConRB.jpg'],
+    pages: [],
+    files: [
+      'Nintendo-Switch-wJoyCons-BlRd-Standing-FL.jpg',
+      'Nintendo-Switch-Console-Docked-wJoyConRB.jpg',
+    ],
+    filesOnly: true,
   },
   'switch-2-console': {
     pages: ['Nintendo Switch 2'],

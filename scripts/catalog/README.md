@@ -1,42 +1,47 @@
-# Catalog bulk seed
+# Catalog images (HQ)
 
-## Local
+## Approach
+
+| Priority | Source            | Best for                                                | Key?                    |
+| -------- | ----------------- | ------------------------------------------------------- | ----------------------- |
+| 1        | **IGDB** (Twitch) | Exact game covers + screenshots (`cover_big` / `1080p`) | Free Client ID + Secret |
+| 2        | **Steam CDN**     | High-quality `library_600x900` + hero art               | No                      |
+| 3        | **Wikipedia**     | Console exclusives + hardware product photos            | No                      |
+
+Images are **downloaded** into `frontend/public/catalog/` (2–4 per SKU family).  
+Do **not** scrape competitor shops.
+
+## Free IGDB (recommended for exclusives)
+
+1. Twitch account + 2FA
+2. [Twitch apps](https://dev.twitch.tv/console/apps) → Confidential app → Client Secret
+3. Run:
 
 ```bash
-# 1) Export image keys + generate placeholder (or RAWG) images
-cd /path/to/GAME-MANIA
-npx tsx database/prisma/export-image-keys.ts
-# Optional real covers:
-# RAWG_API_KEY=your_key node scripts/catalog/fetch-images.mjs
-# Without key, placeholders + local hardware SVGs:
-node scripts/catalog/fetch-images.mjs
-
-# 2) Seed DB (upserts categories + ~265 New/Used products)
+export IGDB_CLIENT_ID='...'
+export IGDB_CLIENT_SECRET='...'
+FORCE_REFETCH=1 node scripts/catalog/fetch-images.mjs
 npm run db:seed
-
-# Optional verify
-cd backend && node ../scripts/catalog/verify-seed.mjs
 ```
 
-## Live (VPS after git pull / update.sh)
+## Without IGDB (Steam + Wikipedia)
+
+```bash
+npx tsx database/prisma/export-image-keys.ts
+FORCE_REFETCH=1 node scripts/catalog/fetch-images.mjs
+npm run db:seed
+```
+
+## Live (VPS)
 
 ```bash
 cd /var/www/gamemania
 GH_TOKEN='YOUR_TOKEN' bash scripts/deploy/update.sh
 
-# Enrich images (optional)
-npx tsx database/prisma/export-image-keys.ts
-# RAWG_API_KEY=xxx node scripts/catalog/fetch-images.mjs
-node scripts/catalog/fetch-images.mjs
+export IGDB_CLIENT_ID='...'          # optional but best
+export IGDB_CLIENT_SECRET='...'
+FORCE_REFETCH=1 node scripts/catalog/fetch-images.mjs
 
 cd backend && npm run prisma:seed
 su - deploy -c 'pm2 restart all --update-env'
 ```
-
-## Notes
-
-- New/Used are **separate products** (`condition` NEW vs PRE_OWNED_GOOD).
-- Prices are UK **estimates** — edit in Admin → Products.
-- Do not scrape competitor shop images; use RAWG + local `/catalog/` assets or upload via admin/Cloudinary.
-- Hardware images live under `frontend/public/catalog/{consoles,controllers,cables}/`.
-- Parent category shop filter includes child categories (e.g. `video-games` shows PS5 games).

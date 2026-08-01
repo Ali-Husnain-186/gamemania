@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'res.cloudinary.com' },
       { protocol: 'https', hostname: 'placehold.co' },
+      { protocol: 'https', hostname: 'images.igdb.com' },
+      { protocol: 'https', hostname: 'upload.wikimedia.org' },
+      { protocol: 'https', hostname: 'commons.wikimedia.org' },
+      { protocol: 'https', hostname: 'cdn.cloudflare.steamstatic.com' },
+      { protocol: 'https', hostname: 'shared.akamai.steamstatic.com' },
+      { protocol: 'https', hostname: 'steamcdn-a.akamaihd.net' },
     ],
     // Serve large enough assets for desktop + Retina
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 2560, 3840],

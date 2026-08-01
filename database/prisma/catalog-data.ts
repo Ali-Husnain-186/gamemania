@@ -1,6 +1,6 @@
 /**
  * GameMania UK bulk catalog definitions.
- * New + Used expand into separate Product rows in seed.
+ * One product listing per title/hardware by default (no New/Used twins).
  * Prices are UK market estimates in pence — edit in admin as needed.
  */
 
@@ -57,7 +57,8 @@ function slugify(input: string): string {
 
 function expandFamily(f: Family): CatalogProductDef[] {
   const base = slugify(f.key);
-  const both = f.bothConditions !== false && !f.usedOnly;
+  // One sellable listing per product by default. Only expand New+Used when bothConditions: true.
+  const both = f.bothConditions === true && !f.usedOnly;
   const desc =
     f.description ??
     `${f.name} available at GameMania UK. Genuine stock with a 3-month warranty.`;
@@ -394,7 +395,6 @@ const XBOX_GAMES = [
   'WWE 2K26',
   'WWE 2K25',
   'NBA 2K26',
-  'Hogwarts Legacy (Xbox)',
 ].map((n, i) =>
   gameFamily(
     n,

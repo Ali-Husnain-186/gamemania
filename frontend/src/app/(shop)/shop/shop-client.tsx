@@ -10,7 +10,7 @@ import { ErrorState } from '@/components/shared/error-state';
 import { BrandLoader } from '@/components/ui/brand-loader';
 import type { Category, Product } from '@/types/catalog';
 
-const PLATFORMS = ['PS5', 'PS4', 'SWITCH', 'XBOX_SERIES', 'PC', 'RETRO'];
+const PLATFORMS = ['PS5', 'PS4', 'PS3', 'SWITCH', 'XBOX_SERIES', 'PC', 'RETRO'];
 
 export function ShopClient() {
   const searchParams = useSearchParams();

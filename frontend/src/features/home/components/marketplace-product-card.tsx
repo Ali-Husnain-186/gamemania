@@ -39,7 +39,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
       setQuickOpen(false);
       notify.success('Added to cart');
-      router.push('/checkout');
+      router.push('/cart');
     },
     onError: () => notify.error('Could not add to cart'),
   });

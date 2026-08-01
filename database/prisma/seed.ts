@@ -197,49 +197,28 @@ async function main() {
     create: { key: 'loyalty.points_per_pound', value: 1, group: 'loyalty' },
   });
 
-  // Featured storefront categories (keep home + admin product dropdown in sync)
+  // Featured storefront categories
   const categoryDefs = [
     {
-      name: 'PlayStation',
-      slug: 'playstation',
-      description: 'PS5, PS4 and PlayStation gear',
+      name: 'Game Consoles',
+      slug: 'game-consoles',
+      description: 'PlayStation, Nintendo, Xbox and more',
       imageUrl: '/brand/playstation.png',
       sortOrder: 1,
     },
     {
-      name: 'Nintendo',
-      slug: 'nintendo',
-      description: 'Switch and Nintendo classics',
-      imageUrl: '/brand/nintendo.png',
-      sortOrder: 2,
-    },
-    {
-      name: 'PC Gaming',
-      slug: 'pc-gaming',
-      description: 'PC games and gaming hardware',
+      name: 'Video Games',
+      slug: 'video-games',
+      description: 'New and pre-owned games for every platform',
       imageUrl: '/brand/pcgames.png',
-      sortOrder: 3,
-    },
-    {
-      name: 'Retro',
-      slug: 'retro',
-      description: 'Retro consoles and classic titles',
-      imageUrl: '/brand/retrogames.png',
-      sortOrder: 4,
+      sortOrder: 2,
     },
     {
       name: 'Accessories',
       slug: 'accessories',
-      description: 'Headsets, cables, and more',
+      description: 'Controllers, headsets, cables and more',
       imageUrl: '/brand/accessories.png',
-      sortOrder: 5,
-    },
-    {
-      name: 'Controllers',
-      slug: 'controllers',
-      description: 'Wireless and wired controllers',
-      imageUrl: '/brand/wireless-controller.png',
-      sortOrder: 6,
+      sortOrder: 3,
     },
   ] as const;
 
@@ -266,15 +245,42 @@ async function main() {
     categoriesBySlug[def.slug] = row;
   }
 
-  // Hide legacy taxonomy that no longer appears on the storefront
+  // Hide legacy platform taxonomy — shop uses Video Games + platform filter instead
   await prisma.category.updateMany({
-    where: { slug: { in: ['games', 'consoles'] } },
+    where: {
+      slug: {
+        in: ['games', 'consoles', 'playstation', 'nintendo', 'pc-gaming', 'retro', 'controllers'],
+      },
+    },
     data: { isActive: false },
   });
 
-  const playstation = categoriesBySlug.playstation;
-  const nintendoCat = categoriesBySlug.nintendo;
-  const controllers = categoriesBySlug.controllers;
+  const gameConsoles = categoriesBySlug['game-consoles']!;
+  const videoGames = categoriesBySlug['video-games']!;
+  const accessories = categoriesBySlug.accessories!;
+
+  // Remap any products still on legacy categories
+  const legacy = await prisma.category.findMany({
+    where: {
+      slug: { in: ['playstation', 'nintendo', 'pc-gaming', 'retro', 'controllers', 'games', 'consoles'] },
+    },
+  });
+  for (const cat of legacy) {
+    const targetId =
+      cat.slug === 'controllers' || cat.slug === 'accessories'
+        ? accessories.id
+        : cat.slug === 'consoles'
+          ? gameConsoles.id
+          : videoGames.id;
+    await prisma.product.updateMany({
+      where: { categoryId: cat.id },
+      data: { categoryId: targetId },
+    });
+  }
+
+  const playstation = videoGames;
+  const nintendoCat = videoGames;
+  const controllers = accessories;
 
   const sony = await prisma.brand.upsert({
     where: { slug: 'sony' },
@@ -290,7 +296,11 @@ async function main() {
 
   const sampleProduct = await prisma.product.upsert({
     where: { sku: 'GM-PS5-DEMO-001' },
-    update: { categoryId: playstation.id },
+    update: {
+      categoryId: videoGames.id,
+      tradeInCashPence: 1500,
+      tradeInCreditPence: 1800,
+    },
     create: {
       name: 'Demo Adventure — PS5',
       slug: 'demo-adventure-ps5',
@@ -299,12 +309,14 @@ async function main() {
       description: 'This is a seeded demo product used to verify catalog APIs and storefront wiring.',
       price: 5499,
       compareAtPrice: 5999,
-      categoryId: playstation.id,
+      categoryId: videoGames.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
       status: ProductStatus.ACTIVE,
       isFeatured: true,
+      tradeInCashPence: 1500,
+      tradeInCreditPence: 1800,
       inventory: { create: { quantity: 25, reserved: 0, lowStockThreshold: 5 } },
       images: {
         create: [
@@ -321,7 +333,11 @@ async function main() {
 
   await prisma.product.upsert({
     where: { sku: 'GM-NSW-DEMO-001' },
-    update: { categoryId: nintendoCat.id },
+    update: {
+      categoryId: videoGames.id,
+      tradeInCashPence: 1200,
+      tradeInCreditPence: 1500,
+    },
     create: {
       name: 'Demo Kart Deluxe — Switch',
       slug: 'demo-kart-deluxe-switch',
@@ -329,11 +345,13 @@ async function main() {
       shortDescription: 'Second sample product for filters and listing.',
       description: 'Seeded Switch title for development.',
       price: 4499,
-      categoryId: nintendoCat.id,
+      categoryId: videoGames.id,
       brandId: nintendo.id,
       platform: 'SWITCH',
       condition: ProductCondition.NEW,
       status: ProductStatus.ACTIVE,
+      tradeInCashPence: 1200,
+      tradeInCreditPence: 1500,
       inventory: { create: { quantity: 40, reserved: 0 } },
       images: {
         create: [
@@ -349,7 +367,11 @@ async function main() {
 
   await prisma.product.upsert({
     where: { sku: 'GM-PS5-CONSOLE-001' },
-    update: { categoryId: playstation.id },
+    update: {
+      categoryId: gameConsoles.id,
+      tradeInCashPence: 22000,
+      tradeInCreditPence: 25000,
+    },
     create: {
       name: 'PlayStation 5 Console (Demo)',
       slug: 'playstation-5-console-demo',
@@ -357,11 +379,13 @@ async function main() {
       shortDescription: 'Demo console SKU for high-value shipping tests.',
       description: 'Seeded console product.',
       price: 47999,
-      categoryId: playstation.id,
+      categoryId: gameConsoles.id,
       brandId: sony.id,
       platform: 'PS5',
       condition: ProductCondition.NEW,
       status: ProductStatus.ACTIVE,
+      tradeInCashPence: 22000,
+      tradeInCreditPence: 25000,
       inventory: { create: { quantity: 8, reserved: 0, lowStockThreshold: 2 } },
     },
   });
@@ -440,59 +464,50 @@ async function main() {
 
   await prisma.cmsPage.upsert({
     where: { slug: 'about' },
-    update: {},
+    update: {
+      title: 'About GameMania UK',
+      content:
+        'GameMania UK is an independent UK gaming retailer — games, consoles, accessories and trade-ins.',
+      status: 'PUBLISHED',
+      publishedAt: new Date(),
+    },
     create: {
-      title: 'About GAME-MANIA',
+      title: 'About GameMania UK',
       slug: 'about',
-      content: 'GAME-MANIA is a premium UK gaming marketplace.',
+      content:
+        'GameMania UK is an independent UK gaming retailer — games, consoles, accessories and trade-ins.',
       status: 'PUBLISHED',
       publishedAt: new Date(),
     },
   });
+
+  const faqContent = `Q: What warranty do you offer?
+A: All products purchased from GAMEMANIA UK include a 3-month warranty from the date of delivery. This warranty covers manufacturing faults and defects that occur under normal use.
+
+Q: How does free UK delivery work?
+A: We offer free UK delivery on all orders over £60. For orders below this amount, shipping costs will be calculated automatically at checkout.
+
+Q: Can I trade in games and consoles?
+A: Yes. You can trade in consoles through our Trade-In page. For games, simply select “Trade to Us” on eligible product pages where a trade-in price is displayed. You can choose to receive either cash or store credit, and we’ll provide a free pre-paid postage label for you to send your items to us.
+
+Q: How do I use a coupon?
+A: Enter your coupon code at checkout before completing your purchase. For example, GAMEMANIA10 can be used to receive 10% off during eligible promotions.
+
+Q: How long does delivery take?
+A: Most UK orders are dispatched within 1–2 working days.`;
 
   await prisma.cmsPage.upsert({
     where: { slug: 'faq' },
     update: {
       status: 'PUBLISHED',
       publishedAt: new Date(),
-      content: `Q: What warranty do you offer?
-A: All GAME MANIA products include a 3-month warranty from the date of delivery, covering manufacturing faults under normal use.
-
-Q: How does free UK delivery work?
-A: Orders over £60 qualify for free UK shipping. Below that, shipping is calculated at checkout.
-
-Q: Can I trade in games and consoles?
-A: Yes. Use Trade-In for consoles, or on product pages use “Trade to us” when a trade-in price is listed for games. Choose cash or store credit. We send a pre-printed postage label to our address.
-
-Q: How do I use a coupon?
-A: Enter your code at checkout (e.g. GAMEMANIA10 for 10% off when available).
-
-Q: How long does delivery take?
-A: Most UK orders ship within 1–2 working days after payment clears.
-
-Q: How do I contact support?
-A: Email us via the Contact page or reply to your order confirmation email.`,
+      title: 'FAQ',
+      content: faqContent,
     },
     create: {
       title: 'FAQ',
       slug: 'faq',
-      content: `Q: What warranty do you offer?
-A: All GAME MANIA products include a 3-month warranty from the date of delivery, covering manufacturing faults under normal use.
-
-Q: How does free UK delivery work?
-A: Orders over £60 qualify for free UK shipping. Below that, shipping is calculated at checkout.
-
-Q: Can I trade in games and consoles?
-A: Yes. Use Trade-In for consoles, or on product pages use “Trade to us” when a trade-in price is listed for games. Choose cash or store credit. We send a pre-printed postage label to our address.
-
-Q: How do I use a coupon?
-A: Enter your code at checkout (e.g. GAMEMANIA10 for 10% off when available).
-
-Q: How long does delivery take?
-A: Most UK orders ship within 1–2 working days after payment clears.
-
-Q: How do I contact support?
-A: Email us via the Contact page or reply to your order confirmation email.`,
+      content: faqContent,
       status: 'PUBLISHED',
       publishedAt: new Date(),
     },
@@ -500,13 +515,177 @@ A: Email us via the Contact page or reply to your order confirmation email.`,
 
   await prisma.cmsPage.upsert({
     where: { slug: 'contact' },
-    update: {},
+    update: {
+      content: 'Email Info@gamemaniauk.co.uk or use the Contact form. Trade-in quotes are available on the Trade-In page.',
+      status: 'PUBLISHED',
+      publishedAt: new Date(),
+    },
     create: {
       title: 'Contact',
       slug: 'contact',
-      content: 'Email support@gamemania.com or use the trade-in wizard for console valuations.',
+      content: 'Email Info@gamemaniauk.co.uk or use the Contact form. Trade-in quotes are available on the Trade-In page.',
       status: 'PUBLISHED',
       publishedAt: new Date(),
+    },
+  });
+
+  const lastUpdated = '1 August 2026';
+
+  const termsContent = `Last Updated: ${lastUpdated}
+
+Welcome to GameMania UK.
+
+By accessing or using our website, you agree to these Terms & Conditions.
+
+1. About Us
+GameMania UK is an independent UK retailer specialising in New Video Games, Pre-Owned Video Games, Games Consoles, Gaming Accessories, and Trade-In Services.
+
+2. Orders
+All orders are subject to acceptance and product availability. GameMania UK reserves the right to cancel or refuse any order where stock is unavailable, pricing errors occur, fraud is suspected, or payment cannot be authorised. If payment has already been taken, a full refund will be issued.
+
+3. Pricing
+All prices shown are in Pounds Sterling (£). Prices include VAT where applicable. Prices may change without notice.
+
+4. Product Information
+We make every effort to ensure product descriptions and images are accurate. However, colours and images may vary slightly depending on your device. Used products may show signs of previous use unless otherwise stated.
+
+5. Condition of Pre-Owned Products
+All pre-owned consoles and accessories are professionally tested, cleaned and inspected before dispatch to ensure they are fully functional. Any cosmetic imperfections will be reflected in the product description where relevant.
+
+6. Delivery
+Estimated delivery times are provided for guidance only. Ownership of goods passes to the customer upon delivery. Customers should inspect deliveries promptly and report any issues as soon as possible.
+
+7. Returns
+Your statutory rights under UK consumer law are not affected. If you wish to return an item, please contact us before sending it back. Items must be returned in accordance with our Returns Policy. Faulty products will be repaired, replaced or refunded where required by law.
+
+8. Trade-In Service
+Trade-in quotations provided online are estimates only. Final valuations are subject to inspection upon receipt and may be adjusted based on cosmetic condition, functionality, missing accessories and authenticity. Customers may choose to accept or decline any revised valuation. GameMania UK reserves the right to refuse counterfeit, stolen or prohibited items.
+
+9. Intellectual Property
+All content on this website, including logos, images, graphics, product descriptions and website design, is the property of GameMania UK unless otherwise stated. No content may be copied or reproduced without written permission.
+
+10. Website Use
+You agree not to use the website unlawfully, attempt to gain unauthorised access, upload malicious software, or misuse our services.
+
+11. Limitation of Liability
+Nothing within these Terms excludes liability where it cannot legally be excluded under the laws of England and Wales. To the fullest extent permitted by law, GameMania UK’s liability shall be limited to the value of the products purchased.
+
+12. Governing Law
+These Terms & Conditions are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.
+
+13. Contact Us
+GameMania UK
+Website: www.gamemaniaauk.co.uk
+Email: Info@gamemaniauk.co.uk`;
+
+  const privacyContent = `Last Updated: ${lastUpdated}
+
+Welcome to GameMania UK (“we”, “our”, “us”). We are committed to protecting your privacy and ensuring your personal information is handled securely and responsibly.
+
+This Privacy Policy explains how we collect, use and protect your personal information when you visit www.gamemaniaauk.co.uk or purchase products from us.
+
+Who We Are
+GameMania UK is an independent UK gaming retailer specialising in New & Pre-Owned Video Games, Games Consoles, Gaming Accessories and Trade-In Services.
+
+If you have any questions regarding this Privacy Policy, please contact us at:
+Email: Info@gamemania.co.uk
+
+Information We Collect
+Personal Information: Full Name, Billing Address, Delivery Address, Email Address, Telephone Number.
+Order Information: Products purchased, Order history, Trade-in requests, Delivery information.
+Payment Information: Payments are securely processed through trusted third-party payment providers. GameMania UK never stores your full payment card details.
+Website Information: IP Address, Browser Type, Device Information, Pages Visited, Time Spent on Website, Cookies.
+
+How We Use Your Information
+We use your information to process orders, deliver purchases, process trade-in requests, verify payments, prevent fraud, improve our website, provide customer support, comply with legal obligations, and send promotional emails only where you have opted in.
+
+Marketing
+If you choose to receive marketing communications, we may occasionally send updates regarding new game releases, trade-in promotions, exclusive discounts, special offers and gaming news. You can unsubscribe at any time using the link within any marketing email.
+
+Cookies
+GameMania UK uses cookies to improve your browsing experience, remember preferences, improve performance, understand visitor behaviour, measure traffic and improve security. You can disable cookies through your browser settings at any time.
+
+Sharing Your Information
+We never sell your personal information. Your information may only be shared with trusted third parties where necessary, including payment providers, delivery companies, website hosting providers, fraud prevention agencies, and legal authorities where required by law.
+
+Keeping Your Information Safe
+We use appropriate technical and organisational measures to protect your information against unauthorised access, loss, misuse and disclosure. While no online service can guarantee absolute security, we continually work to protect your personal information.
+
+Your Rights
+Under UK GDPR you have the right to request access to your personal information, correct inaccurate information, request deletion of your data, restrict processing, object to marketing, and request a copy of your data.
+To exercise these rights, please contact: support@gamemaniaauk.co.uk
+
+Changes to This Policy
+We may update this Privacy Policy from time to time. Any changes will be published on this page.
+
+Contact Us
+GameMania UK
+Website: www.gamemaniaauk.co.uk
+Email: Info@gamemania.co.uk`;
+
+  const returnsContent = `Last Updated: ${lastUpdated}
+
+Returns Policy — GameMania UK
+
+Your statutory rights under UK consumer law are not affected.
+
+Contact us before returning any item. Faulty products will be repaired, replaced or refunded where required by law.
+
+Pre-owned items must be returned in the same condition you received them, with original packaging where possible.
+
+For full details see our Terms & Conditions, or email Info@gamemaniauk.co.uk.`;
+
+  const shippingContent = `Last Updated: ${lastUpdated}
+
+Shipping Policy — GameMania UK
+
+We offer free UK delivery on orders over £60. Below that amount, shipping is calculated at checkout.
+
+Most UK orders are dispatched within 1–2 working days after payment clears.
+
+Delivery times are estimates only. You will receive tracking where available.
+
+For questions, contact Info@gamemaniauk.co.uk.`;
+
+  for (const page of [
+    { slug: 'terms', title: 'Terms & Conditions', content: termsContent },
+    { slug: 'privacy', title: 'Privacy Policy', content: privacyContent },
+    { slug: 'returns', title: 'Returns Policy', content: returnsContent },
+    { slug: 'shipping', title: 'Shipping Policy', content: shippingContent },
+  ]) {
+    await prisma.cmsPage.upsert({
+      where: { slug: page.slug },
+      update: {
+        title: page.title,
+        content: page.content,
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+      },
+      create: {
+        title: page.title,
+        slug: page.slug,
+        content: page.content,
+        status: 'PUBLISHED',
+        publishedAt: new Date(),
+      },
+    });
+  }
+
+  await prisma.setting.upsert({
+    where: { key: 'social.links' },
+    update: {},
+    create: {
+      key: 'social.links',
+      group: 'social',
+      value: [
+        {
+          id: 'instagram',
+          label: 'Instagram',
+          url: 'https://www.instagram.com/gamemaniastore',
+          icon: 'instagram',
+          enabled: true,
+        },
+      ],
     },
   });
 

@@ -31,9 +31,12 @@ export function ProductDetailClient() {
       setCart(cart);
       void queryClient.invalidateQueries({ queryKey: ['cart'] });
       notify.success('Added to cart');
-      router.push('/checkout');
+      router.push('/cart');
     },
-    onError: () => notify.error('Could not add to cart'),
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : 'Could not add to cart';
+      notify.error(message);
+    },
   });
 
   const tradeMutation = useMutation({

@@ -37,12 +37,14 @@ export const productFormSchema = z.object({
   releaseDate: z.string().optional(),
   tradeInCashPounds: z
     .string()
-    .optional()
-    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 6.00'),
+    .trim()
+    .min(1, 'Cash trade-in price is required')
+    .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 6.00'),
   tradeInCreditPounds: z
     .string()
-    .optional()
-    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
+    .trim()
+    .min(1, 'Store credit trade-in price is required')
+    .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
   platform: z.string().optional(),
 });
 

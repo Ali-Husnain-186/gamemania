@@ -81,10 +81,10 @@ export function CartClient() {
             return (
               <div
                 key={item.id}
-                className="flex items-center justify-between gap-4 rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/40 p-4"
+                className="rounded-lg border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/40 p-4"
               >
-                <div className="flex min-w-0 items-center gap-3">
-                  <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg)]">
+                <div className="flex gap-3">
+                  <div className="h-16 w-16 shrink-0 overflow-hidden rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg)] sm:h-20 sm:w-20">
                     {product.imageUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -94,10 +94,10 @@ export function CartClient() {
                       />
                     ) : null}
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <Link
                       href={`/products/${product.slug}`}
-                      className="font-semibold hover:text-[var(--gm-accent)]"
+                      className="block break-words font-semibold leading-snug hover:text-[var(--gm-accent)]"
                     >
                       {product.name}
                     </Link>
@@ -111,43 +111,43 @@ export function CartClient() {
                         {formatGBP(product.price)} each
                       </p>
                     )}
+                    <div className="mt-3 flex flex-wrap items-center gap-3">
+                      {item.isTradeIn ? (
+                        <span className="rounded bg-[var(--gm-cyan)]/20 px-2 py-1 text-[10px] font-bold uppercase text-[var(--gm-cyan)]">
+                          Trade in
+                        </span>
+                      ) : (
+                        <input
+                          type="number"
+                          min={1}
+                          max={99}
+                          value={item.quantity}
+                          onChange={(e) =>
+                            updateMutation.mutate({
+                              id: item.id,
+                              quantity: Number(e.target.value) || 1,
+                            })
+                          }
+                          className="w-16 rounded border border-[var(--gm-border)] bg-[var(--gm-bg)] px-2 py-1 text-sm"
+                          aria-label={`Quantity for ${product.name}`}
+                        />
+                      )}
+                      <p className="text-sm font-semibold">
+                        {item.isTradeIn
+                          ? item.tradeValuePence != null
+                            ? formatGBP(item.tradeValuePence)
+                            : '—'
+                          : formatGBP(lineTotal)}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => removeMutation.mutate(item.id)}
+                        className="text-xs text-[var(--gm-danger)]"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {item.isTradeIn ? (
-                    <span className="rounded bg-[var(--gm-cyan)]/20 px-2 py-1 text-[10px] font-bold uppercase text-[var(--gm-cyan)]">
-                      Trade in
-                    </span>
-                  ) : (
-                    <input
-                      type="number"
-                      min={1}
-                      max={99}
-                      value={item.quantity}
-                      onChange={(e) =>
-                        updateMutation.mutate({
-                          id: item.id,
-                          quantity: Number(e.target.value) || 1,
-                        })
-                      }
-                      className="w-16 rounded border border-[var(--gm-border)] bg-[var(--gm-bg)] px-2 py-1 text-sm"
-                      aria-label={`Quantity for ${product.name}`}
-                    />
-                  )}
-                  <p className="w-20 text-right text-sm font-semibold">
-                    {item.isTradeIn
-                      ? item.tradeValuePence != null
-                        ? formatGBP(item.tradeValuePence)
-                        : '—'
-                      : formatGBP(lineTotal)}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => removeMutation.mutate(item.id)}
-                    className="text-xs text-[var(--gm-danger)]"
-                  >
-                    Remove
-                  </button>
                 </div>
               </div>
             );

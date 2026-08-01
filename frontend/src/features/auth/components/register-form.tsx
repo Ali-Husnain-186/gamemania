@@ -1,7 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Eye, EyeOff } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ApiError } from '@/lib/api';
 import { notify } from '@/lib/toast';
@@ -14,6 +16,8 @@ export function RegisterForm() {
   const searchParams = useSearchParams();
   const { register: registerAccount } = useAuth();
   const returnUrl = searchParams.get('returnUrl');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const {
     register,
     handleSubmit,
@@ -21,7 +25,13 @@ export function RegisterForm() {
     setError,
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '' },
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 
   async function onSubmit(values: RegisterFormValues) {
@@ -92,16 +102,54 @@ export function RegisterForm() {
           <span className="text-xs font-bold uppercase tracking-wider text-[var(--gm-muted)]">
             Password
           </span>
-          <input
-            type="password"
-            autoComplete="new-password"
-            className="mt-1 w-full rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 text-sm gm-focus"
-            aria-invalid={Boolean(errors.password)}
-            {...register('password')}
-          />
+          <div className="relative mt-1">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              className="w-full rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 pr-10 text-sm gm-focus"
+              aria-invalid={Boolean(errors.password)}
+              {...register('password')}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-[var(--gm-muted)] hover:text-[var(--gm-fg)]"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           {errors.password ? (
             <p className="mt-1 text-xs text-[var(--gm-danger)]" role="alert">
               {errors.password.message}
+            </p>
+          ) : null}
+        </label>
+
+        <label className="block">
+          <span className="text-xs font-bold uppercase tracking-wider text-[var(--gm-muted)]">
+            Confirm password
+          </span>
+          <div className="relative mt-1">
+            <input
+              type={showConfirm ? 'text' : 'password'}
+              autoComplete="new-password"
+              className="w-full rounded-md border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 pr-10 text-sm gm-focus"
+              aria-invalid={Boolean(errors.confirmPassword)}
+              {...register('confirmPassword')}
+            />
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-[var(--gm-muted)] hover:text-[var(--gm-fg)]"
+              onClick={() => setShowConfirm((v) => !v)}
+              aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}
+            >
+              {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          {errors.confirmPassword ? (
+            <p className="mt-1 text-xs text-[var(--gm-danger)]" role="alert">
+              {errors.confirmPassword.message}
             </p>
           ) : null}
         </label>

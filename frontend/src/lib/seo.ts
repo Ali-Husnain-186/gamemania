@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-export const SITE_NAME = 'GAMEMANIA UK';
+export const SITE_NAME = 'GameMania UK';
 export const SITE_TAGLINE = 'Trade.Play.Repeat';
 export const SITE_TITLE = `${SITE_NAME} / ${SITE_TAGLINE}`;
 export const DEFAULT_DESCRIPTION =
@@ -84,7 +84,7 @@ export function organizationJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    alternateName: ['GAME MANIA', 'Game Mania UK'],
+    alternateName: ['GameMania', 'GAME MANIA', 'GAMEMANIA UK'],
     url,
     logo: absoluteUrl('/brand/game-mania-logo.png'),
     sameAs: ['https://www.instagram.com/gamemaniastore'],

@@ -51,7 +51,7 @@ export function AccountOverview() {
             {formatGBP(user.storeCredit ?? 0)}
           </dd>
           <p className="mt-2 text-xs text-[var(--gm-muted)]">
-            From approved trade-ins. Applied automatically at checkout.
+            From paid trade-ins. Applied automatically at checkout.
           </p>
         </div>
         <div className="rounded-2xl border-2 border-[var(--gm-magenta)] bg-black/40 p-4">

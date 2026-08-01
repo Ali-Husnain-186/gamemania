@@ -16,11 +16,13 @@ import { reviewsRouter } from './reviews.routes';
 import { cmsRouter, blogRouter } from './cms.routes';
 import { notificationsRouter } from './notifications.routes';
 import { paymentsRouter } from './payments.routes';
+import { publicSettingsRouter } from './public-settings.routes';
 
 const router = Router();
 
 router.get('/health', healthController);
 router.get('/shipping/quote', shippingQuoteController);
+router.use('/settings', publicSettingsRouter);
 router.use('/auth', authRouter);
 router.use(catalogRouter);
 router.use('/cart', cartRouter);

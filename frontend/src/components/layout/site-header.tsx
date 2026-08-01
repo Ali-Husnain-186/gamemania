@@ -2,27 +2,44 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
-import { Menu, Moon, ShoppingBag, Sun, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import {
+  Heart,
+  Home,
+  LogIn,
+  Menu,
+  Moon,
+  RefreshCcw,
+  Search,
+  ShoppingBag,
+  Store,
+  Sun,
+  User,
+  X,
+} from 'lucide-react';
+import { FormEvent, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { useCartStore } from '@/stores/cart-store';
 
 const nav = [
-  { href: '/shop', label: 'Shop' },
-  { href: '/trade-in', label: 'Trade-In' },
-  { href: '/wishlist', label: 'Wishlist' },
-  { href: '/account', label: 'Account' },
+  { href: '/', label: 'Home', icon: Home },
+  { href: '/shop', label: 'Shop', icon: Store },
+  { href: '/trade-in', label: 'Trade-In', icon: RefreshCcw },
+  { href: '/wishlist', label: 'Wishlist', icon: Heart },
+  { href: '/account', label: 'Account', icon: User },
 ];
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const router = useRouter();
   const { resolvedTheme, setTheme } = useTheme();
   const { isAuthenticated, status, logout } = useAuth();
   const itemCount = useCartStore((s) => s.itemCount());
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -31,6 +48,7 @@ export function SiteHeader() {
 
   useEffect(() => {
     setOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
 
   const isDark = !mounted || resolvedTheme !== 'light';
@@ -42,45 +60,66 @@ export function SiteHeader() {
     window.location.assign('/');
   }
 
+  function onSearch(e: FormEvent) {
+    e.preventDefault();
+    const q = query.trim();
+    router.push(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
+    setSearchOpen(false);
+    setOpen(false);
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-2.5 sm:h-[4.25rem] sm:gap-3 sm:px-4 md:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-2.5 sm:h-[4.5rem] sm:gap-3 sm:px-4 md:px-6">
         <Link
           href="/"
           className="flex min-w-0 shrink items-center gap-1.5 rounded-sm gm-focus sm:gap-2.5"
-          aria-label="GAMEMANIA UK home"
+          aria-label="GameMania UK home"
         >
           <Image
             src="/brand/game-mania-logo.png"
             alt=""
-            width={64}
-            height={64}
-            className="h-9 w-9 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-12 sm:w-12 md:h-14 md:w-14"
+            width={72}
+            height={72}
+            className="h-11 w-11 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-[3.75rem] sm:w-[3.75rem] md:h-[4.25rem] md:w-[4.25rem]"
             priority
           />
-          <span className="gm-display hidden whitespace-nowrap text-[1.15rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] md:inline md:text-[1.55rem] lg:text-[1.85rem]">
-            GAMEMANIA UK
+          <span className="gm-display hidden whitespace-nowrap text-[1.2rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] md:inline md:text-[1.65rem] lg:text-[1.95rem]">
+            GameMania
           </span>
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-4 lg:flex lg:gap-6" aria-label="Primary">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'rounded-sm text-xs font-bold uppercase tracking-wide transition gm-focus lg:text-sm',
-                pathname === item.href || pathname.startsWith(`${item.href}/`)
-                  ? 'text-[var(--gm-yellow)]'
-                  : 'text-white/90 hover:text-white',
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+        <nav className="ml-auto hidden items-center gap-4 lg:flex lg:gap-5" aria-label="Primary">
+          {nav
+            .filter((item) => item.href !== '/')
+            .map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'rounded-sm text-xs font-bold uppercase tracking-wide transition gm-focus lg:text-sm',
+                  pathname === item.href ||
+                    (item.href !== '/' && pathname.startsWith(`${item.href}/`))
+                    ? 'text-[var(--gm-yellow)]'
+                    : 'text-white/90 hover:text-white',
+                )}
+              >
+                {item.label}
+              </Link>
+            ))}
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 lg:ml-0">
+          <button
+            type="button"
+            onClick={() => setSearchOpen((v) => !v)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 sm:h-9 sm:w-9 gm-focus"
+            aria-label="Search"
+            aria-expanded={searchOpen}
+          >
+            <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
+          </button>
+
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
@@ -111,7 +150,7 @@ export function SiteHeader() {
             <>
               <Link
                 href="/account"
-                className="hidden rounded-full border-2 border-white px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
+                className="hidden rounded-full border-2 border-white px-2.5 py-1 text-[11px] font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
               >
                 Account
               </Link>
@@ -127,13 +166,13 @@ export function SiteHeader() {
             <>
               <Link
                 href="/login"
-                className="hidden rounded-full border-2 border-white px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
+                className="hidden rounded-full border-2 border-white px-2.5 py-1 text-[11px] font-extrabold text-white transition hover:bg-white hover:text-[#01A6C2] md:inline-flex"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
-                className="btn-primary hidden px-3 py-1.5 text-xs md:inline-flex"
+                className="hidden rounded-full border border-white/50 px-2 py-1 text-[10px] font-semibold text-white/90 transition hover:border-white hover:bg-white/10 md:inline-flex"
               >
                 Create account
               </Link>
@@ -157,6 +196,27 @@ export function SiteHeader() {
         </div>
       </div>
 
+      {searchOpen ? (
+        <div className="border-t-2 border-white/20 bg-[#01A6C2] px-3 py-3 sm:px-4">
+          <form onSubmit={onSearch} className="mx-auto flex max-w-6xl gap-2">
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search games, consoles, accessories…"
+              className="min-w-0 flex-1 rounded-lg border-2 border-white/40 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none"
+              autoFocus
+            />
+            <button
+              type="submit"
+              className="shrink-0 rounded-lg bg-[var(--gm-yellow)] px-4 py-2 text-sm font-bold text-black"
+            >
+              Search
+            </button>
+          </form>
+        </div>
+      ) : null}
+
       {open ? (
         <nav
           id="mobile-nav"
@@ -164,50 +224,49 @@ export function SiteHeader() {
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    'block rounded-lg px-3 py-3 text-sm font-bold uppercase tracking-wide gm-focus',
-                    pathname === item.href
-                      ? 'bg-black/15 text-[var(--gm-yellow)]'
-                      : 'text-white/90 hover:bg-white/10 hover:text-white',
-                  )}
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {nav.map((item) => {
+              const Icon = item.icon;
+              const active =
+                pathname === item.href ||
+                (item.href !== '/' && pathname.startsWith(`${item.href}/`));
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-bold uppercase tracking-wide gm-focus',
+                      active
+                        ? 'bg-black/15 text-[var(--gm-yellow)]'
+                        : 'text-white/90 hover:bg-white/10 hover:text-white',
+                    )}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" aria-hidden />
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
             {signedIn ? (
               <li>
                 <button
                   type="button"
                   onClick={() => void handleSignOut()}
-                  className="block w-full rounded-lg px-3 py-3 text-left text-sm font-bold text-[var(--gm-yellow)] gm-focus"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left text-sm font-bold text-[var(--gm-yellow)] gm-focus"
                 >
+                  <LogIn className="h-4 w-4 shrink-0 rotate-180" aria-hidden />
                   Sign out
                 </button>
               </li>
             ) : showAuthControls ? (
-              <>
-                <li>
-                  <Link
-                    href="/login"
-                    className="block rounded-lg px-3 py-3 text-sm font-bold text-white gm-focus"
-                  >
-                    Sign in
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/register"
-                    className="block rounded-lg px-3 py-3 text-sm font-bold text-[var(--gm-yellow)] gm-focus"
-                  >
-                    Create account
-                  </Link>
-                </li>
-              </>
+              <li>
+                <Link
+                  href="/login"
+                  className="flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-bold text-white gm-focus"
+                >
+                  <LogIn className="h-4 w-4 shrink-0" aria-hidden />
+                  Sign in
+                </Link>
+              </li>
             ) : null}
           </ul>
         </nav>

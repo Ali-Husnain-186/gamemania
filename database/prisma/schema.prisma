@@ -637,27 +637,33 @@ model TradeAccessoryRule {
 }
 
 model TradeRequest {
-  id              String             @id @default(cuid())
-  requestNumber   String             @unique
-  userId          String
-  user            User               @relation(fields: [userId], references: [id])
-  optionId        String
-  option          TradeModelOption   @relation(fields: [optionId], references: [id])
-  status          TradeRequestStatus @default(SUBMITTED)
-  payoutMethod    TradePayoutMethod
-  quotedCash      Int
-  quotedCredit    Int
-  finalAmount     Int?
+  id                String             @id @default(cuid())
+  requestNumber     String             @unique
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  optionId          String?
+  option            TradeModelOption?  @relation(fields: [optionId], references: [id])
+  status            TradeRequestStatus @default(SUBMITTED)
+  payoutMethod      TradePayoutMethod
+  quotedCash        Int
+  quotedCredit      Int
+  finalAmount       Int?
   selectedAccessories Json?
-  customerNotes   String?
-  adminNotes      String?
-  gradedCondition ProductCondition?
-  submittedAt     DateTime           @default(now())
-  receivedAt      DateTime?
-  gradedAt        DateTime?
-  paidAt          DateTime?
-  createdAt       DateTime           @default(now())
-  updatedAt       DateTime           @updatedAt
+  customerNotes     String?
+  adminNotes        String?
+  gradedCondition   ProductCondition?
+  isManual          Boolean            @default(false)
+  manualCategory    String?
+  manualDescription String?
+  bankAccountName   String?
+  bankSortCode      String?
+  bankAccountNumber String?
+  submittedAt       DateTime           @default(now())
+  receivedAt        DateTime?
+  gradedAt          DateTime?
+  paidAt            DateTime?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   @@index([userId])
   @@index([status])

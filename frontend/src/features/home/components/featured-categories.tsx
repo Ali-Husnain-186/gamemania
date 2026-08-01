@@ -17,14 +17,14 @@ export function FeaturedCategories() {
     queryFn: () => apiGet<Category[]>('/categories'),
   });
 
-  const categories = (categoriesQuery.data ?? []).slice(0, 6);
+  const categories = (categoriesQuery.data ?? []).slice(0, 3);
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="Browse"
         title="Featured categories"
-        description="Jump straight into the platforms and gear you love."
+        description="Game Consoles, Video Games and Accessories — then filter by platform in shop."
       />
       {categoriesQuery.isLoading ? (
         <BrandLoader
@@ -47,7 +47,7 @@ export function FeaturedCategories() {
       ) : categories.length === 0 ? (
         <p className="text-sm text-[var(--gm-muted)]">Categories coming soon.</p>
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 md:gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5 md:gap-6">
           {categories.map((cat, i) => {
             const image = cat.imageUrl || FALLBACK_IMAGE;
             return (
@@ -63,22 +63,22 @@ export function FeaturedCategories() {
                   href={`/shop?category=${cat.slug}`}
                   className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--gm-cyan)]/25 bg-[var(--gm-bg-elevated)] transition hover:-translate-y-1 hover:border-[var(--gm-cyan)]/70 hover:shadow-[0_14px_36px_rgba(1,166,194,0.16)] gm-focus"
                 >
-                  <div className="relative h-[180px] w-full shrink-0 overflow-hidden bg-[#0a1016] sm:h-[220px] md:h-[240px]">
+                  <div className="relative h-[180px] w-full shrink-0 overflow-hidden bg-[#0a1016] sm:h-[200px] md:h-[220px]">
                     <Image
                       src={image}
                       alt={cat.name}
                       fill
                       quality={90}
-                      sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 360px"
+                      sizes="(max-width:640px) 100vw, 33vw"
                       className="object-cover object-center transition duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
 
-                  <div className="flex h-[4.25rem] items-center justify-between gap-2 border-t border-[var(--gm-cyan)]/15 px-4 sm:h-[4.75rem] sm:px-5">
-                    <h3 className="gm-display line-clamp-1 text-base text-[var(--gm-yellow)] sm:text-xl">
+                  <div className="flex min-h-[4.5rem] flex-col justify-center gap-2 border-t border-[var(--gm-cyan)]/15 px-4 py-3 sm:min-h-[5rem] sm:px-5">
+                    <h3 className="gm-display text-base leading-tight text-[var(--gm-yellow)] sm:text-xl">
                       {cat.name}
                     </h3>
-                    <span className="shrink-0 rounded-full bg-[var(--gm-cyan)] px-3 py-1 text-[10px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
+                    <span className="w-fit rounded-full bg-[var(--gm-cyan)] px-3 py-1 text-[10px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
                       Explore
                     </span>
                   </div>

@@ -14,6 +14,12 @@ type TradeRequest = {
   quotedCash: number;
   quotedCredit: number;
   finalAmount?: number | null;
+  isManual?: boolean;
+  manualCategory?: string | null;
+  manualDescription?: string | null;
+  bankAccountName?: string | null;
+  bankSortCode?: string | null;
+  bankAccountNumber?: string | null;
   createdAt: string;
   user?: { email: string } | null;
   option?: {
@@ -57,10 +63,13 @@ export default function TradeInsPage() {
     void load();
   }, []);
 
-  function update(id: string, status: string) {
+  function update(id: string, status: string, finalAmount?: number) {
     startTransition(async () => {
       try {
-        await apiPatch(`/admin/trade-in/requests/${id}`, { status });
+        await apiPatch(`/admin/trade-in/requests/${id}`, {
+          status,
+          ...(finalAmount != null ? { finalAmount } : {}),
+        });
         await load();
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Update failed');
@@ -84,7 +93,7 @@ export default function TradeInsPage() {
     <>
       <PageHeader
         title="Trade-ins"
-        description="Approve & mark PAID: store credit is applied to the customer account automatically. Cash payouts are sent manually by bank transfer."
+        description="Mark PAID to apply store credit automatically (quote amount used if final amount is empty). Cash rows show bank details for manual transfer."
       />
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
       <Panel className="overflow-hidden">
@@ -94,14 +103,14 @@ export default function TradeInsPage() {
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left text-sm">
+            <table className="w-full min-w-[920px] text-left text-sm">
               <thead>
                 <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
                   <th className="px-4 py-3 font-medium">Ref</th>
                   <th className="px-4 py-3 font-medium">Customer</th>
-                  <th className="px-4 py-3 font-medium">Device</th>
+                  <th className="px-4 py-3 font-medium">Item</th>
                   <th className="px-4 py-3 font-medium">Quote</th>
-                  <th className="px-4 py-3 font-medium">Payout</th>
+                  <th className="px-4 py-3 font-medium">Payout / Bank</th>
                   <th className="px-4 py-3 font-medium">Status</th>
                   <th className="px-4 py-3 font-medium" />
                 </tr>
@@ -114,47 +123,96 @@ export default function TradeInsPage() {
                     </td>
                   </tr>
                 ) : (
-                  items.map((t) => (
-                    <tr
-                      key={t.id}
-                      className="border-b border-[var(--admin-border)]/70 last:border-0"
-                    >
-                      <td className="px-4 py-3 font-mono text-xs">{t.requestNumber}</td>
-                      <td className="px-4 py-3">{t.user?.email ?? '—'}</td>
-                      <td className="px-4 py-3">
-                        {t.option?.model?.name ?? '—'} {t.option?.storage ?? ''}
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs">
-                        Cash {formatGbp(t.finalAmount ?? t.quotedCash)} / Credit{' '}
-                        {formatGbp(t.quotedCredit)}
-                      </td>
-                      <td className="px-4 py-3">{t.payoutMethod}</td>
-                      <td className="px-4 py-3">
-                        <select
-                          className="rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1 text-xs"
-                          value={t.status}
-                          disabled={pending}
-                          onChange={(e) => update(t.id, e.target.value)}
-                        >
-                          {STATUSES.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <button
-                          type="button"
-                          className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
-                          disabled={pending}
-                          onClick={() => remove(t.id, t.requestNumber)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                  items.map((t) => {
+                    const defaultFinal = t.payoutMethod === 'CASH' ? t.quotedCash : t.quotedCredit;
+                    return (
+                      <tr
+                        key={t.id}
+                        className="border-b border-[var(--admin-border)]/70 last:border-0"
+                      >
+                        <td className="px-4 py-3 font-mono text-xs">{t.requestNumber}</td>
+                        <td className="px-4 py-3">{t.user?.email ?? '—'}</td>
+                        <td className="px-4 py-3">
+                          {t.isManual ? (
+                            <span>
+                              Not listed · {t.manualCategory ?? 'Other'}
+                              {t.manualDescription ? (
+                                <span className="mt-1 block max-w-[220px] truncate text-xs text-[var(--admin-muted)]">
+                                  {t.manualDescription}
+                                </span>
+                              ) : null}
+                            </span>
+                          ) : (
+                            <>
+                              {t.option?.model?.name ?? '—'} {t.option?.storage ?? ''}
+                            </>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs">
+                          Cash {formatGbp(t.quotedCash)} / Credit {formatGbp(t.quotedCredit)}
+                          {t.finalAmount != null ? (
+                            <span className="mt-1 block text-[var(--admin-accent)]">
+                              Final {formatGbp(t.finalAmount)}
+                            </span>
+                          ) : null}
+                          <label className="mt-2 block text-[10px] uppercase text-[var(--admin-muted)]">
+                            Final £ (pence)
+                            <input
+                              type="number"
+                              min={0}
+                              defaultValue={t.finalAmount ?? defaultFinal}
+                              className="mt-1 w-28 rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1 text-xs"
+                              id={`final-${t.id}`}
+                            />
+                          </label>
+                        </td>
+                        <td className="px-4 py-3 text-xs">
+                          <p>{t.payoutMethod}</p>
+                          {t.payoutMethod === 'CASH' ? (
+                            <p className="mt-1 text-[var(--admin-muted)]">
+                              {t.bankAccountName ?? '—'}
+                              <br />
+                              {t.bankSortCode ?? '—'} / {t.bankAccountNumber ?? '—'}
+                            </p>
+                          ) : null}
+                        </td>
+                        <td className="px-4 py-3">
+                          <select
+                            className="rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1 text-xs"
+                            value={t.status}
+                            disabled={pending}
+                            onChange={(e) => {
+                              const el = document.getElementById(
+                                `final-${t.id}`,
+                              ) as HTMLInputElement | null;
+                              const amount = el ? Number(el.value) : undefined;
+                              update(
+                                t.id,
+                                e.target.value,
+                                Number.isFinite(amount) ? amount : undefined,
+                              );
+                            }}
+                          >
+                            {STATUSES.map((s) => (
+                              <option key={s} value={s}>
+                                {s}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <button
+                            type="button"
+                            className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                            disabled={pending}
+                            onClick={() => remove(t.id, t.requestNumber)}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
                 )}
               </tbody>
             </table>

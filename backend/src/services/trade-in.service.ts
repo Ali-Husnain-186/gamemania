@@ -80,25 +80,63 @@ export async function quoteTradeIn(modelOptionId: string, accessoryIds?: string[
 export async function createTradeRequest(
   userId: string,
   input: {
-    modelOptionId: string;
+    modelOptionId?: string;
     payoutMethod: TradePayoutMethod;
     accessories?: string[];
     customerNotes?: string;
+    isManual?: boolean;
+    manualCategory?: string;
+    manualDescription?: string;
+    bankAccountName?: string;
+    bankSortCode?: string;
+    bankAccountNumber?: string;
   },
 ) {
-  const quote = await quoteTradeIn(input.modelOptionId, input.accessories);
+  const isManual = Boolean(input.isManual);
+
+  let quotedCash = 0;
+  let quotedCredit = 0;
+  let optionId: string | null = null;
+
+  if (isManual) {
+    if (!input.manualCategory?.trim() || !input.manualDescription?.trim()) {
+      throw new ValidationError('Manual trade-in requires category and description');
+    }
+  } else {
+    if (!input.modelOptionId) throw new ValidationError('modelOptionId is required');
+    const quote = await quoteTradeIn(input.modelOptionId, input.accessories);
+    quotedCash = quote.cashPence;
+    quotedCredit = quote.creditPence;
+    optionId = input.modelOptionId;
+  }
+
+  if (input.payoutMethod === 'CASH') {
+    if (
+      !input.bankAccountName?.trim() ||
+      !input.bankSortCode?.trim() ||
+      !input.bankAccountNumber?.trim()
+    ) {
+      throw new ValidationError('Bank details are required for cash payouts');
+    }
+  }
 
   const request = await prisma.tradeRequest.create({
     data: {
       requestNumber: generateRequestNumber(),
       userId,
-      optionId: input.modelOptionId,
+      optionId,
       payoutMethod: input.payoutMethod,
-      quotedCash: quote.cashPence,
-      quotedCredit: quote.creditPence,
+      quotedCash,
+      quotedCredit,
       selectedAccessories: input.accessories ?? [],
       customerNotes: input.customerNotes,
       status: 'SUBMITTED',
+      isManual,
+      manualCategory: isManual ? input.manualCategory : null,
+      manualDescription: isManual ? input.manualDescription : null,
+      bankAccountName: input.payoutMethod === 'CASH' ? input.bankAccountName : null,
+      bankSortCode: input.payoutMethod === 'CASH' ? input.bankSortCode : null,
+      bankAccountNumber: input.payoutMethod === 'CASH' ? input.bankAccountNumber : null,
     },
     include: {
       option: {
@@ -170,6 +208,7 @@ export async function adminUpdateTradeRequest(
     status?: string;
     finalCashPence?: number;
     finalCreditPence?: number;
+    finalAmount?: number;
     adminNotes?: string;
     gradedCondition?: ProductCondition;
   },
@@ -184,8 +223,14 @@ export async function adminUpdateTradeRequest(
   const newStatus = input.status ?? existing.status;
 
   let finalAmount = existing.finalAmount;
+  if (input.finalAmount != null) finalAmount = input.finalAmount;
   if (input.finalCashPence != null) finalAmount = input.finalCashPence;
   if (input.finalCreditPence != null) finalAmount = input.finalCreditPence;
+
+  // Auto-fill from quote when marking PAID so store credit / cash payout can complete
+  if (newStatus === 'PAID' && (finalAmount == null || finalAmount <= 0)) {
+    finalAmount = existing.payoutMethod === 'CASH' ? existing.quotedCash : existing.quotedCredit;
+  }
 
   const request = await prisma.$transaction(async (tx) => {
     const updated = await tx.tradeRequest.update({
@@ -241,7 +286,7 @@ export async function adminUpdateTradeRequest(
       'TRADE',
       'Trade-in paid',
       `Your trade-in ${existing.requestNumber} has been marked as paid.`,
-      `/trade-in/requests/${existing.id}`,
+      `/account`,
     );
   }
 

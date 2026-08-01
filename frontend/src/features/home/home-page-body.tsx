@@ -1,25 +1,17 @@
 'use client';
 
-import { AccessoriesGrid } from './components/accessories-grid';
 import { FeaturedCategories } from './components/featured-categories';
-import { LatestBlogs } from './components/latest-blogs';
 import { Newsletter } from './components/newsletter';
-import { PreorderReleasesSection } from './components/preorder-releases-section';
 import { ProductGridSection } from './components/product-grid-section';
 import { PromoBanner } from './components/promo-banner';
-import { RetroShowcase } from './components/retro-showcase';
-import { ReviewsSlider } from './components/reviews-slider';
-import { ShopByPlatform } from './components/shop-by-platform';
 import { TradeInCta } from './components/trade-in-cta';
-import { WhyChoose } from './components/why-choose';
 
-/** Everything below the hero — do not include navbar/hero here. */
+/** Everything below the hero — keep homepage as a concise overview. */
 export function HomePageBody() {
   return (
     <>
-      <PreorderReleasesSection />
-      <FeaturedCategories />
       <PromoBanner />
+      <FeaturedCategories />
       <ProductGridSection
         eyebrow="Fresh stock"
         title="New arrivals"
@@ -37,12 +29,6 @@ export function HomePageBody() {
         endpoint="/products?sort=featured&limit=8"
         viewAllHref="/shop?sort=featured"
       />
-      <ShopByPlatform />
-      <RetroShowcase />
-      <AccessoriesGrid />
-      <WhyChoose />
-      <ReviewsSlider />
-      <LatestBlogs />
       <Newsletter />
     </>
   );

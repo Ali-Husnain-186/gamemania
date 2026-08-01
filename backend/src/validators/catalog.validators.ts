@@ -94,8 +94,8 @@ export const createProductSchema = z.object({
   isFeatured: z.boolean().optional(),
   isPreorder: z.boolean().optional(),
   releaseDate: z.preprocess(emptyToUndefined, z.coerce.date().optional().nullable()),
-  tradeInCashPence: z.number().int().min(0).optional().nullable(),
-  tradeInCreditPence: z.number().int().min(0).optional().nullable(),
+  tradeInCashPence: z.number().int().min(0, 'Cash trade-in price is required'),
+  tradeInCreditPence: z.number().int().min(0, 'Store credit trade-in price is required'),
   quantity: z
     .number({ invalid_type_error: 'Stock quantity must be a number' })
     .int('Stock quantity must be a whole number')

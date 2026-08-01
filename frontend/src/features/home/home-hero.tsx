@@ -7,9 +7,8 @@ import { BadgeCheck, RefreshCcw, ShieldCheck, Truck, ArrowLeftRight } from 'luci
 import { useEffect, useState } from 'react';
 
 const slides = [
-  { label: 'PlayStation', href: '/shop?category=playstation', cta: 'Shop PlayStation' },
-  { label: 'Nintendo', href: '/shop?category=nintendo', cta: 'Shop Nintendo' },
-  { label: 'PC Gaming', href: '/shop?category=pc-gaming', cta: 'Shop PC Gaming' },
+  { label: 'Video Games', href: '/shop?category=video-games', cta: 'Shop Video Games' },
+  { label: 'Consoles', href: '/shop?category=game-consoles', cta: 'Shop Consoles' },
   { label: 'Accessories', href: '/shop?category=accessories', cta: 'Shop accessories' },
   { label: 'Trade-ins', href: '/trade-in', cta: 'Get a trade-in quote' },
 ];
@@ -61,7 +60,7 @@ export function HomeHero() {
       <div className="relative isolate aspect-[3/4] w-full overflow-hidden sm:aspect-[16/11] md:aspect-[21/10] lg:aspect-[2.4/1]">
         <Image
           src="/brand/hero-main.jpg"
-          alt="GAME MANIA gaming setup"
+          alt="GameMania UK gaming setup"
           fill
           priority
           quality={90}
@@ -85,7 +84,7 @@ export function HomeHero() {
               <span className="text-[var(--gm-yellow)]">Repeat.</span>
             </h1>
 
-            <p className="gm-display mx-auto mt-3 max-w-[18rem] text-[0.7rem] leading-snug tracking-[0.08em] text-[var(--gm-cyan)] sm:mt-4 sm:max-w-none sm:text-[0.95rem] sm:tracking-[0.12em] md:text-[1.15rem]">
+            <p className="gm-display mx-auto mt-2 max-w-[18rem] text-[0.7rem] leading-snug tracking-[0.08em] text-[var(--gm-cyan)] sm:mt-3 sm:max-w-none sm:text-[0.95rem] sm:tracking-[0.12em] md:text-[1.15rem]">
               <span className="sm:hidden">Games • Consoles • Trade In</span>
               <span className="hidden sm:inline">Games • Consoles • Accessories • Trade In</span>
             </p>
@@ -93,9 +92,9 @@ export function HomeHero() {
         </div>
       </div>
 
-      {/* CTA bar — always below hero media */}
-      <div className="border-t border-[var(--gm-cyan)]/20 bg-black px-4 py-4 sm:px-6 sm:py-5">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3">
+      {/* CTA bar — closer under heading */}
+      <div className="border-t border-[var(--gm-cyan)]/20 bg-black px-4 py-3 sm:px-6 sm:py-4">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2.5">
           <AnimatePresence mode="wait">
             <motion.div
               key={active.cta}

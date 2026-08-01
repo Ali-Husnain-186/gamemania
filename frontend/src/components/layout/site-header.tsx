@@ -19,6 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
+import { BrandWordmark } from '@/components/brand/brand-wordmark';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/providers/auth-provider';
 import { useCartStore } from '@/stores/cart-store';
@@ -84,9 +85,11 @@ export function SiteHeader() {
             className="h-11 w-11 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-[3.75rem] sm:w-[3.75rem] md:h-[4.25rem] md:w-[4.25rem]"
             priority
           />
-          <span className="gm-display hidden whitespace-nowrap text-[1.2rem] leading-none tracking-wide text-[var(--gm-yellow)] [text-shadow:0_1px_0_#000] md:inline md:text-[1.65rem] lg:text-[1.95rem]">
-            GameMania
-          </span>
+          <BrandWordmark
+            className="hidden whitespace-nowrap text-[1.2rem] [text-shadow:0_1px_0_#000] md:inline md:text-[1.65rem] lg:text-[1.95rem]"
+            gameClassName="[text-shadow:0_1px_0_#000]"
+            maniaClassName="[text-shadow:0_1px_0_#000]"
+          />
         </Link>
 
         <nav className="ml-auto hidden items-center gap-4 lg:flex lg:gap-5" aria-label="Primary">

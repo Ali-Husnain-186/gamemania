@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Facebook, Instagram, Twitter, Youtube, type LucideIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { BrandWordmark } from '@/components/brand/brand-wordmark';
 import { apiGet } from '@/lib/api';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -82,7 +83,14 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto border-t-2 border-[#01A6C2]/55 bg-black">
       <div className="gm-banner mx-auto max-w-6xl px-4 py-3 text-center text-sm md:text-base">
-        Play more. Save more. GameMania UK!
+        Play more. Save more.{' '}
+        <BrandWordmark
+          showUk
+          className="inline text-[1.05em]"
+          maniaClassName="!text-white"
+          ukClassName="!text-white"
+        />
+        !
       </div>
 
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:gap-10 sm:py-12 md:px-6 lg:grid-cols-4">
@@ -95,9 +103,7 @@ export function SiteFooter() {
               height={56}
               className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
             />
-            <span className="gm-display text-lg leading-none text-[var(--gm-yellow)] sm:text-xl">
-              GameMania
-            </span>
+            <BrandWordmark className="text-lg sm:text-xl" />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--gm-muted)]">
             UK games, consoles & accessories — plus trade-ins for store credit or cash.
@@ -197,7 +203,10 @@ export function SiteFooter() {
 
       <div className="border-t border-[var(--gm-border)]">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-5 text-xs text-[var(--gm-muted)] sm:flex-row sm:items-center sm:justify-between md:px-6">
-          <p>© {new Date().getFullYear()} GameMania UK. All rights reserved.</p>
+          <p>
+            © {new Date().getFullYear()} <BrandWordmark showUk className="inline text-[1em]" />. All
+            rights reserved.
+          </p>
           <p className="font-bold text-[var(--gm-cyan)]">@gamemaniastore</p>
         </div>
       </div>

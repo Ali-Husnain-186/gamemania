@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { BrandWordmark } from '@/components/brand/brand-wordmark';
 import { cn } from '@/lib/utils';
 
 type BrandLoaderProps = {
@@ -65,10 +66,7 @@ export function BrandLoader({
 
       {showWordmark ? (
         <div className="text-center">
-          <p className={cn('gm-display gm-loader-wordmark leading-none', s.word)}>
-            <span className="text-[var(--gm-yellow)]">GAME</span>{' '}
-            <span className="text-[var(--gm-magenta)]">MANIA</span>
-          </p>
+          <BrandWordmark as="p" uppercase spaced className={cn('gm-loader-wordmark', s.word)} />
           <p className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[var(--gm-cyan)] sm:mt-2 sm:text-xs">
             {label}
           </p>

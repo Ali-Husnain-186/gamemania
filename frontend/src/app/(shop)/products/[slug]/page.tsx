@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!product) {
     return buildPageMetadata({
       title: 'Product',
-      description: 'Browse genuine games, consoles and accessories at GAMEMANIA UK.',
+      description: 'Browse genuine games, consoles and accessories at GameMania UK.',
       path: `/products/${slug}`,
     });
   }
@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     product.metaDescription?.trim() ||
     product.shortDescription?.trim() ||
     (product.description ? truncateMeta(product.description) : undefined) ||
-    `Buy ${product.name} at GAMEMANIA UK. Genuine games, consoles and accessories with free UK shipping on orders £60+.`;
+    `Buy ${product.name} at GameMania UK. Genuine games, consoles and accessories with free UK shipping on orders £60+.`;
 
   const image = product.images?.find((i) => i.isPrimary)?.url ?? product.images?.[0]?.url ?? null;
 

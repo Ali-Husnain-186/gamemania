@@ -33,7 +33,7 @@ type BuildPageMetadataInput = {
   noIndex?: boolean;
   type?: 'website' | 'article';
   keywords?: string[];
-  /** Skip "%s | GAMEMANIA UK" template (use for homepage). */
+  /** Skip "%s | GameMania UK" template (use for homepage). */
   absoluteTitle?: boolean;
 };
 

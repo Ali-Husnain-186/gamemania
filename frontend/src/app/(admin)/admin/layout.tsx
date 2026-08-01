@@ -5,7 +5,7 @@ import { AdminSidebar } from '@/features/admin/components/sidebar';
 export const metadata: Metadata = {
   title: {
     default: 'Admin',
-    template: '%s | GAME-MANIA Admin',
+    template: '%s | GameMania Admin',
   },
   robots: { index: false, follow: false },
 };

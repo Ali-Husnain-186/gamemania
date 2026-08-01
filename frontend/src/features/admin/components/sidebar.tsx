@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { BrandWordmark } from '@/components/brand/brand-wordmark';
 import { useAuth } from '@/providers/auth-provider';
 
 const NAV = [
@@ -96,7 +97,7 @@ export function AdminSidebar() {
       <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[var(--admin-accent)]">
         Admin
       </p>
-      <p className="mt-1 text-lg font-semibold tracking-tight">GAME-MANIA</p>
+      <BrandWordmark className="mt-1 text-lg font-semibold tracking-tight" />
       {user?.email ? (
         <p className="mt-2 truncate text-xs text-[var(--admin-muted)]">{user.email}</p>
       ) : null}
@@ -130,7 +131,9 @@ export function AdminSidebar() {
         >
           {open ? <X className="size-5" /> : <Menu className="size-5" />}
         </button>
-        <p className="text-sm font-semibold tracking-tight">GAME-MANIA Admin</p>
+        <p className="text-sm font-semibold tracking-tight">
+          <BrandWordmark className="inline text-sm" /> Admin
+        </p>
         <div className="w-10" />
       </div>
 

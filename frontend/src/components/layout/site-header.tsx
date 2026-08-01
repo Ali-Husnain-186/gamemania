@@ -86,13 +86,40 @@ export function SiteHeader() {
             priority
           />
           <BrandWordmark
-            className="hidden whitespace-nowrap text-[1.2rem] [text-shadow:0_1px_0_#000] md:inline md:text-[1.65rem] lg:text-[1.95rem]"
+            showUk
+            className="hidden whitespace-nowrap text-[1.05rem] [text-shadow:0_1px_0_#000] md:inline md:text-[1.45rem] lg:text-[1.7rem]"
             gameClassName="[text-shadow:0_1px_0_#000]"
             maniaClassName="[text-shadow:0_1px_0_#000]"
+            ukClassName="[text-shadow:0_1px_0_#000]"
           />
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-4 lg:flex lg:gap-5" aria-label="Primary">
+        <form
+          onSubmit={onSearch}
+          className="mx-2 hidden min-w-0 flex-1 items-center gap-1.5 md:flex lg:mx-4"
+          role="search"
+        >
+          <label className="sr-only" htmlFor="header-search">
+            Search
+          </label>
+          <input
+            id="header-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search games, consoles…"
+            className="min-h-9 w-full min-w-0 rounded-full border-2 border-white/45 bg-black/15 px-3.5 py-1.5 text-sm text-white placeholder:text-white/65 focus:border-white focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="inline-flex h-9 shrink-0 items-center gap-1 rounded-full bg-[var(--gm-yellow)] px-3 text-xs font-extrabold text-black"
+          >
+            <Search className="h-3.5 w-3.5" aria-hidden />
+            Search
+          </button>
+        </form>
+
+        <nav className="ml-auto hidden items-center gap-4 xl:flex xl:gap-5" aria-label="Primary">
           {nav
             .filter((item) => item.href !== '/')
             .map((item) => (
@@ -112,11 +139,11 @@ export function SiteHeader() {
             ))}
         </nav>
 
-        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 lg:ml-0">
+        <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 xl:ml-0">
           <button
             type="button"
             onClick={() => setSearchOpen((v) => !v)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 sm:h-9 sm:w-9 gm-focus"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 md:hidden sm:h-9 sm:w-9 gm-focus"
             aria-label="Search"
             aria-expanded={searchOpen}
           >
@@ -184,7 +211,7 @@ export function SiteHeader() {
 
           <button
             type="button"
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white lg:hidden sm:h-9 sm:w-9 gm-focus"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white xl:hidden sm:h-9 sm:w-9 gm-focus"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? 'Close menu' : 'Open menu'}
@@ -200,7 +227,7 @@ export function SiteHeader() {
       </div>
 
       {searchOpen ? (
-        <div className="border-t-2 border-white/20 bg-[#01A6C2] px-3 py-3 sm:px-4">
+        <div className="border-t-2 border-white/20 bg-[#01A6C2] px-3 py-3 md:hidden sm:px-4">
           <form onSubmit={onSearch} className="mx-auto flex max-w-6xl gap-2">
             <input
               type="search"
@@ -223,7 +250,7 @@ export function SiteHeader() {
       {open ? (
         <nav
           id="mobile-nav"
-          className="border-t-2 border-white/20 bg-[#01A6C2] px-4 py-4 lg:hidden"
+          className="border-t-2 border-white/20 bg-[#01A6C2] px-4 py-4 xl:hidden"
           aria-label="Mobile"
         >
           <ul className="flex flex-col gap-1">

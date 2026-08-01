@@ -77,7 +77,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
               <img
                 src={image.url}
                 alt={image.altText || product.name}
-                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]"
+                className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.05]"
               />
             ) : (
               <div className="flex h-full items-center justify-center text-xs text-[var(--gm-muted)]">
@@ -179,7 +179,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
             <div className="aspect-square overflow-hidden rounded-xl bg-black/30">
               {image?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={image.url} alt={product.name} className="h-full w-full object-cover" />
+                <img src={image.url} alt={product.name} className="h-full w-full object-contain" />
               ) : null}
             </div>
             <div className="flex flex-col">

@@ -218,8 +218,8 @@ async function main() {
 
   await prisma.setting.upsert({
     where: { key: 'store.name' },
-    update: { value: 'GAME-MANIA' },
-    create: { key: 'store.name', value: 'GAME-MANIA', group: 'general' },
+    update: { value: 'GameMania UK' },
+    create: { key: 'store.name', value: 'GameMania UK', group: 'general' },
   });
   await prisma.setting.upsert({
     where: { key: 'shipping.free_threshold_pence' },
@@ -450,6 +450,27 @@ async function main() {
   }
   console.log(`Catalog products upserted: ${catalogUpserts}`);
 
+  // PS2/PS3 games: Used only — soft-remove any leftover New SKUs
+  const retiredNew = await prisma.product.updateMany({
+    where: {
+      deletedAt: null,
+      condition: ProductCondition.NEW,
+      platform: { in: ['PS2', 'PS3'] },
+      OR: [
+        { sku: { contains: 'GAME' } },
+        {
+          category: {
+            slug: { in: ['playstation-2-games', 'playstation-3-games'] },
+          },
+        },
+      ],
+    },
+    data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
+  });
+  if (retiredNew.count) {
+    console.log(`Retired ${retiredNew.count} PS2/PS3 New game SKU(s).`);
+  }
+
   // Backfill trade-in prices on any older rows still missing them
   const missingTradeIn = await prisma.product.findMany({
     where: {
@@ -636,7 +657,7 @@ async function main() {
   // Trade-in sample tree
   const ps = await prisma.tradeConsole.upsert({
     where: { slug: 'playstation' },
-    update: {},
+    update: { isActive: true },
     create: { name: 'PlayStation', slug: 'playstation' },
   });
 
@@ -674,6 +695,94 @@ async function main() {
         condition: ProductCondition.PRE_OWNED_FAIR,
         baseCashPence: 18000,
         baseCreditPence: 20000,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  const nintendoTrade = await prisma.tradeConsole.upsert({
+    where: { slug: 'nintendo' },
+    update: { isActive: true },
+    create: { name: 'Nintendo', slug: 'nintendo' },
+  });
+
+  const switchDevice = await prisma.tradeDevice.upsert({
+    where: { consoleId_slug: { consoleId: nintendoTrade.id, slug: 'switch' } },
+    update: {},
+    create: { consoleId: nintendoTrade.id, name: 'Nintendo Switch', slug: 'switch' },
+  });
+
+  const switchOled = await prisma.tradeModel.upsert({
+    where: { deviceId_slug: { deviceId: switchDevice.id, slug: 'switch-oled' } },
+    update: {},
+    create: { deviceId: switchDevice.id, name: 'Switch OLED', slug: 'switch-oled' },
+  });
+
+  await prisma.tradeModelOption.createMany({
+    data: [
+      {
+        modelId: switchOled.id,
+        storage: '64GB',
+        condition: ProductCondition.PRE_OWNED_EXCELLENT,
+        baseCashPence: 16000,
+        baseCreditPence: 18500,
+      },
+      {
+        modelId: switchOled.id,
+        storage: '64GB',
+        condition: ProductCondition.PRE_OWNED_GOOD,
+        baseCashPence: 14000,
+        baseCreditPence: 16000,
+      },
+      {
+        modelId: switchOled.id,
+        storage: '64GB',
+        condition: ProductCondition.PRE_OWNED_FAIR,
+        baseCashPence: 11000,
+        baseCreditPence: 13000,
+      },
+    ],
+    skipDuplicates: true,
+  });
+
+  const switch2Device = await prisma.tradeDevice.upsert({
+    where: { consoleId_slug: { consoleId: nintendoTrade.id, slug: 'switch-2' } },
+    update: {},
+    create: { consoleId: nintendoTrade.id, name: 'Nintendo Switch 2', slug: 'switch-2' },
+  });
+
+  const switch2Console = await prisma.tradeModel.upsert({
+    where: { deviceId_slug: { deviceId: switch2Device.id, slug: 'switch-2-console' } },
+    update: {},
+    create: {
+      deviceId: switch2Device.id,
+      name: 'Switch 2 Console',
+      slug: 'switch-2-console',
+    },
+  });
+
+  await prisma.tradeModelOption.createMany({
+    data: [
+      {
+        modelId: switch2Console.id,
+        storage: '256GB',
+        condition: ProductCondition.PRE_OWNED_EXCELLENT,
+        baseCashPence: 28000,
+        baseCreditPence: 32000,
+      },
+      {
+        modelId: switch2Console.id,
+        storage: '256GB',
+        condition: ProductCondition.PRE_OWNED_GOOD,
+        baseCashPence: 25000,
+        baseCreditPence: 28500,
+      },
+      {
+        modelId: switch2Console.id,
+        storage: '256GB',
+        condition: ProductCondition.PRE_OWNED_FAIR,
+        baseCashPence: 21000,
+        baseCreditPence: 24000,
       },
     ],
     skipDuplicates: true,
@@ -890,19 +999,13 @@ For questions, contact Info@gamemaniauk.co.uk.`;
 
   await prisma.setting.upsert({
     where: { key: 'social.links' },
-    update: {},
+    update: {
+      value: [],
+    },
     create: {
       key: 'social.links',
       group: 'social',
-      value: [
-        {
-          id: 'instagram',
-          label: 'Instagram',
-          url: 'https://www.instagram.com/gamemaniastore',
-          icon: 'instagram',
-          enabled: true,
-        },
-      ],
+      value: [],
     },
   });
 

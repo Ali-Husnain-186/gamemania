@@ -83,6 +83,7 @@ export function CheckoutClient() {
   const [pending, startTransition] = useTransition();
   const [couponCode, setCouponCode] = useState('');
   const [email, setEmail] = useState('');
+  const [useStoreCredit, setUseStoreCredit] = useState(true);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -90,6 +91,9 @@ export function CheckoutClient() {
   const [verifying, setVerifying] = useState(false);
   const [shipping, setShipping] = useState<ShippingForm>(emptyShipping);
   const [savedAddressId, setSavedAddressId] = useState<string | null>(null);
+
+  const creditBalance = user?.storeCredit ?? 0;
+  const canUseCredit = isAuthenticated && creditBalance > 0;
 
   useEffect(() => {
     if (user?.email) setEmail(user.email);
@@ -139,6 +143,7 @@ export function CheckoutClient() {
           const data = await apiPost<Preview>('/checkout/preview', {
             couponCode: couponCode || undefined,
             country: 'GB',
+            useStoreCredit: canUseCredit && useStoreCredit,
           });
           if (!cancelled) setPreview(data);
         } catch (err) {
@@ -160,7 +165,7 @@ export function CheckoutClient() {
     return () => {
       cancelled = true;
     };
-  }, [couponCode, isPaymentReturn, confirmation]);
+  }, [couponCode, useStoreCredit, canUseCredit, isPaymentReturn, confirmation]);
 
   useEffect(() => {
     const paidFlag = searchParams.get('paid') === '1';
@@ -287,6 +292,7 @@ export function CheckoutClient() {
           email: email.trim().toLowerCase(),
           couponCode: couponCode || undefined,
           country: 'GB',
+          useStoreCredit: canUseCredit && useStoreCredit,
         };
 
         if (savedAddressId && isAuthenticated) {
@@ -554,6 +560,23 @@ export function CheckoutClient() {
             />
           </label>
 
+          {canUseCredit ? (
+            <label className="flex items-start gap-3 rounded-2xl border-2 border-[var(--gm-cyan)]/50 bg-[rgba(1,166,194,0.1)] p-4 text-sm">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={useStoreCredit}
+                onChange={(e) => setUseStoreCredit(e.target.checked)}
+              />
+              <span>
+                <span className="font-bold text-[var(--gm-cyan)]">Apply store credit</span>
+                <span className="mt-0.5 block text-[var(--gm-muted)]">
+                  Available {formatGbpFromPence(creditBalance)}. Applied automatically when checked.
+                </span>
+              </span>
+            </label>
+          ) : null}
+
           {preview ? (
             <div className="rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/80 p-5 text-sm">
               <ul className="space-y-3">
@@ -587,6 +610,12 @@ export function CheckoutClient() {
                   <div className="flex justify-between text-emerald-400">
                     <dt>Discount</dt>
                     <dd>−{formatGbpFromPence(preview.discountPence)}</dd>
+                  </div>
+                ) : null}
+                {preview.storeCreditApplied > 0 ? (
+                  <div className="flex justify-between text-[var(--gm-cyan)]">
+                    <dt>Store credit</dt>
+                    <dd>−{formatGbpFromPence(preview.storeCreditApplied)}</dd>
                   </div>
                 ) : null}
                 <div className="flex justify-between">

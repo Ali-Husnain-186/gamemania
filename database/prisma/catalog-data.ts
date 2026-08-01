@@ -37,6 +37,8 @@ type Family = {
   tradeInCash: number;
   tradeInCredit: number;
   bothConditions?: boolean;
+  /** Used-only (e.g. PS2/PS3 games — no sealed New stock) */
+  usedOnly?: boolean;
   featured?: boolean;
   qtyNew?: number;
   qtyUsed?: number;
@@ -80,6 +82,11 @@ function expandFamily(f: Family): CatalogProductDef[] {
       isFeatured: f.featured && condition === 'NEW',
     };
   };
+
+  if (f.usedOnly) {
+    rows.push(make('PRE_OWNED_GOOD', f.usedPrice, f.qtyUsed ?? 5));
+    return rows;
+  }
 
   rows.push(make('NEW', f.newPrice, f.qtyNew ?? 8));
   if (both) rows.push(make('PRE_OWNED_GOOD', f.usedPrice, f.qtyUsed ?? 5));
@@ -256,6 +263,7 @@ function gameFamily(
   brandSlug: string,
   newPrice: number,
   usedPrice: number,
+  opts?: { usedOnly?: boolean },
 ): Family {
   return {
     key: `${platform.toLowerCase()}-game-${slugify(name)}`,
@@ -268,6 +276,7 @@ function gameFamily(
     usedPrice,
     tradeInCash: Math.round(usedPrice * 0.35),
     tradeInCredit: Math.round(usedPrice * 0.42),
+    usedOnly: opts?.usedOnly,
   };
 }
 
@@ -375,7 +384,9 @@ const PS3_GAMES = [
   'Far Cry 3',
   "Assassin's Creed IV Black Flag",
 ].map((n, i) =>
-  gameFamily(n, 'PS3', 'playstation-3-games', 'sony', 1499 - (i % 3) * 100, 799 - (i % 3) * 50),
+  gameFamily(n, 'PS3', 'playstation-3-games', 'sony', 1499 - (i % 3) * 100, 799 - (i % 3) * 50, {
+    usedOnly: true,
+  }),
 );
 
 const PS2_GAMES = [
@@ -391,7 +402,7 @@ const PS2_GAMES = [
   'Need for Speed Underground 2',
   'Need for Speed Most Wanted',
   'Need for Speed Carbon',
-  'Spider-Man 2',
+  'Spider-Man 2 (2004)',
   "WWE SmackDown! Here Comes The Pain",
   'WWE SmackDown vs Raw 2007',
   'God of War',
@@ -400,7 +411,51 @@ const PS2_GAMES = [
   'Kingdom Hearts',
   'Resident Evil 4',
 ].map((n, i) =>
-  gameFamily(n, 'PS2', 'playstation-2-games', 'sony', 1999 - (i % 4) * 100, 999 - (i % 4) * 50),
+  gameFamily(n, 'PS2', 'playstation-2-games', 'sony', 1999 - (i % 4) * 100, 999 - (i % 4) * 50, {
+    usedOnly: true,
+  }),
+);
+
+const SWITCH_GAMES = [
+  'The Legend of Zelda: Tears of the Kingdom',
+  'The Legend of Zelda: Breath of the Wild',
+  'Mario Kart 8 Deluxe',
+  'Super Mario Odyssey',
+  'Super Smash Bros. Ultimate',
+  'Animal Crossing: New Horizons',
+  'Pokémon Scarlet',
+  'Pokémon Violet',
+  'Nintendo Switch Sports',
+  'Luigi’s Mansion 3',
+  'Super Mario Party',
+  'Splatoon 3',
+  'Metroid Dread',
+  'Fire Emblem: Three Houses',
+  'Xenoblade Chronicles 3',
+].map((n, i) =>
+  gameFamily(n, 'SWITCH', 'nintendo-switch-games', 'nintendo', 4499 - (i % 5) * 200, 2999 - (i % 5) * 150),
+);
+
+const SWITCH2_GAMES = [
+  'Mario Kart World',
+  'The Legend of Zelda: Breath of the Wild (Switch 2 Edition)',
+  'The Legend of Zelda: Tears of the Kingdom (Switch 2 Edition)',
+  'Nintendo Switch 2 Welcome Tour',
+  'Kirby and the Forgotten Land – Nintendo Switch 2 Edition',
+  'Super Mario Party Jamboree – Nintendo Switch 2 Edition',
+  'Metroid Prime 4: Beyond',
+  'Donkey Kong Bananza',
+  'Pokémon Legends: Z-A',
+  'Mario Tennis Fever',
+].map((n, i) =>
+  gameFamily(
+    n,
+    'SWITCH2',
+    'nintendo-switch-2-games',
+    'nintendo',
+    5499 - (i % 4) * 200,
+    3999 - (i % 4) * 150,
+  ),
 );
 
 const DUALSENSE_COLOURS = [
@@ -577,6 +632,22 @@ export const CATALOG_CATEGORY_CHILDREN: Array<{
     sortOrder: 5,
   },
   {
+    name: 'Nintendo Switch Games',
+    slug: 'nintendo-switch-games',
+    parentSlug: 'video-games',
+    description: 'Top Switch titles — new and used',
+    imageUrl: '/brand/nintendo.png',
+    sortOrder: 6,
+  },
+  {
+    name: 'Nintendo Switch 2 Games',
+    slug: 'nintendo-switch-2-games',
+    parentSlug: 'video-games',
+    description: 'Switch 2 games — new and used',
+    imageUrl: '/brand/nintendo.png',
+    sortOrder: 7,
+  },
+  {
     name: 'PlayStation Accessories',
     slug: 'playstation-accessories',
     parentSlug: 'accessories',
@@ -610,6 +681,8 @@ export function getAllCatalogProducts(): CatalogProductDef[] {
     ...XBOX_GAMES,
     ...PS3_GAMES,
     ...PS2_GAMES,
+    ...SWITCH_GAMES,
+    ...SWITCH2_GAMES,
     ...ACCESSORIES,
   ].flatMap(expandFamily);
 }

@@ -2026,58 +2026,51 @@
   "ps3-game-red-dead-redemption": [
     {
       "url": "/catalog/games/ps3-game-red-dead-redemption/ps3-game-red-dead-redemption-1.jpg",
-      "altText": "Red Dead Redemption 2",
+      "altText": "Red Dead Redemption",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-red-dead-redemption/ps3-game-red-dead-redemption-2.jpg",
-      "altText": "Red Dead Redemption 2",
+      "altText": "Red Dead Redemption",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-red-dead-redemption/ps3-game-red-dead-redemption-3.jpg",
-      "altText": "Red Dead Redemption 2",
+      "altText": "Red Dead Redemption",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/games/ps3-game-red-dead-redemption/ps3-game-red-dead-redemption-4.jpg",
-      "altText": "Red Dead Redemption 2",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],
   "ps3-game-call-of-duty-black-ops": [
     {
       "url": "/catalog/games/ps3-game-call-of-duty-black-ops/ps3-game-call-of-duty-black-ops-1.jpg",
-      "altText": "Call of Duty®: Black Ops",
+      "altText": "Call of Duty®: Black Ops III",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-call-of-duty-black-ops/ps3-game-call-of-duty-black-ops-2.jpg",
-      "altText": "Call of Duty®: Black Ops",
+      "altText": "Call of Duty®: Black Ops III",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-call-of-duty-black-ops/ps3-game-call-of-duty-black-ops-3.jpg",
-      "altText": "Call of Duty®: Black Ops",
+      "altText": "Call of Duty®: Black Ops III",
       "isPrimary": false,
       "sortOrder": 2,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-call-of-duty-black-ops/ps3-game-call-of-duty-black-ops-4.jpg",
-      "altText": "Call of Duty®: Black Ops",
+      "altText": "Call of Duty®: Black Ops III",
       "isPrimary": false,
       "sortOrder": 3,
       "publicId": null
@@ -2199,30 +2192,23 @@
   "ps3-game-the-last-of-us": [
     {
       "url": "/catalog/games/ps3-game-the-last-of-us/ps3-game-the-last-of-us-1.jpg",
-      "altText": "The Last of Us™ Part I",
+      "altText": "The Last of Us™ Part II Remastered",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-the-last-of-us/ps3-game-the-last-of-us-2.jpg",
-      "altText": "The Last of Us™ Part I",
+      "altText": "The Last of Us™ Part II Remastered",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
       "url": "/catalog/games/ps3-game-the-last-of-us/ps3-game-the-last-of-us-3.jpg",
-      "altText": "The Last of Us™ Part I",
+      "altText": "The Last of Us™ Part II Remastered",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/games/ps3-game-the-last-of-us/ps3-game-the-last-of-us-4.jpg",
-      "altText": "The Last of Us™ Part I",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -2405,13 +2391,6 @@
       "altText": "Batman: Arkham Asylum Game of the Year Edition",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/games/ps3-game-batman-arkham-asylum/ps3-game-batman-arkham-asylum-4.jpg",
-      "altText": "Batman: Arkham Asylum Game of the Year Edition",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -3743,6 +3722,695 @@
       "altText": "cable-usbc",
       "isPrimary": false,
       "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "ps2-game-spider-man-2-2004": [
+    {
+      "url": "/catalog/games/ps2-game-spider-man-2-2004/ps2-game-spider-man-2-2004-1.jpg",
+      "altText": "spider man 2 2004",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps2-game-spider-man-2-2004/ps2-game-spider-man-2-2004-2.jpg",
+      "altText": "spider man 2 2004",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/ps2-game-spider-man-2-2004/ps2-game-spider-man-2-2004-3.png",
+      "altText": "spider man 2 2004",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-game-the-legend-of-zelda-tears-of-the-kingdom": [
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-1.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-2.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-3.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-game-the-legend-of-zelda-breath-of-the-wild": [
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-1.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-2.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-3.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-4.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-mario-kart-8-deluxe": [
+    {
+      "url": "/catalog/games/switch-game-mario-kart-8-deluxe/switch-game-mario-kart-8-deluxe-1.jpg",
+      "altText": "mario kart 8 deluxe",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-mario-kart-8-deluxe/switch-game-mario-kart-8-deluxe-2.jpg",
+      "altText": "mario kart 8 deluxe",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-mario-kart-8-deluxe/switch-game-mario-kart-8-deluxe-3.jpg",
+      "altText": "mario kart 8 deluxe",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-mario-kart-8-deluxe/switch-game-mario-kart-8-deluxe-4.jpg",
+      "altText": "mario kart 8 deluxe",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-super-mario-odyssey": [
+    {
+      "url": "/catalog/games/switch-game-super-mario-odyssey/switch-game-super-mario-odyssey-1.jpg",
+      "altText": "super mario odyssey",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-odyssey/switch-game-super-mario-odyssey-2.jpg",
+      "altText": "super mario odyssey",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-odyssey/switch-game-super-mario-odyssey-3.jpg",
+      "altText": "super mario odyssey",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-odyssey/switch-game-super-mario-odyssey-4.png",
+      "altText": "super mario odyssey",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-super-smash-bros-ultimate": [
+    {
+      "url": "/catalog/games/switch-game-super-smash-bros-ultimate/switch-game-super-smash-bros-ultimate-1.jpg",
+      "altText": "super smash bros ultimate",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-smash-bros-ultimate/switch-game-super-smash-bros-ultimate-2.jpg",
+      "altText": "super smash bros ultimate",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-smash-bros-ultimate/switch-game-super-smash-bros-ultimate-3.jpg",
+      "altText": "super smash bros ultimate",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-smash-bros-ultimate/switch-game-super-smash-bros-ultimate-4.jpg",
+      "altText": "super smash bros ultimate",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-animal-crossing-new-horizons": [
+    {
+      "url": "/catalog/games/switch-game-animal-crossing-new-horizons/switch-game-animal-crossing-new-horizons-1.jpg",
+      "altText": "animal crossing new horizons",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-animal-crossing-new-horizons/switch-game-animal-crossing-new-horizons-2.jpg",
+      "altText": "animal crossing new horizons",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-animal-crossing-new-horizons/switch-game-animal-crossing-new-horizons-3.png",
+      "altText": "animal crossing new horizons",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-animal-crossing-new-horizons/switch-game-animal-crossing-new-horizons-4.jpg",
+      "altText": "animal crossing new horizons",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-pok-mon-scarlet": [
+    {
+      "url": "/catalog/games/switch-game-pok-mon-scarlet/switch-game-pok-mon-scarlet-1.jpg",
+      "altText": "pok mon scarlet",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-scarlet/switch-game-pok-mon-scarlet-2.jpg",
+      "altText": "pok mon scarlet",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-scarlet/switch-game-pok-mon-scarlet-3.jpg",
+      "altText": "pok mon scarlet",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-scarlet/switch-game-pok-mon-scarlet-4.jpg",
+      "altText": "pok mon scarlet",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-pok-mon-violet": [
+    {
+      "url": "/catalog/games/switch-game-pok-mon-violet/switch-game-pok-mon-violet-1.jpg",
+      "altText": "pok mon violet",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-violet/switch-game-pok-mon-violet-2.jpg",
+      "altText": "pok mon violet",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-violet/switch-game-pok-mon-violet-3.jpg",
+      "altText": "pok mon violet",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-pok-mon-violet/switch-game-pok-mon-violet-4.jpg",
+      "altText": "pok mon violet",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-nintendo-switch-sports": [
+    {
+      "url": "/catalog/games/switch-game-nintendo-switch-sports/switch-game-nintendo-switch-sports-1.jpg",
+      "altText": "nintendo switch sports",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-nintendo-switch-sports/switch-game-nintendo-switch-sports-2.jpg",
+      "altText": "nintendo switch sports",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-nintendo-switch-sports/switch-game-nintendo-switch-sports-3.png",
+      "altText": "nintendo switch sports",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-game-luigi-s-mansion-3": [
+    {
+      "url": "/catalog/games/switch-game-luigi-s-mansion-3/switch-game-luigi-s-mansion-3-1.jpg",
+      "altText": "luigi s mansion 3",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-luigi-s-mansion-3/switch-game-luigi-s-mansion-3-2.jpg",
+      "altText": "luigi s mansion 3",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-luigi-s-mansion-3/switch-game-luigi-s-mansion-3-3.png",
+      "altText": "luigi s mansion 3",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-luigi-s-mansion-3/switch-game-luigi-s-mansion-3-4.png",
+      "altText": "luigi s mansion 3",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-super-mario-party": [
+    {
+      "url": "/catalog/games/switch-game-super-mario-party/switch-game-super-mario-party-1.jpg",
+      "altText": "super mario party",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-party/switch-game-super-mario-party-2.jpg",
+      "altText": "super mario party",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-party/switch-game-super-mario-party-3.png",
+      "altText": "super mario party",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-super-mario-party/switch-game-super-mario-party-4.png",
+      "altText": "super mario party",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-splatoon-3": [
+    {
+      "url": "/catalog/games/switch-game-splatoon-3/switch-game-splatoon-3-1.jpg",
+      "altText": "splatoon 3",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-splatoon-3/switch-game-splatoon-3-2.jpg",
+      "altText": "splatoon 3",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-splatoon-3/switch-game-splatoon-3-3.jpg",
+      "altText": "splatoon 3",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-splatoon-3/switch-game-splatoon-3-4.jpg",
+      "altText": "splatoon 3",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-metroid-dread": [
+    {
+      "url": "/catalog/games/switch-game-metroid-dread/switch-game-metroid-dread-1.png",
+      "altText": "metroid dread",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-metroid-dread/switch-game-metroid-dread-2.jpg",
+      "altText": "metroid dread",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-metroid-dread/switch-game-metroid-dread-3.jpg",
+      "altText": "metroid dread",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-metroid-dread/switch-game-metroid-dread-4.png",
+      "altText": "metroid dread",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch-game-fire-emblem-three-houses": [
+    {
+      "url": "/catalog/games/switch-game-fire-emblem-three-houses/switch-game-fire-emblem-three-houses-1.jpg",
+      "altText": "fire emblem three houses",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-fire-emblem-three-houses/switch-game-fire-emblem-three-houses-2.jpg",
+      "altText": "fire emblem three houses",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-fire-emblem-three-houses/switch-game-fire-emblem-three-houses-3.jpg",
+      "altText": "fire emblem three houses",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch-game-xenoblade-chronicles-3": [
+    {
+      "url": "/catalog/games/switch-game-xenoblade-chronicles-3/switch-game-xenoblade-chronicles-3-1.jpg",
+      "altText": "xenoblade chronicles 3",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-xenoblade-chronicles-3/switch-game-xenoblade-chronicles-3-2.png",
+      "altText": "xenoblade chronicles 3",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-xenoblade-chronicles-3/switch-game-xenoblade-chronicles-3-3.png",
+      "altText": "xenoblade chronicles 3",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-xenoblade-chronicles-3/switch-game-xenoblade-chronicles-3-4.png",
+      "altText": "xenoblade chronicles 3",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch2-game-mario-kart-world": [
+    {
+      "url": "/catalog/games/switch2-game-mario-kart-world/switch2-game-mario-kart-world-1.png",
+      "altText": "mario kart world",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-mario-kart-world/switch2-game-mario-kart-world-2.jpg",
+      "altText": "mario kart world",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-mario-kart-world/switch2-game-mario-kart-world-3.jpg",
+      "altText": "mario kart world",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-mario-kart-world/switch2-game-mario-kart-world-4.png",
+      "altText": "mario kart world",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch2-game-nintendo-switch-2-welcome-tour": [
+    {
+      "url": "/catalog/games/switch2-game-nintendo-switch-2-welcome-tour/switch2-game-nintendo-switch-2-welcome-tour-1.jpg",
+      "altText": "nintendo switch 2 welcome tour",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-nintendo-switch-2-welcome-tour/switch2-game-nintendo-switch-2-welcome-tour-2.png",
+      "altText": "nintendo switch 2 welcome tour",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    }
+  ],
+  "switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition": [
+    {
+      "url": "/catalog/games/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition-1.jpg",
+      "altText": "kirby and the forgotten land nintendo switch 2 edition",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition-2.jpg",
+      "altText": "kirby and the forgotten land nintendo switch 2 edition",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition-3.jpg",
+      "altText": "kirby and the forgotten land nintendo switch 2 edition",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition": [
+    {
+      "url": "/catalog/games/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition-1.png",
+      "altText": "super mario party jamboree nintendo switch 2 edition",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition-2.jpg",
+      "altText": "super mario party jamboree nintendo switch 2 edition",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    }
+  ],
+  "switch2-game-metroid-prime-4-beyond": [
+    {
+      "url": "/catalog/games/switch2-game-metroid-prime-4-beyond/switch2-game-metroid-prime-4-beyond-1.png",
+      "altText": "metroid prime 4 beyond",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-metroid-prime-4-beyond/switch2-game-metroid-prime-4-beyond-2.jpg",
+      "altText": "metroid prime 4 beyond",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-metroid-prime-4-beyond/switch2-game-metroid-prime-4-beyond-3.png",
+      "altText": "metroid prime 4 beyond",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-metroid-prime-4-beyond/switch2-game-metroid-prime-4-beyond-4.png",
+      "altText": "metroid prime 4 beyond",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch2-game-donkey-kong-bananza": [
+    {
+      "url": "/catalog/games/switch2-game-donkey-kong-bananza/switch2-game-donkey-kong-bananza-1.jpg",
+      "altText": "donkey kong bananza",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-donkey-kong-bananza/switch2-game-donkey-kong-bananza-2.png",
+      "altText": "donkey kong bananza",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-donkey-kong-bananza/switch2-game-donkey-kong-bananza-3.jpg",
+      "altText": "donkey kong bananza",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-donkey-kong-bananza/switch2-game-donkey-kong-bananza-4.png",
+      "altText": "donkey kong bananza",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch2-game-pok-mon-legends-z-a": [
+    {
+      "url": "/catalog/games/switch2-game-pok-mon-legends-z-a/switch2-game-pok-mon-legends-z-a-1.jpg",
+      "altText": "pok mon legends z a",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-pok-mon-legends-z-a/switch2-game-pok-mon-legends-z-a-2.jpg",
+      "altText": "pok mon legends z a",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-pok-mon-legends-z-a/switch2-game-pok-mon-legends-z-a-3.jpg",
+      "altText": "pok mon legends z a",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    }
+  ],
+  "switch2-game-mario-tennis-fever": [
+    {
+      "url": "/catalog/games/switch2-game-mario-tennis-fever/switch2-game-mario-tennis-fever-1.webp",
+      "altText": "mario tennis fever",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch2-game-mario-tennis-fever/switch2-game-mario-tennis-fever-2.png",
+      "altText": "mario tennis fever",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    }
+  ],
+  "switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition": [
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-1.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-2.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-3.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-4.jpg",
+      "altText": "the legend of zelda breath of the wild",
+      "isPrimary": false,
+      "sortOrder": 3,
+      "publicId": null
+    }
+  ],
+  "switch2-game-the-legend-of-zelda-tears-of-the-kingdom-switch-2-edition": [
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-1.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": true,
+      "sortOrder": 0,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-2.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-3.jpg",
+      "altText": "the legend of zelda tears of the kingdom",
+      "isPrimary": false,
+      "sortOrder": 2,
       "publicId": null
     }
   ]

@@ -64,7 +64,7 @@ const STATUS_COPY: Record<OrderStatus, { subject: string; title: string; body: s
   DELIVERED: {
     subject: 'Your order has been delivered',
     title: 'Order delivered',
-    body: 'Your order has been marked as delivered. Thanks for shopping with GAME MANIA.',
+    body: 'Your order has been marked as delivered. Thanks for shopping with GameMania UK.',
   },
   CANCELLED: {
     subject: 'Order cancelled',
@@ -143,8 +143,11 @@ function wrapEmailLayout(input: {
             <td style="background:${BRAND.ink};padding:22px 28px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.04em;color:${BRAND.white};">
-                    GAME <span style="color:${BRAND.cyan};">MANIA</span>
+                  <td style="vertical-align:middle;">
+                    <img src="${siteUrl('/brand/game-mania-logo.png')}" alt="GameMania UK" width="48" height="48" style="display:block;border-radius:999px;border:0;" />
+                  </td>
+                  <td style="padding-left:12px;font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.04em;color:${BRAND.white};">
+                    <span style="color:${BRAND.yellow};">Game</span><span style="color:${BRAND.magenta};">Mania</span> <span style="color:${BRAND.white};">UK</span>
                   </td>
                   <td align="right" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${BRAND.yellow};font-weight:700;">
                     UK Gaming Marketplace
@@ -172,14 +175,14 @@ function wrapEmailLayout(input: {
           </tr>
           <tr>
             <td style="background:#eef4f7;padding:18px 28px;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.5;color:${BRAND.muted};border-top:1px solid ${BRAND.border};">
-              <strong style="color:${BRAND.ink};">GAME MANIA</strong><br/>
+              <strong style="color:${BRAND.ink};">GameMania UK</strong><br/>
               Games • Consoles • Accessories<br/>
               <a href="${siteUrl('/')}" style="color:${BRAND.cyan};text-decoration:none;">${escapeHtml(siteUrl('/'))}</a>
             </td>
           </tr>
         </table>
         <p style="margin:14px 0 0;font-family:Arial,Helvetica,sans-serif;font-size:11px;color:${BRAND.muted};">
-          You’re receiving this because you placed an order with GAME MANIA.
+          You’re receiving this because you placed an order with GameMania UK.
         </p>
       </td>
     </tr>
@@ -256,7 +259,7 @@ export async function emailOrderStatusUpdate(
     ``,
     `View: ${viewUrl}`,
     ``,
-    `— GAME MANIA`,
+    `— GameMania UK`,
   ].join('\n');
 
   const bodyHtml = `
@@ -320,7 +323,7 @@ async function sendPaidOrderEmail(order: {
   const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
 
   const text = [
-    `Thanks for your order with GAME MANIA.`,
+    `Thanks for your order with GameMania UK.`,
     ``,
     `Reference: ${order.orderNumber}`,
     `Total paid: ${gbp(order.grandTotal)}`,
@@ -331,7 +334,7 @@ async function sendPaidOrderEmail(order: {
     ``,
     `We’ll email you again when your order status changes.`,
     ``,
-    `— GAME MANIA`,
+    `— GameMania UK`,
     siteUrl('/'),
   ].join('\n');
 
@@ -351,7 +354,7 @@ async function sendPaidOrderEmail(order: {
     .join('');
 
   const bodyHtml = `
-    <p style="margin:0 0 8px;color:${BRAND.muted};">Thanks for your order with <strong style="color:${BRAND.ink};">GAME MANIA</strong>. We’ve received your payment.</p>
+    <p style="margin:0 0 8px;color:${BRAND.muted};">Thanks for your order with <strong style="color:${BRAND.ink};">GameMania UK</strong>. We’ve received your payment.</p>
     ${metaCard([
       { label: 'Reference', value: escapeHtml(order.orderNumber) },
       { label: 'Status', value: `<span style="color:#159947;">Paid</span>` },

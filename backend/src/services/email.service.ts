@@ -35,7 +35,7 @@ export function getEmailProvider(): 'resend' | 'smtp' | 'none' {
 function smtpFromAddress(): string {
   // Resend test sender won't work over SMTP; use the Gmail account when present.
   if (env.EMAIL_FROM.includes('beth.t@example.com') && env.SMTP_USER) {
-    return `GAME MANIA <${env.SMTP_USER}>`;
+    return `GameMania UK <${env.SMTP_USER}>`;
   }
   return env.EMAIL_FROM;
 }

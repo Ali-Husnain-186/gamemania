@@ -44,15 +44,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
   youtube: Youtube,
 };
 
-const DEFAULT_SOCIAL: SocialLink[] = [
-  {
-    id: 'instagram',
-    label: 'Instagram',
-    url: 'https://www.instagram.com/gamemaniastore',
-    icon: 'instagram',
-    enabled: true,
-  },
-];
+const DEFAULT_SOCIAL: SocialLink[] = [];
 
 export function SiteFooter() {
   const { isAuthenticated, status } = useAuth();
@@ -72,7 +64,7 @@ export function SiteFooter() {
               typeof (l as SocialLink).url === 'string' &&
               (l as SocialLink).enabled !== false,
           );
-          if (links.length) setSocial(links);
+          setSocial(links);
         }
       } catch {
         /* keep defaults */
@@ -87,6 +79,7 @@ export function SiteFooter() {
         <BrandWordmark
           showUk
           className="inline text-[1.05em]"
+          gameClassName="!text-white"
           maniaClassName="!text-white"
           ukClassName="!text-white"
         />
@@ -98,12 +91,12 @@ export function SiteFooter() {
           <Link href="/" className="inline-flex items-center gap-3 gm-focus rounded-sm">
             <Image
               src="/brand/game-mania-logo.png"
-              alt="GameMania"
+              alt="GameMania UK"
               width={56}
               height={56}
               className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14"
             />
-            <BrandWordmark className="text-lg sm:text-xl" />
+            <BrandWordmark showUk className="text-lg sm:text-xl" />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-[var(--gm-muted)]">
             UK games, consoles & accessories — plus trade-ins for store credit or cash.
@@ -207,7 +200,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} <BrandWordmark showUk className="inline text-[1em]" />. All
             rights reserved.
           </p>
-          <p className="font-bold text-[var(--gm-cyan)]">@gamemaniastore</p>
+          <p className="font-bold text-[var(--gm-cyan)]">gamemaniauk.co.uk</p>
         </div>
       </div>
     </footer>

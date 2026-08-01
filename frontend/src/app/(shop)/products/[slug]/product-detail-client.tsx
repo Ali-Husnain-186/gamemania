@@ -25,6 +25,20 @@ export function ProductDetailClient() {
     queryFn: () => apiGet<Product>(`/products/${params.slug}`),
   });
 
+  const siblingSlug = useMemo(() => {
+    const slug = params.slug ?? '';
+    if (slug.endsWith('-new')) return `${slug.slice(0, -4)}-used`;
+    if (slug.endsWith('-used')) return `${slug.slice(0, -5)}-new`;
+    return null;
+  }, [params.slug]);
+
+  const siblingQuery = useQuery({
+    queryKey: ['product', siblingSlug],
+    queryFn: () => apiGet<Product>(`/products/${siblingSlug}`),
+    enabled: Boolean(siblingSlug),
+    retry: false,
+  });
+
   const addMutation = useMutation({
     mutationFn: (productId: string) => apiPost<Cart>('/cart/items', { productId, quantity: 1 }),
     onSuccess: (cart) => {
@@ -109,7 +123,7 @@ export function ProductDetailClient() {
               <img
                 src={mainImage.url}
                 alt={mainImage.altText ?? product.name}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-contain"
               />
             ) : null}
           </div>
@@ -127,7 +141,7 @@ export function ProductDetailClient() {
                   <img
                     src={img.url}
                     alt={img.altText ?? product.name}
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                   />
                 </button>
               ))}
@@ -138,7 +152,73 @@ export function ProductDetailClient() {
           <p className="text-xs uppercase tracking-[0.18em] text-[var(--gm-muted)]">
             {product.category?.name ?? product.platform ?? product.brand?.name}
           </p>
-          <h1 className="gm-display mt-2 text-3xl font-bold md:text-4xl">{product.name}</h1>
+          <h1 className="gm-display mt-2 text-3xl font-bold md:text-4xl">
+            {product.name.replace(/\s*\((New|Used)\)\s*$/i, '')}
+          </h1>
+
+          {siblingQuery.data || product.condition ? (
+            <div className="mt-4">
+              <p className="text-xs font-bold uppercase tracking-wider text-[var(--gm-muted)]">
+                Condition
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {(product.condition === 'NEW' || siblingQuery.data?.condition === 'NEW') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const target =
+                        product.condition === 'NEW'
+                          ? product.slug
+                          : siblingQuery.data?.condition === 'NEW'
+                            ? siblingQuery.data.slug
+                            : null;
+                      if (target && target !== product.slug) router.push(`/products/${target}`);
+                    }}
+                    className={
+                      product.condition === 'NEW'
+                        ? 'rounded-full bg-[var(--gm-yellow)] px-4 py-2 text-xs font-extrabold text-black'
+                        : 'rounded-full border border-[var(--gm-border)] px-4 py-2 text-xs font-bold text-[var(--gm-muted)]'
+                    }
+                  >
+                    New
+                    {product.condition === 'NEW'
+                      ? ` · ${formatGBP(product.price)}`
+                      : siblingQuery.data?.condition === 'NEW'
+                        ? ` · ${formatGBP(siblingQuery.data.price)}`
+                        : ''}
+                  </button>
+                )}
+                {(product.condition !== 'NEW' ||
+                  (siblingQuery.data && siblingQuery.data.condition !== 'NEW')) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const target =
+                        product.condition !== 'NEW'
+                          ? product.slug
+                          : siblingQuery.data && siblingQuery.data.condition !== 'NEW'
+                            ? siblingQuery.data.slug
+                            : null;
+                      if (target && target !== product.slug) router.push(`/products/${target}`);
+                    }}
+                    className={
+                      product.condition !== 'NEW'
+                        ? 'rounded-full bg-[var(--gm-magenta)] px-4 py-2 text-xs font-extrabold text-white'
+                        : 'rounded-full border border-[var(--gm-border)] px-4 py-2 text-xs font-bold text-[var(--gm-muted)]'
+                    }
+                  >
+                    Used
+                    {product.condition !== 'NEW'
+                      ? ` · ${formatGBP(product.price)}`
+                      : siblingQuery.data && siblingQuery.data.condition !== 'NEW'
+                        ? ` · ${formatGBP(siblingQuery.data.price)}`
+                        : ''}
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : null}
+
           {product.isPreorder ? (
             <p className="mt-2 inline-flex rounded bg-[var(--gm-magenta)] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
               Pre-order

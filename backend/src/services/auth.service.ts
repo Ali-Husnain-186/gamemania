@@ -242,11 +242,11 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
 
   const settingFirstPassword = !user.passwordHash;
   const subject = settingFirstPassword
-    ? 'Set a GAME MANIA password'
-    : 'Reset your GAME MANIA password';
+    ? 'Set a GameMania UK password'
+    : 'Reset your GameMania UK password';
   const intro = settingFirstPassword
-    ? 'You can set a password for your GAME MANIA account (e.g. if you usually sign in with Google).'
-    : 'You requested a password reset for your GAME MANIA account.';
+    ? 'You can set a password for your GameMania UK account (e.g. if you usually sign in with Google).'
+    : 'You requested a password reset for your GameMania UK account.';
   const ctaLabel = settingFirstPassword ? 'Set your password' : 'Reset your password';
 
   const result = await sendMail({

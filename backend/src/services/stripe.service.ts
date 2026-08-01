@@ -51,7 +51,7 @@ export async function createCheckoutSession(input: {
           price_data: {
             currency: 'gbp',
             product_data: {
-              name: `GAME MANIA order ${input.orderNumber}`,
+              name: `GameMania UK order ${input.orderNumber}`,
               description: 'Games, consoles & accessories',
             },
             unit_amount: input.grandTotalPence,

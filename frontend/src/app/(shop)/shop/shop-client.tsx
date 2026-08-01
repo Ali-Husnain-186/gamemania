@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { apiGet } from '@/lib/api';
 import { ProductCard } from '@/features/catalog/product-card';
@@ -12,12 +12,19 @@ import type { Category, Product } from '@/types/catalog';
 
 const PLATFORMS = ['PS5', 'PS4', 'PS3', 'PS2', 'SWITCH', 'SWITCH2', 'XBOX_SERIES', 'PC', 'RETRO'];
 
+const CONDITIONS = [
+  { value: '', label: 'All' },
+  { value: 'NEW', label: 'New' },
+  { value: 'PRE_OWNED_GOOD', label: 'Used' },
+] as const;
+
 export function ShopClient() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const q = searchParams.get('q') ?? '';
   const category = searchParams.get('category') ?? '';
   const platform = searchParams.get('platform') ?? '';
+  const condition = searchParams.get('condition') ?? '';
   const sort = searchParams.get('sort') ?? 'newest';
   const inStock = searchParams.get('inStock') === 'true';
   const preorder = searchParams.get('preorder');
@@ -28,19 +35,29 @@ export function ShopClient() {
   const [draftMax, setDraftMax] = useState(maxPrice);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  useEffect(() => {
+    setDraftQ(q);
+  }, [q]);
+
+  useEffect(() => {
+    setDraftMin(minPrice);
+    setDraftMax(maxPrice);
+  }, [minPrice, maxPrice]);
+
   const queryString = useMemo(() => {
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (category) params.set('category', category);
     if (platform) params.set('platform', platform);
+    if (condition) params.set('condition', condition);
     if (sort) params.set('sort', sort);
     if (inStock) params.set('inStock', 'true');
     if (preorder === 'true' || preorder === 'false') params.set('preorder', preorder);
     if (minPrice) params.set('minPrice', String(Math.round(Number(minPrice) * 100)));
     if (maxPrice) params.set('maxPrice', String(Math.round(Number(maxPrice) * 100)));
-    params.set('limit', '24');
+    params.set('limit', '48');
     return params.toString();
-  }, [q, category, platform, sort, inStock, preorder, minPrice, maxPrice]);
+  }, [q, category, platform, condition, sort, inStock, preorder, minPrice, maxPrice]);
 
   const productsQuery = useQuery({
     queryKey: ['products', queryString],
@@ -52,12 +69,17 @@ export function ShopClient() {
     queryFn: () => apiGet<Category[]>('/categories'),
   });
 
+  const hasActiveFilters = Boolean(
+    q || category || platform || condition || inStock || preorder || minPrice || maxPrice,
+  );
+
   function applyFilters(next: Record<string, string | boolean | undefined>) {
     const params = new URLSearchParams();
     const values = {
       q: next.q !== undefined ? String(next.q) : q,
       category: next.category !== undefined ? String(next.category) : category,
       platform: next.platform !== undefined ? String(next.platform) : platform,
+      condition: next.condition !== undefined ? String(next.condition) : condition,
       sort: next.sort !== undefined ? String(next.sort) : sort,
       inStock: next.inStock !== undefined ? Boolean(next.inStock) : inStock,
       preorder: next.preorder !== undefined ? String(next.preorder) : preorder,
@@ -67,6 +89,7 @@ export function ShopClient() {
     if (values.q) params.set('q', values.q);
     if (values.category) params.set('category', values.category);
     if (values.platform) params.set('platform', values.platform);
+    if (values.condition) params.set('condition', values.condition);
     if (values.sort) params.set('sort', values.sort);
     if (values.inStock) params.set('inStock', 'true');
     if (values.preorder === 'true' || values.preorder === 'false') {
@@ -77,11 +100,46 @@ export function ShopClient() {
     router.push(`/shop?${params.toString()}`);
   }
 
+  function clearAllFilters() {
+    router.push('/shop');
+    setDraftQ('');
+    setDraftMin('');
+    setDraftMax('');
+  }
+
   const filterPanel = (
     <aside className="space-y-5 rounded-2xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)]/60 p-4">
-      <p className="text-xs font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
-        Filter
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-extrabold uppercase tracking-wider text-[var(--gm-cyan)]">
+          Filter
+        </p>
+        {hasActiveFilters ? (
+          <button
+            type="button"
+            className="text-[10px] font-bold uppercase tracking-wide text-[var(--gm-yellow)]"
+            onClick={clearAllFilters}
+          >
+            Clear all
+          </button>
+        ) : null}
+      </div>
+
+      <div>
+        <p className="mb-2 text-sm font-bold">Condition</p>
+        <div className="space-y-1.5 text-sm text-[var(--gm-muted)]">
+          {CONDITIONS.map((c) => (
+            <label key={c.value || 'all'} className="flex items-center gap-2">
+              <input
+                type="radio"
+                name="condition"
+                checked={condition === c.value}
+                onChange={() => applyFilters({ condition: c.value })}
+              />
+              {c.label}
+            </label>
+          ))}
+        </div>
+      </div>
 
       <div>
         <p className="mb-2 text-sm font-bold">Availability</p>
@@ -162,7 +220,7 @@ export function ShopClient() {
 
       <div>
         <p className="mb-2 text-sm font-bold">Category</p>
-        <div className="max-h-48 space-y-1.5 overflow-y-auto text-sm text-[var(--gm-muted)]">
+        <div className="max-h-56 space-y-1.5 overflow-y-auto text-sm text-[var(--gm-muted)]">
           <label className="flex items-center gap-2">
             <input
               type="radio"
@@ -289,7 +347,10 @@ export function ShopClient() {
               }
             />
           ) : !productsQuery.data?.length ? (
-            <EmptyState title="No products found" description="Try another search or filter." />
+            <EmptyState
+              title="No products found"
+              description="Try Clear all filters, or another search."
+            />
           ) : (
             <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
               {productsQuery.data.map((p: Product) => (

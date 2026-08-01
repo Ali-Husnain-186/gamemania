@@ -36,7 +36,7 @@ async function maybeEmailUser(userId: string, title: string, body: string, link?
     const href = link
       ? `${env.FRONTEND_URL.replace(/\/$/, '')}${link.startsWith('/') ? link : `/${link}`}`
       : env.FRONTEND_URL;
-    const text = `Hi${user.firstName ? ` ${user.firstName}` : ''},\n\n${body}\n\nOpen: ${href}\n\n— GAME MANIA`;
+    const text = `Hi${user.firstName ? ` ${user.firstName}` : ''},\n\n${body}\n\nOpen: ${href}\n\n— GameMania UK`;
     const html = `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#f4f7f9;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:24px 12px;background:#f4f7f9;">
         <tr><td align="center">
@@ -55,7 +55,7 @@ async function maybeEmailUser(userId: string, title: string, body: string, link?
 
     await sendMail({
       to: user.email,
-      subject: `[GAME MANIA] ${title}`,
+      subject: `[GameMania UK] ${title}`,
       text,
       html,
     });

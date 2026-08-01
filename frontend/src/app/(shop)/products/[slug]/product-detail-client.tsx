@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
+import { TradeValueBlock } from '@/features/catalog/trade-value-block';
 import { formatGBP } from '@/lib/format';
 import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
@@ -227,26 +228,10 @@ export function ProductDetailClient() {
             {formatGBP(product.price)}
           </p>
 
-          {hasTradeIn ? (
-            <div className="mt-3 space-y-1 text-sm text-[var(--gm-muted)]">
-              {product.tradeInCreditPence != null && product.tradeInCreditPence > 0 ? (
-                <p>
-                  <span className="font-semibold text-[var(--gm-fg)]">
-                    {formatGBP(product.tradeInCreditPence)}
-                  </span>{' '}
-                  Trade-in for voucher / store credit
-                </p>
-              ) : null}
-              {product.tradeInCashPence != null && product.tradeInCashPence > 0 ? (
-                <p>
-                  <span className="font-semibold text-[var(--gm-fg)]">
-                    {formatGBP(product.tradeInCashPence)}
-                  </span>{' '}
-                  Trade-in for cash
-                </p>
-              ) : null}
-            </div>
-          ) : null}
+          <TradeValueBlock
+            cashPence={product.tradeInCashPence}
+            creditPence={product.tradeInCreditPence}
+          />
 
           <p className="mt-4 text-[var(--gm-muted)]">
             {product.shortDescription ?? product.description ?? 'Premium gaming product.'}

@@ -65,9 +65,13 @@ function expandFamily(f: Family): CatalogProductDef[] {
     const tag = condition === 'NEW' ? 'NEW' : 'USED';
     const label = condition === 'NEW' ? 'New' : 'Used';
     const singleCondition = f.usedOnly || f.bothConditions === false;
+    const sku = singleCondition
+      ? `GM-${f.platform}-${base}`.toUpperCase().replace(/[^A-Z0-9-]/g, '')
+      : `GM-${f.platform}-${base}-${tag}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    const slug = singleCondition ? base : `${base}-${tag.toLowerCase()}`;
     return {
-      sku: `GM-${f.platform}-${base}-${tag}`.toUpperCase().replace(/[^A-Z0-9-]/g, ''),
-      slug: `${base}-${tag.toLowerCase()}`,
+      sku,
+      slug,
       // Only label New/Used when the family actually has both sellable conditions
       name: singleCondition ? f.name : `${f.name} (${label})`,
       categorySlug: f.categorySlug,
@@ -285,29 +289,10 @@ function gameFamily(
   };
 }
 
-/** Titles not yet widely available Used — New stock only */
-const NEW_ONLY_TITLES = new Set([
-  'EA Sports FC 26',
-  'Call of Duty: Black Ops 7',
-  "Marvel's Wolverine",
-  'WWE 2K26',
-  'NBA 2K26',
-  'Mario Kart World',
-  'The Legend of Zelda: Breath of the Wild (Switch 2 Edition)',
-  'The Legend of Zelda: Tears of the Kingdom (Switch 2 Edition)',
-  'Nintendo Switch 2 Welcome Tour',
-  'Kirby and the Forgotten Land – Nintendo Switch 2 Edition',
-  'Super Mario Party Jamboree – Nintendo Switch 2 Edition',
-  'Metroid Prime 4: Beyond',
-  'Donkey Kong Bananza',
-  'Pokémon Legends: Z-A',
-  'Mario Tennis Fever',
-]);
-
-function gameOpts(name: string, platform: string): { usedOnly?: boolean; newOnly?: boolean } | undefined {
+/** Games are sold as titles only — no New/Used variants on the shop. */
+function gameOpts(_name: string, platform: string): { usedOnly?: boolean; newOnly?: boolean } {
   if (platform === 'PS2' || platform === 'PS3') return { usedOnly: true };
-  if (NEW_ONLY_TITLES.has(name)) return { newOnly: true };
-  return undefined;
+  return { newOnly: true };
 }
 
 const PS5_GAMES = [

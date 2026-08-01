@@ -124,22 +124,24 @@ export function ShopClient() {
         ) : null}
       </div>
 
-      <div>
-        <p className="mb-2 text-sm font-bold">Condition</p>
-        <div className="space-y-1.5 text-sm text-[var(--gm-muted)]">
-          {CONDITIONS.map((c) => (
-            <label key={c.value || 'all'} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name="condition"
-                checked={condition === c.value}
-                onChange={() => applyFilters({ condition: c.value })}
-              />
-              {c.label}
-            </label>
-          ))}
+      {!/game/i.test(category) ? (
+        <div>
+          <p className="mb-2 text-sm font-bold">Condition</p>
+          <div className="space-y-1.5 text-sm text-[var(--gm-muted)]">
+            {CONDITIONS.map((c) => (
+              <label key={c.value || 'all'} className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="condition"
+                  checked={condition === c.value}
+                  onChange={() => applyFilters({ condition: c.value })}
+                />
+                {c.label}
+              </label>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div>
         <p className="mb-2 text-sm font-bold">Availability</p>

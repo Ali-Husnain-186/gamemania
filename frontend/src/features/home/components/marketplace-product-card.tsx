@@ -10,6 +10,7 @@ import { apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
+import { TradeValueBlock, showsConditionVariant } from '@/features/catalog/trade-value-block';
 import type { Cart } from '@/types/cart';
 import type { Product } from '@/types/catalog';
 
@@ -31,6 +32,8 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
   const queryClient = useQueryClient();
   const image = product.images?.find((i) => i.isPrimary) ?? product.images?.[0];
   const rating = 4 + ((product.name.length + index) % 10) / 10;
+  const showCondition = showsConditionVariant(product.name);
+  const displayName = product.name.replace(/\s*\((New|Used)\)\s*$/i, '');
 
   const addMutation = useMutation({
     mutationFn: () => apiPost<Cart>('/cart/items', { productId: product.id, quantity: 1 }),
@@ -86,15 +89,17 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
             )}
           </Link>
 
-          <span
-            className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-              conditionLabel(product.condition) === 'New'
-                ? 'bg-[var(--gm-cyan)] text-black'
-                : 'bg-[var(--gm-magenta)] text-white'
-            }`}
-          >
-            {conditionLabel(product.condition)}
-          </span>
+          {showCondition ? (
+            <span
+              className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                conditionLabel(product.condition) === 'New'
+                  ? 'bg-[var(--gm-cyan)] text-black'
+                  : 'bg-[var(--gm-magenta)] text-white'
+              }`}
+            >
+              {conditionLabel(product.condition)}
+            </span>
+          ) : null}
 
           <div className="absolute right-3 top-3 flex flex-col gap-2 opacity-100 transition sm:opacity-0 sm:group-hover:opacity-100">
             <button
@@ -122,7 +127,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
           </p>
           <Link href={`/products/${product.slug}`} className="mt-1">
             <h3 className="line-clamp-2 text-sm font-bold leading-snug transition hover:text-[var(--gm-yellow)]">
-              {product.name}
+              {displayName}
             </h3>
           </Link>
 
@@ -141,6 +146,11 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
               <p className="gm-display text-xl text-[var(--gm-magenta)]">
                 {formatGBP(product.price)}
               </p>
+              <TradeValueBlock
+                cashPence={product.tradeInCashPence}
+                creditPence={product.tradeInCreditPence}
+                compact
+              />
               {wishMsg ? <p className="text-[10px] text-[var(--gm-muted)]">{wishMsg}</p> : null}
             </div>
             <button
@@ -176,20 +186,25 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="aspect-square overflow-hidden rounded-xl bg-black/30">
+            <div className="aspect-square overflow-hidden rounded-xl bg-white">
               {image?.url ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={image.url} alt={product.name} className="h-full w-full object-contain" />
+                <img src={image.url} alt={displayName} className="h-full w-full object-contain" />
               ) : null}
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-bold uppercase tracking-wider text-[var(--gm-cyan)]">
                 {product.platform ?? 'Game'}
               </p>
-              <h3 className="mt-1 text-lg font-bold">{product.name}</h3>
+              <h3 className="mt-1 text-lg font-bold">{displayName}</h3>
               <p className="gm-display mt-3 text-2xl text-[var(--gm-magenta)]">
                 {formatGBP(product.price)}
               </p>
+              <TradeValueBlock
+                cashPence={product.tradeInCashPence}
+                creditPence={product.tradeInCreditPence}
+                compact
+              />
               <p className="mt-3 line-clamp-4 text-sm text-[var(--gm-muted)]">
                 {product.shortDescription ||
                   'Ready to ship across the UK. Genuine stock from GAME MANIA.'}

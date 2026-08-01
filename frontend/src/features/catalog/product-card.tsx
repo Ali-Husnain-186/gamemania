@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { formatGBP } from '@/lib/format';
+import { TradeValueBlock } from '@/features/catalog/trade-value-block';
 import type { Product } from '@/types/catalog';
 
 type ProductCardProps = {
@@ -48,9 +49,14 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
             {product.platform ?? product.brand?.name ?? 'Game'}
           </p>
           <h3 className="line-clamp-2 text-sm font-bold text-foreground transition group-hover:text-[var(--gm-yellow)]">
-            {product.name}
+            {product.name.replace(/\s*\((New|Used)\)\s*$/i, '')}
           </h3>
           <p className="gm-display text-lg text-[var(--gm-magenta)]">{formatGBP(product.price)}</p>
+          <TradeValueBlock
+            cashPence={product.tradeInCashPence}
+            creditPence={product.tradeInCreditPence}
+            compact
+          />
         </div>
       </Link>
     </motion.article>

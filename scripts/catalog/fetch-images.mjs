@@ -41,7 +41,7 @@ const HARDWARE_WIKI = {
     pages: [],
     files: [
       'Black and white Playstation 5 base edition with controller.png',
-      'PlayStation 5 and DualSense with transparent background.png',
+      'PlayStation 5 and DualSense (2).jpg',
     ],
     filesOnly: true,
   },
@@ -49,7 +49,7 @@ const HARDWARE_WIKI = {
     pages: [],
     files: [
       'PS5DigitalEdition.png',
-      'PlayStation 5 and DualSense with transparent background.png',
+      'PS5Digitalprerefined.jpg',
     ],
     filesOnly: true,
   },
@@ -57,13 +57,13 @@ const HARDWARE_WIKI = {
     pages: [],
     files: [
       'Black and white Playstation 5 base edition with controller.png',
-      'PlayStation 5 and DualSense (2).jpg',
+      'PlayStation 5 and DualSense with transparent background.png',
     ],
     filesOnly: true,
   },
   'ps5-original-digital': {
     pages: [],
-    files: ['PS5DigitalEdition.png', 'PlayStation 5 and DualSense with transparent background.png'],
+    files: ['PS5DigitalEdition.png', 'PS5Digitalprerefined.jpg'],
     filesOnly: true,
   },
   'ps4-console': {

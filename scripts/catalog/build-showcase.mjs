@@ -107,48 +107,69 @@ function caseTheme(platform) {
 
 async function buildGameCase(coverPath, platform, outPath) {
   const theme = caseTheme(platform);
-  const caseW = 520;
-  const caseH = 740;
-  const left = Math.round((SIZE - caseW) / 2);
-  const top = Math.round((SIZE - caseH) / 2) - 10;
-  const spineW = 28;
-  const headerH = 78;
-  const artX = left + spineW + 10;
-  const artY = top + headerH + 10;
-  const artW = caseW - spineW - 20;
-  const artH = caseH - headerH - 50;
+  // Retail Blu-ray / game-case proportions (Amazon-style front face)
+  const caseW = 560;
+  const caseH = 780;
+  const left = Math.round((SIZE - caseW) / 2) - 8;
+  const top = Math.round((SIZE - caseH) / 2);
+  const depth = 22;
+  const headerH = platform === 'PS5' || platform === 'PS4' ? 92 : 84;
+  const artPad = 8;
+  const artX = left + artPad;
+  const artY = top + headerH + artPad;
+  const artW = caseW - artPad * 2;
+  const artH = caseH - headerH - artPad * 2 - 18;
 
   const cover = await sharp(coverPath)
     .resize(artW, artH, { fit: 'cover', position: 'centre' })
-    .jpeg({ quality: 90 })
+    .jpeg({ quality: 92 })
     .toBuffer();
+
+  const caseFill =
+    platform === 'PS5'
+      ? '#1a6fd4'
+      : platform === 'PS4'
+        ? '#0b2a6b'
+        : platform === 'XBOX'
+          ? '#0e7a0e'
+          : platform.startsWith('SWITCH')
+            ? '#e8e8e8'
+            : '#1f2937';
 
   const svg = Buffer.from(`
 <svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="#ffffff"/>
   <defs>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000000" flood-opacity="0.22"/>
+    <linearGradient id="plastic" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${caseFill}" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="${caseFill}" stop-opacity="0.75"/>
+    </linearGradient>
+    <filter id="shadow" x="-25%" y="-25%" width="150%" height="150%">
+      <feDropShadow dx="8" dy="16" stdDeviation="18" flood-color="#000000" flood-opacity="0.28"/>
     </filter>
   </defs>
+  <!-- Case depth / side -->
   <g filter="url(#shadow)">
-    <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="10" ry="10" fill="${theme.body}"/>
-    <rect x="${left}" y="${top}" width="${spineW}" height="${caseH}" fill="${theme.spine}"/>
+    <polygon points="${left + caseW},${top} ${left + caseW + depth},${top + 10} ${left + caseW + depth},${top + caseH + 10} ${left + caseW},${top + caseH}" fill="${caseFill}" opacity="0.55"/>
+    <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="6" ry="6" fill="url(#plastic)"/>
+    <!-- Platform header strip -->
     <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="${theme.header}"/>
-    <text x="${left + spineW + 22}" y="${top + 48}" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700" fill="${theme.headerText}">${theme.label}</text>
-    <rect x="${left + 14}" y="${top + caseH - 28}" width="${caseW - 28}" height="10" rx="4" fill="#374151"/>
+    <text x="${left + 28}" y="${top + Math.round(headerH * 0.62)}" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="${platform === 'SWITCH2' ? 28 : 36}" font-weight="800" fill="${theme.headerText}" letter-spacing="1">${theme.label}</text>
+    <!-- Inner tray -->
+    <rect x="${left + 4}" y="${top + headerH}" width="${caseW - 8}" height="${caseH - headerH - 4}" fill="#0a0a0a"/>
   </g>
 </svg>`);
 
   await sharp(svg)
     .composite([{ input: cover, left: artX, top: artY }])
-    .jpeg({ quality: 92 })
+    .jpeg({ quality: 93 })
     .toFile(outPath);
 }
 
-async function buildHardwareWhite(srcPath, outPath) {
+async function buildHardwareWhite(srcPath, outPath, labelText = '') {
+  const maxH = labelText ? Math.round(SIZE * 0.72) : Math.round(SIZE * 0.82);
   const resized = await sharp(srcPath)
-    .resize(Math.round(SIZE * 0.82), Math.round(SIZE * 0.82), {
+    .resize(Math.round(SIZE * 0.82), maxH, {
       fit: 'contain',
       background: { r: 255, g: 255, b: 255, alpha: 1 },
     })
@@ -156,7 +177,17 @@ async function buildHardwareWhite(srcPath, outPath) {
 
   const meta = await sharp(resized).metadata();
   const left = Math.round((SIZE - (meta.width || 0)) / 2);
-  const top = Math.round((SIZE - (meta.height || 0)) / 2);
+  const top = Math.round((SIZE - (meta.height || 0)) / 2) - (labelText ? 40 : 0);
+
+  const layers = [{ input: resized, left, top }];
+  if (labelText) {
+    const badge = Buffer.from(`
+<svg width="${SIZE}" height="70" xmlns="http://www.w3.org/2000/svg">
+  <rect x="120" y="8" width="760" height="54" rx="12" fill="#0f172a"/>
+  <text x="500" y="44" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" fill="#ffffff">${labelText}</text>
+</svg>`);
+    layers.push({ input: badge, left: 0, top: SIZE - 90 });
+  }
 
   await sharp({
     create: {
@@ -166,9 +197,17 @@ async function buildHardwareWhite(srcPath, outPath) {
       background: { r: 255, g: 255, b: 255 },
     },
   })
-    .composite([{ input: resized, left, top }])
+    .composite(layers)
     .jpeg({ quality: 92 })
     .toFile(outPath);
+}
+
+function hardwareLabel(key) {
+  if (key === 'ps5-slim-disc') return 'PS5 Slim · Disc Edition';
+  if (key === 'ps5-slim-digital') return 'PS5 Slim · Digital Edition';
+  if (key === 'ps5-original-disc') return 'PS5 Original · Disc Edition';
+  if (key === 'ps5-original-digital') return 'PS5 Original · Digital Edition';
+  return '';
 }
 
 function relUrl(absPath) {
@@ -194,7 +233,9 @@ async function main() {
 
   for (const key of list) {
     const existing = map[key] || [];
-    const srcUrl = existing.find((i) => localPathFromUrl(i.url))?.url;
+    const srcUrl =
+      existing.find((i) => localPathFromUrl(i.url) && !String(i.url).includes('-showcase'))?.url ??
+      existing.find((i) => localPathFromUrl(i.url))?.url;
     const srcPath = localPathFromUrl(srcUrl);
     if (!srcPath) {
       console.log(`skip ${key} (no local source)`);
@@ -220,7 +261,7 @@ async function main() {
       if (isGameKey(key)) {
         await buildGameCase(srcPath, platformFromKey(key), outPath);
       } else {
-        await buildHardwareWhite(srcPath, outPath);
+        await buildHardwareWhite(srcPath, outPath, hardwareLabel(key));
       }
 
       const showcase = {

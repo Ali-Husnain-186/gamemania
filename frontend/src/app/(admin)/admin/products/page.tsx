@@ -468,6 +468,9 @@ export default function ProductsPage() {
                   placeholder="4.00"
                   {...register('tradeInCashPounds')}
                 />
+                <span className="mt-1 block text-[10px] opacity-70">
+                  Shown on product cards as “We buy · cash”. Edit here anytime.
+                </span>
               </label>
 
               <label className="block text-xs text-[var(--admin-muted)]">
@@ -477,6 +480,9 @@ export default function ProductsPage() {
                   placeholder="6.00"
                   {...register('tradeInCreditPounds')}
                 />
+                <span className="mt-1 block text-[10px] opacity-70">
+                  Shown on product cards as “We buy · store credit”.
+                </span>
               </label>
             </div>
 

@@ -15,7 +15,7 @@
       "publicId": null
     },
     {
-      "url": "/catalog/consoles/ps5-slim-disc-2.png",
+      "url": "/catalog/consoles/ps5-slim-disc-2.jpg",
       "altText": "ps5-slim-disc",
       "isPrimary": false,
       "sortOrder": 2,
@@ -38,7 +38,7 @@
       "publicId": null
     },
     {
-      "url": "/catalog/consoles/ps5-slim-digital-2.png",
+      "url": "/catalog/consoles/ps5-slim-digital-2.jpg",
       "altText": "ps5-slim-digital",
       "isPrimary": false,
       "sortOrder": 2,
@@ -61,7 +61,7 @@
       "publicId": null
     },
     {
-      "url": "/catalog/consoles/ps5-original-disc-2.jpg",
+      "url": "/catalog/consoles/ps5-original-disc-2.png",
       "altText": "ps5-original-disc",
       "isPrimary": false,
       "sortOrder": 2,
@@ -84,7 +84,7 @@
       "publicId": null
     },
     {
-      "url": "/catalog/consoles/ps5-original-digital-2.png",
+      "url": "/catalog/consoles/ps5-original-digital-2.jpg",
       "altText": "ps5-original-digital",
       "isPrimary": false,
       "sortOrder": 2,

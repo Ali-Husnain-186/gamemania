@@ -27,7 +27,13 @@ function loadCatalogImages(): Record<string, SeedImage[]> {
 }
 
 function imagesForKey(key: string, name: string, map: Record<string, SeedImage[]>): SeedImage[] {
-  const found = map[key];
+  const aliases: Record<string, string> = {
+    'switch2-game-the-legend-of-zelda-tears-of-the-kingdom-switch-2-edition':
+      'switch-game-the-legend-of-zelda-tears-of-the-kingdom',
+    'switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition':
+      'switch-game-the-legend-of-zelda-breath-of-the-wild',
+  };
+  const found = map[key] ?? (aliases[key] ? map[aliases[key]] : undefined);
   if (found?.length) return found.slice(0, 4);
   const label = encodeURIComponent(name.slice(0, 24));
   return [0, 1, 2].map((n) => ({

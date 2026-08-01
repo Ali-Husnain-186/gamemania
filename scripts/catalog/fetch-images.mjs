@@ -559,10 +559,102 @@ const WIKI_TITLE_OVERRIDES = {
   'ps2-game-god-of-war': 'God of War (2005 video game)',
   'ps2-game-god-of-war-ii': 'God of War II',
   'ps4-game-god-of-war': 'God of War (2018 video game)',
+  'switch-game-the-legend-of-zelda-tears-of-the-kingdom':
+    'The Legend of Zelda: Tears of the Kingdom',
+  'switch-game-the-legend-of-zelda-breath-of-the-wild':
+    'The Legend of Zelda: Breath of the Wild',
   'cable-hdmi': 'HDMI',
   'cable-usbc': 'USB-C',
   'cable-figure-8': 'IEC 60320',
 };
+
+/** Prefer exact cover/box art files — never developer headshots */
+const WIKI_FILE_OVERRIDES = {
+  'switch-game-the-legend-of-zelda-tears-of-the-kingdom': [
+    'The Legend of Zelda Tears of the Kingdom cover.jpg',
+    'Tears of the kingdom contraptions.jpg',
+  ],
+  'switch-game-the-legend-of-zelda-breath-of-the-wild': [
+    'The Legend of Zelda Breath of the Wild.jpg',
+    'Breath of the Wild paraglide.jpg',
+    'Climbing in BotW.jpg',
+  ],
+  'switch-game-mario-kart-8-deluxe': ['Mario Kart 8 Deluxe NA box art.jpg', 'Mario Kart 8 Deluxe.jpg'],
+  'switch-game-super-mario-odyssey': ['Super Mario Odyssey.jpg', 'SuperMarioOdyssey.jpg'],
+  'switch-game-super-smash-bros-ultimate': [
+    'Super Smash Bros. Ultimate.jpg',
+    'Super Smash Bros Ultimate.jpg',
+  ],
+  'switch-game-animal-crossing-new-horizons': [
+    'Animal Crossing New Horizons.jpg',
+    'Animal Crossing New Horizons Gameplay.jpg',
+  ],
+  'switch-game-metroid-dread': ['Metroid Dread.jpg', 'Metroid Dread cover art.jpg'],
+  'switch-game-splatoon-3': ['Splatoon 3.jpg', 'Splatoon 3 cover art.jpg'],
+  'switch-game-pok-mon-scarlet': [
+    'Pokémon Scarlet and Violet banner.png',
+    'Pokemon Scarlet and Violet Concept Artwork.webp',
+    'Tera Raid Battle.jpg',
+  ],
+  'switch-game-pok-mon-violet': [
+    'Pokémon Scarlet and Violet banner.png',
+    'Pokemon Scarlet and Violet Concept Artwork.webp',
+    'Tera Raid Battle.jpg',
+  ],
+  'switch2-game-mario-kart-world': [
+    'Mario Kart World Cover Artwork.png',
+    'Mario Kart World Knockout Tour.jpeg',
+  ],
+  'switch2-game-donkey-kong-bananza': [
+    'Donkey Kong Bananza updated box art.png',
+    'Donkey Kong Bananza Screenshot.jpg',
+  ],
+  'switch2-game-metroid-prime-4-beyond': [
+    'Metroid Prime 4 Beyond cover art.png',
+    'Prime4Gameplay.png',
+  ],
+  'switch-game-luigi-s-mansion-3': ["Luigi's Mansion 3.jpg"],
+  'switch-game-super-mario-odyssey': [
+    'Super Mario Odyssey.jpg',
+    'Super Mario Odyssey, Cascade Kingdom.png',
+    'Super Mario Odyssey, Seaside Kingdom.png',
+  ],
+  'switch-game-super-smash-bros-ultimate': [
+    'Super Smash Bros. Ultimate.jpg',
+    'Super Smash Bros. Ultimate gameplay.jpg',
+  ],
+};
+
+/** Switch 2 editions reuse the base Switch title art when no separate cover exists */
+const IMAGE_ALIASES = {
+  'switch2-game-the-legend-of-zelda-tears-of-the-kingdom-switch-2-edition':
+    'switch-game-the-legend-of-zelda-tears-of-the-kingdom',
+  'switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition':
+    'switch-game-the-legend-of-zelda-breath-of-the-wild',
+};
+
+const BAD_WIKI_FILE =
+  /logo|icon|symbol|flag|map|svg|ambox|commons|portrait|headshot|cropped|aonuma|miyamoto|iwata|sakurai|koizumi|hayashida|eguchi|nogami|masuda|sheeran|yoasobi|toby fox|developer|interview|selfie|staff|presenter|cebit|game developers|gdc |e3|gamescom|photo of|person with|people |signature|autograph|qr code|wikidata|booth|conference|region map|españa|portugal|momotar/i;
+
+const GOOD_WIKI_FILE =
+  /cover|box\s?art|key\s?art|artwork|packaging|game cover|na box|eu box|official|banner|promo|packshot/i;
+
+function scoreWikiFile(fileName, gameName) {
+  const f = fileName.toLowerCase();
+  if (BAD_WIKI_FILE.test(f)) return -100;
+  let score = 0;
+  if (GOOD_WIKI_FILE.test(f)) score += 50;
+  const tokens = gameName
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length > 2 && !['the', 'and', 'for', 'edition', 'game', 'video'].includes(w));
+  const hits = tokens.filter((t) => f.includes(t)).length;
+  score += hits * 10;
+  if (/screenshot|gameplay|paraglide|climbing|contraption|raid|kingdom/i.test(f)) score += 4;
+  if (score < 10) return -1;
+  return score;
+}
 
 async function imagesFromSteam(key) {
   const name = searchNameFromKey(key);
@@ -597,14 +689,12 @@ async function imagesFromSteam(key) {
 
 /* -------------------- Wikipedia -------------------- */
 
-async function wikiPageImages(title) {
+async function wikiPageImages(title, gameName = '') {
   const api = new URL('https://en.wikipedia.org/w/api.php');
   api.searchParams.set('action', 'query');
   api.searchParams.set('titles', title);
-  api.searchParams.set('prop', 'pageimages|images');
-  api.searchParams.set('piprop', 'original|thumbnail');
-  api.searchParams.set('pithumbsize', '1200');
-  api.searchParams.set('imlimit', '40');
+  api.searchParams.set('prop', 'images');
+  api.searchParams.set('imlimit', '50');
   api.searchParams.set('format', 'json');
   api.searchParams.set('redirects', '1');
   api.searchParams.set('origin', '*');
@@ -615,20 +705,15 @@ async function wikiPageImages(title) {
   const page = Object.values(json.query?.pages || {})[0];
   if (!page || page.missing != null) return [];
 
-  const urls = [];
-  if (page.original?.source) urls.push(page.original.source);
-  if (page.thumbnail?.source) urls.push(page.thumbnail.source);
-
   const files = (page.images || [])
     .map((i) => i.title?.replace(/^File:/i, ''))
     .filter(Boolean)
     .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
-    .filter((f) => !/logo|icon|symbol|flag|map|svg|ambox|commons/i.test(f));
+    .map((f) => ({ file: f, score: scoreWikiFile(f, gameName || title) }))
+    .filter((x) => x.score >= 0)
+    .sort((a, b) => b.score - a.score);
 
-  for (const f of files.slice(0, 8)) {
-    urls.push(wikiFileUrl(f, 1400));
-  }
-  return [...new Set(urls)];
+  return files.slice(0, 10).map((x) => wikiFileUrl(x.file, 1400));
 }
 
 async function wikiSearchTitle(query) {
@@ -647,21 +732,28 @@ async function wikiSearchTitle(query) {
 
 async function imagesFromWikipediaGame(key) {
   const name = searchNameFromKey(key);
+  const forcedFiles = WIKI_FILE_OVERRIDES[key];
+  if (forcedFiles?.length) {
+    const urls = forcedFiles.map((f) => wikiFileUrl(f, 1400));
+    const imgs = await finalizeImages(key, `games/${key}`, urls, name);
+    if (imgs?.length) return imgs;
+  }
+
   const forced = WIKI_TITLE_OVERRIDES[key];
   const titles = forced
     ? [forced]
     : await wikiSearchTitle(`${name} (video game)`);
-  if (!forced) {
-    await sleep(200);
-  }
+  if (!forced) await sleep(200);
   const more = forced ? [] : await wikiSearchTitle(name);
   if (!forced) await sleep(200);
-  const tryTitles = [...new Set([forced, `${name} (video game)`, name, ...titles, ...more].filter(Boolean))];
+  const tryTitles = [
+    ...new Set([forced, `${name} (video game)`, name, ...titles, ...more].filter(Boolean)),
+  ];
 
   const urls = [];
   for (const t of tryTitles.slice(0, 4)) {
-    const found = await wikiPageImages(t);
-    await sleep(250);
+    const found = await wikiPageImages(t, name);
+    await sleep(300);
     for (const u of found) {
       if (!urls.includes(u)) urls.push(u);
     }
@@ -710,6 +802,9 @@ function looksGood(imgs) {
 }
 
 async function resolveKey(key) {
+  if (IMAGE_ALIASES[key] && IMAGE_ALIASES[key] !== key) {
+    return null; // filled from alias after source key is ready
+  }
   if (isGameKey(key)) {
     const hasIgdb = Boolean(
       (process.env.IGDB_CLIENT_ID ?? '').trim() &&
@@ -726,6 +821,21 @@ async function resolveKey(key) {
     return steam || wiki || null;
   }
   return imagesFromHardware(key);
+}
+
+function applyAliases(out) {
+  for (const [alias, source] of Object.entries(IMAGE_ALIASES)) {
+    if (alias === source) continue;
+    if (out[source]?.length) {
+      out[alias] = out[source].map((img, i) => ({
+        ...img,
+        altText: alias.replace(/-/g, ' '),
+        isPrimary: i === 0,
+        sortOrder: i,
+      }));
+    }
+  }
+  return out;
 }
 
 async function main() {
@@ -754,6 +864,9 @@ async function main() {
   let fail = 0;
 
   for (const key of keys) {
+    if (IMAGE_ALIASES[key] && IMAGE_ALIASES[key] !== key) {
+      continue;
+    }
     if (!force && looksGood(out[key])) {
       ok += 1;
       continue;
@@ -776,7 +889,7 @@ async function main() {
     fs.writeFileSync(OUT, JSON.stringify(out, null, 2));
   }
 
-  fs.writeFileSync(OUT, JSON.stringify(out, null, 2));
+  fs.writeFileSync(OUT, JSON.stringify(applyAliases(out), null, 2));
   console.log(`\nWrote ${OUT}\nOK: ${ok}  failed: ${fail}`);
   if (!hasIgdb) {
     console.log(`

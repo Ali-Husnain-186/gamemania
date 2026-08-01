@@ -37,7 +37,7 @@ type Family = {
   tradeInCash: number;
   tradeInCredit: number;
   bothConditions?: boolean;
-  /** Used-only (e.g. PS2/PS3 games — no sealed New stock) */
+  /** Used-only (e.g. PS2/PS3 — no sealed New stock) */
   usedOnly?: boolean;
   featured?: boolean;
   qtyNew?: number;
@@ -55,7 +55,7 @@ function slugify(input: string): string {
 
 function expandFamily(f: Family): CatalogProductDef[] {
   const base = slugify(f.key);
-  const both = f.bothConditions !== false;
+  const both = f.bothConditions !== false && !f.usedOnly;
   const desc =
     f.description ??
     `${f.name} available at GameMania UK. Genuine stock with a 3-month warranty.`;
@@ -64,10 +64,12 @@ function expandFamily(f: Family): CatalogProductDef[] {
   const make = (condition: CatalogCondition, price: number, qty: number): CatalogProductDef => {
     const tag = condition === 'NEW' ? 'NEW' : 'USED';
     const label = condition === 'NEW' ? 'New' : 'Used';
+    const singleCondition = f.usedOnly || f.bothConditions === false;
     return {
       sku: `GM-${f.platform}-${base}-${tag}`.toUpperCase().replace(/[^A-Z0-9-]/g, ''),
       slug: `${base}-${tag.toLowerCase()}`,
-      name: `${f.name} (${label})`,
+      // Only label New/Used when the family actually has both sellable conditions
+      name: singleCondition ? f.name : `${f.name} (${label})`,
       categorySlug: f.categorySlug,
       brandSlug: f.brandSlug,
       platform: f.platform,
@@ -79,7 +81,7 @@ function expandFamily(f: Family): CatalogProductDef[] {
       description: desc,
       imageKey: f.key,
       quantity: qty,
-      isFeatured: f.featured && condition === 'NEW',
+      isFeatured: Boolean(f.featured) && (condition === 'NEW' || f.usedOnly),
     };
   };
 
@@ -161,11 +163,12 @@ const CONSOLES: Family[] = [
     categorySlug: 'playstation-consoles',
     brandSlug: 'sony',
     platform: 'PS3',
-    shortDescription: 'PlayStation 3 console.',
+    shortDescription: 'PlayStation 3 console (pre-owned).',
     newPrice: 12999,
     usedPrice: 6999,
     tradeInCash: 2500,
     tradeInCredit: 3200,
+    usedOnly: true,
   },
   {
     key: 'ps2-console',
@@ -173,11 +176,12 @@ const CONSOLES: Family[] = [
     categorySlug: 'playstation-consoles',
     brandSlug: 'sony',
     platform: 'PS2',
-    shortDescription: 'PlayStation 2 console.',
+    shortDescription: 'PlayStation 2 console (pre-owned).',
     newPrice: 9999,
     usedPrice: 4999,
     tradeInCash: 1500,
     tradeInCredit: 2000,
+    usedOnly: true,
   },
   {
     key: 'xbox-series-x',
@@ -263,7 +267,7 @@ function gameFamily(
   brandSlug: string,
   newPrice: number,
   usedPrice: number,
-  opts?: { usedOnly?: boolean },
+  opts?: { usedOnly?: boolean; newOnly?: boolean },
 ): Family {
   return {
     key: `${platform.toLowerCase()}-game-${slugify(name)}`,
@@ -277,7 +281,33 @@ function gameFamily(
     tradeInCash: Math.round(usedPrice * 0.35),
     tradeInCredit: Math.round(usedPrice * 0.42),
     usedOnly: opts?.usedOnly,
+    bothConditions: opts?.newOnly ? false : undefined,
   };
+}
+
+/** Titles not yet widely available Used — New stock only */
+const NEW_ONLY_TITLES = new Set([
+  'EA Sports FC 26',
+  'Call of Duty: Black Ops 7',
+  "Marvel's Wolverine",
+  'WWE 2K26',
+  'NBA 2K26',
+  'Mario Kart World',
+  'The Legend of Zelda: Breath of the Wild (Switch 2 Edition)',
+  'The Legend of Zelda: Tears of the Kingdom (Switch 2 Edition)',
+  'Nintendo Switch 2 Welcome Tour',
+  'Kirby and the Forgotten Land – Nintendo Switch 2 Edition',
+  'Super Mario Party Jamboree – Nintendo Switch 2 Edition',
+  'Metroid Prime 4: Beyond',
+  'Donkey Kong Bananza',
+  'Pokémon Legends: Z-A',
+  'Mario Tennis Fever',
+]);
+
+function gameOpts(name: string, platform: string): { usedOnly?: boolean; newOnly?: boolean } | undefined {
+  if (platform === 'PS2' || platform === 'PS3') return { usedOnly: true };
+  if (NEW_ONLY_TITLES.has(name)) return { newOnly: true };
+  return undefined;
 }
 
 const PS5_GAMES = [
@@ -302,7 +332,15 @@ const PS5_GAMES = [
   'Dragon Ball: Sparking! ZERO',
   'Helldivers 2',
 ].map((n, i) =>
-  gameFamily(n, 'PS5', 'playstation-5-games', 'sony', 5499 - (i % 5) * 200, 3299 - (i % 5) * 100),
+  gameFamily(
+    n,
+    'PS5',
+    'playstation-5-games',
+    'sony',
+    5499 - (i % 5) * 200,
+    3299 - (i % 5) * 100,
+    gameOpts(n, 'PS5'),
+  ),
 );
 
 const PS4_GAMES = [
@@ -327,7 +365,15 @@ const PS4_GAMES = [
   "Assassin's Creed Valhalla",
   'Hogwarts Legacy',
 ].map((n, i) =>
-  gameFamily(n, 'PS4', 'playstation-4-games', 'sony', 2499 - (i % 4) * 100, 1299 - (i % 4) * 50),
+  gameFamily(
+    n,
+    'PS4',
+    'playstation-4-games',
+    'sony',
+    2499 - (i % 4) * 100,
+    1299 - (i % 4) * 50,
+    gameOpts(n, 'PS4'),
+  ),
 );
 
 const XBOX_GAMES = [
@@ -359,6 +405,7 @@ const XBOX_GAMES = [
     'microsoft',
     4999 - (i % 5) * 200,
     2999 - (i % 5) * 100,
+    gameOpts(n, 'XBOX_SERIES'),
   ),
 );
 
@@ -433,7 +480,15 @@ const SWITCH_GAMES = [
   'Fire Emblem: Three Houses',
   'Xenoblade Chronicles 3',
 ].map((n, i) =>
-  gameFamily(n, 'SWITCH', 'nintendo-switch-games', 'nintendo', 4499 - (i % 5) * 200, 2999 - (i % 5) * 150),
+  gameFamily(
+    n,
+    'SWITCH',
+    'nintendo-switch-games',
+    'nintendo',
+    4499 - (i % 5) * 200,
+    2999 - (i % 5) * 150,
+    gameOpts(n, 'SWITCH'),
+  ),
 );
 
 const SWITCH2_GAMES = [
@@ -455,6 +510,7 @@ const SWITCH2_GAMES = [
     'nintendo',
     5499 - (i % 4) * 200,
     3999 - (i % 4) * 150,
+    gameOpts(n, 'SWITCH2'),
   ),
 );
 

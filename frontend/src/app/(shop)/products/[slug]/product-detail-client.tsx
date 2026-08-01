@@ -156,20 +156,20 @@ export function ProductDetailClient() {
             {product.name.replace(/\s*\((New|Used)\)\s*$/i, '')}
           </h1>
 
-          {siblingQuery.data || product.condition ? (
+          {siblingQuery.data ? (
             <div className="mt-4">
               <p className="text-xs font-bold uppercase tracking-wider text-[var(--gm-muted)]">
                 Condition
               </p>
               <div className="mt-2 flex flex-wrap gap-2">
-                {(product.condition === 'NEW' || siblingQuery.data?.condition === 'NEW') && (
+                {(product.condition === 'NEW' || siblingQuery.data.condition === 'NEW') && (
                   <button
                     type="button"
                     onClick={() => {
                       const target =
                         product.condition === 'NEW'
                           ? product.slug
-                          : siblingQuery.data?.condition === 'NEW'
+                          : siblingQuery.data.condition === 'NEW'
                             ? siblingQuery.data.slug
                             : null;
                       if (target && target !== product.slug) router.push(`/products/${target}`);
@@ -183,20 +183,19 @@ export function ProductDetailClient() {
                     New
                     {product.condition === 'NEW'
                       ? ` · ${formatGBP(product.price)}`
-                      : siblingQuery.data?.condition === 'NEW'
+                      : siblingQuery.data.condition === 'NEW'
                         ? ` · ${formatGBP(siblingQuery.data.price)}`
                         : ''}
                   </button>
                 )}
-                {(product.condition !== 'NEW' ||
-                  (siblingQuery.data && siblingQuery.data.condition !== 'NEW')) && (
+                {(product.condition !== 'NEW' || siblingQuery.data.condition !== 'NEW') && (
                   <button
                     type="button"
                     onClick={() => {
                       const target =
                         product.condition !== 'NEW'
                           ? product.slug
-                          : siblingQuery.data && siblingQuery.data.condition !== 'NEW'
+                          : siblingQuery.data.condition !== 'NEW'
                             ? siblingQuery.data.slug
                             : null;
                       if (target && target !== product.slug) router.push(`/products/${target}`);
@@ -210,7 +209,7 @@ export function ProductDetailClient() {
                     Used
                     {product.condition !== 'NEW'
                       ? ` · ${formatGBP(product.price)}`
-                      : siblingQuery.data && siblingQuery.data.condition !== 'NEW'
+                      : siblingQuery.data.condition !== 'NEW'
                         ? ` · ${formatGBP(siblingQuery.data.price)}`
                         : ''}
                   </button>

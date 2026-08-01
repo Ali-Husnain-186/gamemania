@@ -97,64 +97,160 @@ const HARDWARE_WIKI = {
     files: ['Nintendo Switch OLED model.jpg', 'Nintendo-Switch-wJoyConRB.jpg'],
   },
   'switch-2-console': {
-    pages: ['Nintendo Switch 2', 'Nintendo Switch'],
-    files: ['Nintendo Switch OLED model.jpg', 'Nintendo-Switch-wJoyConRB.jpg'],
+    pages: ['Nintendo Switch 2'],
+    files: [
+      'Nintendo Switch 2 in mode "handheld".png',
+      'Dreifaltigkeit der Nintendo Switch (2) 20250606 HOF5608 RAW-Export.png',
+    ],
+    filesOnly: true,
   },
   'dualsense-white': {
-    pages: ['DualSense', 'DualShock'],
+    pages: ['DualSense'],
     files: [
       'Playstation DualSense Controller.png',
-      'DualSense Edge Controller.jpg',
       'PlayStation 5 and DualSense with transparent background.png',
     ],
+    filesOnly: true,
   },
   'dualsense-midnight-black': {
-    pages: ['DualSense', 'DualShock'],
+    pages: ['DualSense'],
     files: [
-      'Playstation DualSense Controller.png',
-      'DualSense Edge Controller.jpg',
-      'PlayStation 5 and DualSense with transparent background.png',
+      'Playstation 5 DualSense controller in Midnight Black, 2026-02-07 (front).jpg',
+      'Playstation 5 DualSense controller in Midnight Black, 2026-02-07 (rear).jpg',
     ],
+    filesOnly: true,
+  },
+  'dualsense-cosmic-red': {
+    pages: ['DualSense'],
+    files: [
+      'InclusiveGameLab PS5-Controller CC-BY-SA 02.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-starlight-blue': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Wireless Controller Cobalt Blue.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-galactic-purple': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Controller Chroma Pearl.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-nova-pink': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Controller Chroma Pearl.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-volcanic-red': {
+    pages: ['DualSense'],
+    files: [
+      'InclusiveGameLab PS5-Controller CC-BY-SA 02.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-cobalt-blue': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Wireless Controller Cobalt Blue.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-sterling-silver': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Controller Chroma Pearl.jpg',
+      'Playstation DualSense Controller.png',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-chroma-teal': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Controller Chroma Pearl.jpg',
+      'DualSense Wireless Controller Cobalt Blue.jpg',
+    ],
+    filesOnly: true,
+  },
+  'dualsense-chroma-indigo': {
+    pages: ['DualSense'],
+    files: [
+      'DualSense Controller Chroma Pearl.jpg',
+      'DualSense Wireless Controller Cobalt Blue.jpg',
+    ],
+    filesOnly: true,
   },
   'dualshock4-black': {
     pages: ['DualShock'],
     files: ['DualShock 4.jpg', 'DualShock 4 Side Profile.jpg', 'DualShock4-Controller.jpg'],
+    filesOnly: true,
   },
   'dualshock4-white': {
     pages: ['DualShock'],
     files: ['DualShock 4.jpg', 'DualShock 4 Side Profile.jpg', 'DualShock4-Controller.jpg'],
+    filesOnly: true,
   },
   'dualshock4-red': {
     pages: ['DualShock'],
     files: ['DualShock 4.jpg', 'DualShock 4 Side Profile.jpg', 'DualShock4-Controller.jpg'],
+    filesOnly: true,
   },
   'switch2-joycon-blue-red': {
     pages: ['Joy-Con', 'Nintendo Switch'],
     files: ['Nintendo-Switch-wJoyConRB.jpg', 'Joy-Con.jpg'],
+    filesOnly: true,
   },
   'switch2-joycon-black': {
     pages: ['Joy-Con', 'Nintendo Switch'],
     files: ['Nintendo-Switch-wJoyConRB.jpg', 'Joy-Con.jpg'],
+    filesOnly: true,
   },
   'switch2-joycon-white': {
     pages: ['Joy-Con', 'Nintendo Switch'],
     files: ['Nintendo-Switch-wJoyConRB.jpg', 'Joy-Con.jpg'],
+    filesOnly: true,
   },
   'switch2-joycon-other-official-colours': {
     pages: ['Joy-Con', 'Nintendo Switch'],
     files: ['Nintendo-Switch-wJoyConRB.jpg', 'Joy-Con.jpg'],
+    filesOnly: true,
   },
+  // Curated product photos only — avoid connector diagrams / SVG icons
   'cable-hdmi': {
-    pages: ['HDMI'],
-    files: ['HDMI connector.jpg', 'HDMI_Connector.jpg'],
+    pages: [],
+    files: ['HDMI CableEnd 02.jpg', 'HDMI CableEnd.jpg', 'MicroHDMI CableEnd.jpg'],
+    filesOnly: true,
   },
   'cable-usbc': {
-    pages: ['USB-C'],
-    files: ['USB Type-C plug.svg', 'USB-C.jpg'],
+    pages: [],
+    files: [
+      'CAB-25579-USB-C-Extension-Cable-with-Power-Switch-Feature.jpg',
+      'CAB-25579-USB-C-Extension-Cable-with-Power-Switch-Top.jpg',
+      'CAB-25579-USB-C-Extension-Cable-with-Power-Switch-Detail.jpg',
+    ],
+    filesOnly: true,
   },
   'cable-figure-8': {
-    pages: ['IEC 60320'],
-    files: ['IEC 60320 C7.svg', 'C7 connector.jpg'],
+    pages: [],
+    files: [
+      'Connection cable CEE 7-16 to IEC 60320 C7.jpg',
+      'Connector IEC-60320-C7.jpg',
+      'IEC 60320 C7 connector.jpg',
+      'Shortened IEC 60320 C7 connection.jpg',
+    ],
+    filesOnly: true,
   },
 };
 
@@ -338,7 +434,8 @@ async function igdbSearchGame(name, platformKey) {
     if (platformId) return igdbSearchGame(name, null);
     return null;
   }
-  return rows[0];
+  const related = rows.find((r) => namesRelated(name, r.name || '')) ?? null;
+  return related || (namesRelated(name, rows[0].name || '') ? rows[0] : null);
 }
 
 async function imagesFromIgdb(key) {
@@ -378,6 +475,33 @@ async function steamSearch(name) {
   return item ?? null;
 }
 
+function namesRelated(query, resultName) {
+  const stop = new Set([
+    'the',
+    'and',
+    'for',
+    'edition',
+    'remake',
+    'remastered',
+    'part',
+    'volume',
+    'game',
+    'video',
+  ]);
+  const tokens = (s) =>
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 2 && !stop.has(w));
+  const q = tokens(query);
+  const r = new Set(tokens(resultName));
+  if (!q.length || !r.size) return false;
+  const hits = q.filter((w) => [...r].some((x) => x === w || x.includes(w) || w.includes(x)));
+  return hits.length >= Math.min(2, q.length);
+}
+
 function steamImages(appId) {
   const base = `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}`;
   return [
@@ -388,35 +512,82 @@ function steamImages(appId) {
   ];
 }
 
+/** Exact Steam app IDs — avoids unrelated search hits */
+const STEAM_APP_IDS = {
+  'ps5-game-elden-ring': 1245620,
+  'ps5-game-helldivers-2': 553850,
+  'ps5-game-hogwarts-legacy': 990080,
+  'ps5-game-god-of-war-ragnar-k': 2322010,
+  'ps5-game-gran-turismo-7': 1300510,
+  'ps5-game-silent-hill-2-remake': 2124490,
+  'ps5-game-dragon-ball-sparking-zero': 1790600,
+  'ps5-game-mortal-kombat-1': 1971870,
+  'ps5-game-assassins-creed-shadows': 3159330,
+  'ps4-game-red-dead-redemption-2': 1174180,
+  'ps4-game-god-of-war': 1593500,
+  'ps4-game-ghost-of-tsushima': 2215430,
+  'xbox_series-game-forza-horizon-5': 1551360,
+  'xbox_series-game-starfield': 1716740,
+  'xbox_series-game-halo-infinite': 1240440,
+  'xbox_series-game-cyberpunk-2077': 1091500,
+  'switch-game-the-legend-of-zelda-tears-of-the-kingdom': null, // not on Steam
+  'ps2-game-spider-man-2-2004': null,
+};
+
+const SEARCH_OVERRIDES = {
+  'ps5-game-silent-hill-2-remake': 'SILENT HILL 2',
+  'ps5-game-gran-turismo-7': 'Gran Turismo 7',
+  'ps5-game-marvels-wolverine': "Marvel's Wolverine",
+  'ps5-game-god-of-war-ragnar-k': 'God of War Ragnarok',
+  'ps3-game-gran-turismo-6': 'Gran Turismo 6',
+  'ps2-game-gran-turismo-4': 'Gran Turismo 4',
+  'ps2-game-gran-turismo-3': 'Gran Turismo 3 A-Spec',
+  'ps2-game-spider-man-2-2004': 'Spider-Man 2 2004',
+  'ps3-game-fifa-19': 'FIFA 19',
+  'ps3-game-minecraft-ps3-edition': 'Minecraft',
+  'ps2-game-wwe-smackdown-here-comes-the-pain': 'WWE SmackDown Here Comes the Pain',
+  'ps2-game-kingdom-hearts': 'Kingdom Hearts',
+  'switch-game-luigi-s-mansion-3': "Luigi's Mansion 3",
+};
+
+const WIKI_TITLE_OVERRIDES = {
+  'ps2-game-spider-man-2-2004': 'Spider-Man 2 (2004 video game)',
+  'ps5-game-marvels-spider-man-2': "Marvel's Spider-Man 2",
+  'ps5-game-marvels-wolverine': "Marvel's Wolverine",
+  'ps4-game-marvels-spider-man': "Marvel's Spider-Man (2018 video game)",
+  'ps3-game-the-last-of-us': 'The Last of Us',
+  'ps2-game-god-of-war': 'God of War (2005 video game)',
+  'ps2-game-god-of-war-ii': 'God of War II',
+  'ps4-game-god-of-war': 'God of War (2018 video game)',
+  'cable-hdmi': 'HDMI',
+  'cable-usbc': 'USB-C',
+  'cable-figure-8': 'IEC 60320',
+};
+
 async function imagesFromSteam(key) {
   const name = searchNameFromKey(key);
-  // Prefer cleaner Steam queries for noisy catalog names
-  const overrides = {
-    'ps5-game-silent-hill-2-remake': 'SILENT HILL 2',
-    'ps5-game-gran-turismo-7': 'Gran Turismo 7',
-    'ps5-game-marvels-wolverine': 'Marvel Wolverine',
-    'ps3-game-gran-turismo-6': 'Gran Turismo 6',
-    'ps2-game-gran-turismo-4': 'Gran Turismo 4',
-    'ps2-game-gran-turismo-3': 'Gran Turismo 3',
-    'ps3-game-fifa-19': 'FIFA 19',
-    'ps3-game-minecraft-ps3-edition': 'Minecraft',
-    'xbox_series-game-wwe-2k26': 'WWE 2K25',
-    'xbox_series-game-nba-2k26': 'NBA 2K25',
-    'ps2-game-wwe-smackdown-here-comes-the-pain': 'WWE SmackDown Here Comes the Pain',
-  };
-  const preferred = overrides[key];
+  const appId = STEAM_APP_IDS[key];
+  if (appId) {
+    return finalizeImages(key, `games/${key}`, steamImages(appId), name);
+  }
+  if (appId === null) return null;
+
+  const preferred = SEARCH_OVERRIDES[key];
   const queries = [
     preferred,
     name,
-    name.replace(/remake|remastered|part i+|edition/gi, '').trim(),
+    name.replace(/remake|remastered|part i+|edition|\(\d+\)/gi, '').trim(),
     name.split(' ').slice(0, 4).join(' '),
   ].filter(Boolean);
 
   let app = null;
   for (const q of queries) {
-    app = await steamSearch(q);
+    const found = await steamSearch(q);
     await sleep(250);
-    if (app) break;
+    if (found && namesRelated(q, found.name)) {
+      app = found;
+      break;
+    }
   }
   if (!app) return null;
 
@@ -476,11 +647,16 @@ async function wikiSearchTitle(query) {
 
 async function imagesFromWikipediaGame(key) {
   const name = searchNameFromKey(key);
-  const titles = await wikiSearchTitle(`${name} (video game)`);
-  await sleep(200);
-  const more = await wikiSearchTitle(name);
-  await sleep(200);
-  const tryTitles = [...new Set([`${name} (video game)`, name, ...titles, ...more])];
+  const forced = WIKI_TITLE_OVERRIDES[key];
+  const titles = forced
+    ? [forced]
+    : await wikiSearchTitle(`${name} (video game)`);
+  if (!forced) {
+    await sleep(200);
+  }
+  const more = forced ? [] : await wikiSearchTitle(name);
+  if (!forced) await sleep(200);
+  const tryTitles = [...new Set([forced, `${name} (video game)`, name, ...titles, ...more].filter(Boolean))];
 
   const urls = [];
   for (const t of tryTitles.slice(0, 4)) {
@@ -501,7 +677,7 @@ async function imagesFromHardware(key) {
     files: [],
   };
 
-  // Colour DualSense variants reuse DualSense photos
+  // Colour DualSense variants without a curated entry fall back to white DualSense
   if (key.startsWith('dualsense-') && !HARDWARE_WIKI[key]) {
     Object.assign(cfg, HARDWARE_WIKI['dualsense-white']);
   }
@@ -510,11 +686,13 @@ async function imagesFromHardware(key) {
   for (const f of cfg.files || []) {
     urls.push(wikiFileUrl(f, 1600));
   }
-  for (const page of cfg.pages || []) {
-    const found = await wikiPageImages(page);
-    await sleep(250);
-    for (const u of found) {
-      if (!urls.includes(u)) urls.push(u);
+  if (!cfg.filesOnly) {
+    for (const page of cfg.pages || []) {
+      const found = await wikiPageImages(page);
+      await sleep(350);
+      for (const u of found) {
+        if (!urls.includes(u)) urls.push(u);
+      }
     }
   }
   if (!urls.length) return null;
@@ -551,9 +729,14 @@ async function resolveKey(key) {
 }
 
 async function main() {
-  const keys = fs.existsSync(KEYS_FILE)
+  const allKeys = fs.existsSync(KEYS_FILE)
     ? JSON.parse(fs.readFileSync(KEYS_FILE, 'utf8'))
     : [];
+  const only = (process.env.ONLY_KEYS ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const keys = only.length ? allKeys.filter((k) => only.includes(k)) : allKeys;
   let existing = {};
   if (fs.existsSync(OUT)) existing = JSON.parse(fs.readFileSync(OUT, 'utf8'));
 
@@ -563,7 +746,7 @@ async function main() {
       (process.env.IGDB_CLIENT_SECRET ?? '').trim(),
   );
   console.log(
-    `Keys: ${keys.length} | IGDB: ${hasIgdb ? 'yes' : 'no'} | Steam+Wikipedia: yes | FORCE: ${force}`,
+    `Keys: ${keys.length}/${allKeys.length} | IGDB: ${hasIgdb ? 'yes' : 'no'} | Steam+Wikipedia: yes | FORCE: ${force}`,
   );
 
   const out = { ...existing };

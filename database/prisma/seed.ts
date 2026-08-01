@@ -394,6 +394,7 @@ async function main() {
           platform: item.platform,
           condition,
           status: ProductStatus.ACTIVE,
+          deletedAt: null,
           isFeatured: Boolean(item.isFeatured),
           tradeInCashPence: item.tradeInCashPence,
           tradeInCreditPence: item.tradeInCreditPence,
@@ -450,25 +451,29 @@ async function main() {
   }
   console.log(`Catalog products upserted: ${catalogUpserts}`);
 
-  // PS2/PS3 games: Used only — soft-remove any leftover New SKUs
-  const retiredNew = await prisma.product.updateMany({
+  // Soft-remove GM catalog SKUs that are no longer in catalog-data (wrong New/Used pairs, etc.)
+  const keepSkus = new Set(catalogProducts.map((p) => p.sku));
+  const DEMO_SKUS = [
+    'GM-PS5-DEMO-001',
+    'GM-SWITCH-DEMO-001',
+    'GM-PS5-CONSOLE-001',
+    'GM-CTRL-DUALSENSE-001',
+    'GM-MS1LNMRU',
+  ];
+  const orphaned = await prisma.product.findMany({
     where: {
       deletedAt: null,
-      condition: ProductCondition.NEW,
-      platform: { in: ['PS2', 'PS3'] },
-      OR: [
-        { sku: { contains: 'GAME' } },
-        {
-          category: {
-            slug: { in: ['playstation-2-games', 'playstation-3-games'] },
-          },
-        },
-      ],
+      sku: { startsWith: 'GM-' },
+      NOT: { sku: { in: [...keepSkus, ...DEMO_SKUS] } },
     },
-    data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
+    select: { id: true, sku: true },
   });
-  if (retiredNew.count) {
-    console.log(`Retired ${retiredNew.count} PS2/PS3 New game SKU(s).`);
+  if (orphaned.length) {
+    await prisma.product.updateMany({
+      where: { id: { in: orphaned.map((o) => o.id) } },
+      data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
+    });
+    console.log(`Retired ${orphaned.length} obsolete catalog SKU(s).`);
   }
 
   // Backfill trade-in prices on any older rows still missing them

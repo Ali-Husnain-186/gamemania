@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { apiGet } from '@/lib/api';
-import { formatGBP } from '@/lib/format';
+import { formatGBP, formatPlatform } from '@/lib/format';
 import type { Product } from '@/types/catalog';
 import { SectionHeading } from './section-heading';
 
@@ -83,7 +83,9 @@ export function PreorderReleasesSection() {
                     </span>
                   </div>
                   <p className="mt-2 text-[10px] font-bold uppercase tracking-wider text-[var(--gm-cyan)]">
-                    {p.platform ?? p.brand?.name ?? 'Game'}
+                    {formatPlatform(p.platform) !== 'Game'
+                      ? formatPlatform(p.platform)
+                      : (p.brand?.name ?? 'Game')}
                   </p>
                   <h3 className="line-clamp-2 text-sm font-bold group-hover:text-[var(--gm-yellow)]">
                     {p.name}

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { formatGBP } from '@/lib/format';
+import { formatGBP, formatPlatform } from '@/lib/format';
 import { TradeValueBlock } from '@/features/catalog/trade-value-block';
 import type { Product } from '@/types/catalog';
 
@@ -46,7 +46,9 @@ export function ProductCard({ product, index = 0 }: ProductCardProps) {
         </div>
         <div className="mt-3 space-y-1">
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--gm-cyan)]">
-            {product.platform ?? product.brand?.name ?? 'Game'}
+            {formatPlatform(product.platform) !== 'Game'
+              ? formatPlatform(product.platform)
+              : (product.brand?.name ?? 'Game')}
           </p>
           <h3 className="line-clamp-2 text-sm font-bold text-foreground transition group-hover:text-[var(--gm-yellow)]">
             {product.name.replace(/\s*\((New|Used)\)\s*$/i, '')}

@@ -333,7 +333,24 @@ export default function ProductsPage() {
           <p className="mb-4 text-sm font-medium">
             {editingId ? 'Edit product' : 'Create product'}
           </p>
-          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <form
+            className="space-y-4"
+            onSubmit={handleSubmit(onSubmit, (formErrors) => {
+              const first =
+                formErrors.name?.message ||
+                formErrors.pricePounds?.message ||
+                formErrors.tradeInCashPounds?.message ||
+                formErrors.tradeInCreditPounds?.message ||
+                formErrors.images?.message ||
+                (Array.isArray(formErrors.images)
+                  ? formErrors.images.find((slot) => slot?.url?.message)?.url?.message
+                  : undefined) ||
+                'Please fix the highlighted fields';
+              setError(String(first));
+              notify.error(String(first));
+            })}
+            noValidate
+          >
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block text-xs text-[var(--admin-muted)] sm:col-span-2">
                 Name <span className="text-[var(--admin-danger)]">*</span>

@@ -103,13 +103,32 @@ export const createProductSchema = z.object({
     .default(0),
   imageUrl: z.preprocess(
     emptyToUndefined,
-    z.string().url('Image URL must be a valid URL').optional(),
+    z
+      .string()
+      .refine(
+        (v) =>
+          /^https?:\/\//i.test(v) ||
+          v.startsWith('/catalog/') ||
+          v.startsWith('/brand/') ||
+          v.startsWith('/uploads/'),
+        'Image URL must be a valid URL or site path',
+      )
+      .optional(),
   ),
   imagePublicId: z.preprocess(emptyToUndefined, z.string().optional()),
   images: z
     .array(
       z.object({
-        url: z.string().url('Image URL must be a valid URL'),
+        url: z
+          .string()
+          .refine(
+            (v) =>
+              /^https?:\/\//i.test(v) ||
+              v.startsWith('/catalog/') ||
+              v.startsWith('/brand/') ||
+              v.startsWith('/uploads/'),
+            'Image URL must be a valid URL or site path',
+          ),
         publicId: z.string().optional().nullable(),
         altText: z.string().max(200).optional().nullable(),
         isPrimary: z.boolean().optional(),

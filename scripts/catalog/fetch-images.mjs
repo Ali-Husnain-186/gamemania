@@ -608,6 +608,11 @@ const WIKI_TITLE_OVERRIDES = {
 
 /** Prefer exact cover/box art files — never developer headshots */
 const WIKI_FILE_OVERRIDES = {
+  'ps5-game-grand-theft-auto-vi': ['Grand Theft Auto VI.png', 'Grand Theft Auto VI screenshot.png'],
+  'xbox_series-game-grand-theft-auto-vi': [
+    'Grand Theft Auto VI screenshot.png',
+    'Grand Theft Auto VI.png',
+  ],
   'switch-game-the-legend-of-zelda-tears-of-the-kingdom': [
     'The Legend of Zelda Tears of the Kingdom cover.jpg',
     'Tears of the kingdom contraptions.jpg',
@@ -669,8 +674,6 @@ const IMAGE_ALIASES = {
     'switch-game-the-legend-of-zelda-tears-of-the-kingdom',
   'switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition':
     'switch-game-the-legend-of-zelda-breath-of-the-wild',
-  'xbox_series-game-grand-theft-auto-vi': 'ps5-game-grand-theft-auto-vi',
-  'xbox_series-game-ea-sports-fc-27': 'ps5-game-ea-sports-fc-27',
 };
 
 const BAD_WIKI_FILE =

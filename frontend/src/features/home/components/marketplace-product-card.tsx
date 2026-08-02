@@ -7,7 +7,7 @@ import { Eye, Heart, ShoppingBag, Star, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { apiPost, getAccessToken } from '@/lib/api';
-import { formatGBP } from '@/lib/format';
+import { formatGBP, formatPlatform } from '@/lib/format';
 import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import { TradeValueBlock, showsConditionVariant } from '@/features/catalog/trade-value-block';
@@ -123,7 +123,9 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
 
         <div className="flex flex-1 flex-col p-3.5 sm:p-4">
           <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--gm-cyan)]">
-            {product.platform ?? product.brand?.name ?? 'Game'}
+            {formatPlatform(product.platform) !== 'Game'
+              ? formatPlatform(product.platform)
+              : (product.brand?.name ?? 'Game')}
           </p>
           <Link href={`/products/${product.slug}`} className="mt-1">
             <h3 className="line-clamp-2 text-sm font-bold leading-snug transition hover:text-[var(--gm-yellow)]">
@@ -194,7 +196,7 @@ export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProduc
             </div>
             <div className="flex flex-col">
               <p className="text-xs font-bold uppercase tracking-wider text-[var(--gm-cyan)]">
-                {product.platform ?? 'Game'}
+                {formatPlatform(product.platform)}
               </p>
               <h3 className="mt-1 text-lg font-bold">{displayName}</h3>
               <p className="gm-display mt-3 text-2xl text-[var(--gm-magenta)]">

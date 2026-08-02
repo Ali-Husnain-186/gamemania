@@ -1,7 +1,21 @@
 import { z } from 'zod';
 
+/** Accept Cloudinary https URLs or local catalog paths like /catalog/... */
+export const productImageUrlSchema = z
+  .string()
+  .trim()
+  .refine(
+    (v) =>
+      v === '' ||
+      /^https?:\/\//i.test(v) ||
+      v.startsWith('/catalog/') ||
+      v.startsWith('/brand/') ||
+      v.startsWith('/uploads/'),
+    'Image must be a valid URL or site path',
+  );
+
 export const productImageSlotSchema = z.object({
-  url: z.union([z.literal(''), z.string().url()]),
+  url: productImageUrlSchema,
   publicId: z.string().optional(),
   isPrimary: z.boolean().optional(),
   sortOrder: z.number().int().min(0).max(3).optional(),
@@ -38,13 +52,13 @@ export const productFormSchema = z.object({
   tradeInCashPounds: z
     .string()
     .trim()
-    .min(1, 'Cash trade-in price is required')
-    .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 6.00'),
+    .optional()
+    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 6.00'),
   tradeInCreditPounds: z
     .string()
     .trim()
-    .min(1, 'Store credit trade-in price is required')
-    .refine((v) => /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
+    .optional()
+    .refine((v) => !v || /^\d+(\.\d{1,2})?$/.test(v), 'Enter a valid amount like 8.00'),
   platform: z.string().optional(),
   condition: z.enum(['NEW', 'PRE_OWNED_EXCELLENT', 'PRE_OWNED_GOOD', 'PRE_OWNED_FAIR']),
 });

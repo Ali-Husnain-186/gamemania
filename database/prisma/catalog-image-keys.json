@@ -75,7 +75,6 @@
   "xbox_series-game-wwe-2k26",
   "xbox_series-game-wwe-2k25",
   "xbox_series-game-nba-2k26",
-  "xbox_series-game-hogwarts-legacy-xbox",
   "ps3-game-grand-theft-auto-v",
   "ps3-game-red-dead-redemption",
   "ps3-game-call-of-duty-black-ops",
@@ -158,8 +157,5 @@
   "switch2-joycon-blue-red",
   "switch2-joycon-black",
   "switch2-joycon-white",
-  "switch2-joycon-other-official-colours",
-  "cable-figure-8",
-  "cable-hdmi",
-  "cable-usbc"
+  "switch2-joycon-other-official-colours"
 ]

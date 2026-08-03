@@ -1,6 +1,7 @@
 /**
  * GameMania UK bulk catalog definitions.
- * One product listing per title/hardware by default (no New/Used twins).
+ * New + Used expand into separate Product rows (PDP condition picker).
+ * Shop lists New by default; Used is available via Pre-owned on the product page.
  * Prices are UK market estimates in pence — edit in admin as needed.
  */
 
@@ -57,8 +58,8 @@ function slugify(input: string): string {
 
 function expandFamily(f: Family): CatalogProductDef[] {
   const base = slugify(f.key);
-  // One sellable listing per product by default. Only expand New+Used when bothConditions: true.
-  const both = f.bothConditions === true && !f.usedOnly;
+  // New + Pre-owned twins by default (shop hides -used; PDP shows the picker).
+  const both = f.bothConditions !== false && !f.usedOnly;
   const desc =
     f.description ??
     `${f.name} available at GameMania UK. Genuine stock with a 3-month warranty.`;
@@ -295,10 +296,10 @@ function gameFamily(
   };
 }
 
-/** Games are sold as titles only — no New/Used variants on the shop. */
+/** Modern titles: New + Pre-owned. Retro PS2/PS3: used-only. */
 function gameOpts(_name: string, platform: string): { usedOnly?: boolean; newOnly?: boolean } {
   if (platform === 'PS2' || platform === 'PS3') return { usedOnly: true };
-  return { newOnly: true };
+  return {};
 }
 
 const PS5_GAMES = [
@@ -576,45 +577,6 @@ const ACCESSORIES: Family[] = [
     tradeInCash: 2000,
     tradeInCredit: 2500,
   })),
-  {
-    key: 'cable-figure-8',
-    name: 'Figure 8 Power Cable',
-    categorySlug: 'cables',
-    brandSlug: 'sony',
-    platform: 'PS5',
-    shortDescription: 'Figure-8 (C7) power cable for consoles and devices.',
-    newPrice: 799,
-    usedPrice: 499,
-    tradeInCash: 0,
-    tradeInCredit: 0,
-    bothConditions: false,
-  },
-  {
-    key: 'cable-hdmi',
-    name: 'HDMI Cable',
-    categorySlug: 'cables',
-    brandSlug: 'sony',
-    platform: 'PS5',
-    shortDescription: 'High-speed HDMI cable for consoles and TVs.',
-    newPrice: 999,
-    usedPrice: 599,
-    tradeInCash: 0,
-    tradeInCredit: 0,
-    bothConditions: false,
-  },
-  {
-    key: 'cable-usbc',
-    name: 'USB-C Cable',
-    categorySlug: 'cables',
-    brandSlug: 'sony',
-    platform: 'PS5',
-    shortDescription: 'USB-C charging / data cable.',
-    newPrice: 899,
-    usedPrice: 499,
-    tradeInCash: 0,
-    tradeInCredit: 0,
-    bothConditions: false,
-  },
 ];
 
 export const CATALOG_CATEGORY_CHILDREN: Array<{

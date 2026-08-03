@@ -92,13 +92,19 @@ const HARDWARE_WIKI = {
     filesOnly: true,
   },
   'xbox-series-x': {
-    pages: [],
-    files: ['Xbox Series X.png', 'Xbox_Series_X_console.png'],
+    pages: ['Xbox Series X and Series S'],
+    files: [
+      'Xbox Series X mit Controller (transparent background).png',
+      'Xbox Series X.png',
+    ],
     filesOnly: true,
   },
   'xbox-series-s': {
-    pages: [],
-    files: ['Xbox Series S.png', 'Xbox_Series_S.png'],
+    pages: ['Xbox Series X and Series S'],
+    files: [
+      'Xbox Series S with controller (transparent background).png',
+      'Xbox Series S.png',
+    ],
     filesOnly: true,
   },
   'switch-oled': {

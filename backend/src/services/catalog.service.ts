@@ -151,6 +151,16 @@ export async function listProducts(query: ProductListQuery, admin = false) {
   }
   if (query.condition) {
     where.condition = query.condition;
+  } else if (!admin) {
+    // Storefront: show New (+ used-only singles). Hide -used twins; PDP picker links to them.
+    const hideUsedTwin = { NOT: { slug: { endsWith: '-used' } } };
+    if (where.AND) {
+      where.AND = Array.isArray(where.AND)
+        ? [...where.AND, hideUsedTwin]
+        : [where.AND, hideUsedTwin];
+    } else {
+      where.AND = [hideUsedTwin];
+    }
   }
   if (query.minPrice !== undefined || query.maxPrice !== undefined) {
     where.price = {

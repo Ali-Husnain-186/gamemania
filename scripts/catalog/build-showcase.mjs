@@ -48,10 +48,11 @@ function caseTheme(platform) {
     case 'PS5':
       return {
         header: '#ffffff',
-        headerText: '#003087',
+        headerText: '#000000',
         spine: '#0070d1',
         body: '#111827',
         label: 'PS5',
+        headerStyle: 'ps5',
       };
     case 'PS4':
       return {
@@ -60,6 +61,7 @@ function caseTheme(platform) {
         spine: '#000000',
         body: '#0b1220',
         label: 'PS4',
+        headerStyle: 'ps4',
       };
     case 'PS3':
       return {
@@ -68,6 +70,7 @@ function caseTheme(platform) {
         spine: '#666666',
         body: '#111111',
         label: 'PS3',
+        headerStyle: 'ps3',
       };
     case 'PS2':
       return {
@@ -75,7 +78,8 @@ function caseTheme(platform) {
         headerText: '#ffffff',
         spine: '#1e3a8a',
         body: '#0a0a0a',
-        label: 'PS2',
+        label: 'PlayStation.2',
+        headerStyle: 'ps2',
       };
     case 'XBOX':
       return {
@@ -83,7 +87,8 @@ function caseTheme(platform) {
         headerText: '#ffffff',
         spine: '#0b5a0b',
         body: '#111111',
-        label: 'XBOX',
+        label: 'XBOX SERIES X',
+        headerStyle: 'xbox',
       };
     case 'SWITCH':
     case 'SWITCH2':
@@ -93,6 +98,7 @@ function caseTheme(platform) {
         spine: '#0a84ff',
         body: '#111111',
         label: platform === 'SWITCH2' ? 'SWITCH 2' : 'SWITCH',
+        headerStyle: 'switch',
       };
     default:
       return {
@@ -101,8 +107,39 @@ function caseTheme(platform) {
         spine: '#444444',
         body: '#111111',
         label: 'GAME',
+        headerStyle: 'default',
       };
   }
+}
+
+function headerMarkup(theme, left, top, caseW, headerH) {
+  if (theme.headerStyle === 'xbox') {
+    return `
+    <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="${theme.header}"/>
+    <circle cx="${left + 36}" cy="${top + Math.round(headerH / 2)}" r="16" fill="#ffffff"/>
+    <circle cx="${left + 36}" cy="${top + Math.round(headerH / 2)}" r="11" fill="${theme.header}"/>
+    <text x="${left + 62}" y="${top + Math.round(headerH * 0.42)}" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="800" fill="#ffffff" letter-spacing="0.5">XBOX SERIES X</text>
+    <text x="${left + 62}" y="${top + Math.round(headerH * 0.72)}" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#ffffff" letter-spacing="1">XBOX ONE</text>
+    `;
+  }
+  if (theme.headerStyle === 'ps2') {
+    return `
+    <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="#000000"/>
+    <text x="${left + 22}" y="${top + Math.round(headerH * 0.62)}" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#ffffff">PlayStation.2</text>
+    <text x="${left + caseW - 70}" y="${top + Math.round(headerH * 0.62)}" font-family="Arial Black, Arial, sans-serif" font-size="26" font-weight="800" fill="#ffffff">PS</text>
+    `;
+  }
+  if (theme.headerStyle === 'ps5') {
+    return `
+    <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="#ffffff"/>
+    <text x="${left + 28}" y="${top + Math.round(headerH * 0.64)}" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="40" font-weight="900" fill="#000000" letter-spacing="1">PS5</text>
+    `;
+  }
+  const size = theme.headerStyle === 'switch' && theme.label.length > 6 ? 28 : 36;
+  return `
+    <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="${theme.header}"/>
+    <text x="${left + 28}" y="${top + Math.round(headerH * 0.62)}" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="${size}" font-weight="800" fill="${theme.headerText}" letter-spacing="1">${theme.label}</text>
+  `;
 }
 
 async function buildGameCase(coverPath, platform, outPath) {
@@ -113,7 +150,7 @@ async function buildGameCase(coverPath, platform, outPath) {
   const left = Math.round((SIZE - caseW) / 2) - 8;
   const top = Math.round((SIZE - caseH) / 2);
   const depth = 22;
-  const headerH = platform === 'PS5' || platform === 'PS4' ? 92 : 84;
+  const headerH = platform === 'PS5' || platform === 'PS4' || platform === 'XBOX' ? 96 : 88;
   const artPad = 8;
   const artX = left + artPad;
   const artY = top + headerH + artPad;
@@ -148,14 +185,10 @@ async function buildGameCase(coverPath, platform, outPath) {
       <feDropShadow dx="8" dy="16" stdDeviation="18" flood-color="#000000" flood-opacity="0.28"/>
     </filter>
   </defs>
-  <!-- Case depth / side -->
   <g filter="url(#shadow)">
     <polygon points="${left + caseW},${top} ${left + caseW + depth},${top + 10} ${left + caseW + depth},${top + caseH + 10} ${left + caseW},${top + caseH}" fill="${caseFill}" opacity="0.55"/>
     <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="6" ry="6" fill="url(#plastic)"/>
-    <!-- Platform header strip -->
-    <rect x="${left}" y="${top}" width="${caseW}" height="${headerH}" fill="${theme.header}"/>
-    <text x="${left + 28}" y="${top + Math.round(headerH * 0.62)}" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="${platform === 'SWITCH2' ? 28 : 36}" font-weight="800" fill="${theme.headerText}" letter-spacing="1">${theme.label}</text>
-    <!-- Inner tray -->
+    ${headerMarkup(theme, left, top, caseW, headerH)}
     <rect x="${left + 4}" y="${top + headerH}" width="${caseW - 8}" height="${caseH - headerH - 4}" fill="#0a0a0a"/>
   </g>
 </svg>`);
@@ -234,7 +267,13 @@ async function main() {
   for (const key of list) {
     const existing = map[key] || [];
     const srcUrl =
-      existing.find((i) => localPathFromUrl(i.url) && !String(i.url).includes('-showcase'))?.url ??
+      existing.find(
+        (i) =>
+          localPathFromUrl(i.url) &&
+          !String(i.url).includes('-showcase') &&
+          !/\.svg$/i.test(String(i.url)),
+      )?.url ??
+      existing.find((i) => localPathFromUrl(i.url) && !/\.svg$/i.test(String(i.url)))?.url ??
       existing.find((i) => localPathFromUrl(i.url))?.url;
     const srcPath = localPathFromUrl(srcUrl);
     if (!srcPath) {

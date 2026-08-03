@@ -207,7 +207,7 @@ export function ProductDetailClient() {
                         : 'rounded-full border border-[var(--gm-border)] px-4 py-2 text-xs font-bold text-[var(--gm-muted)]'
                     }
                   >
-                    Used
+                    Pre-owned
                     {product.condition !== 'NEW'
                       ? ` · ${formatGBP(product.price)}`
                       : siblingQuery.data.condition !== 'NEW'

@@ -181,6 +181,13 @@
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-x-2.png",
+      "altText": "xbox-series-x",
+      "isPrimary": false,
+      "sortOrder": 2,
+      "publicId": null
     }
   ],
   "xbox-series-s": [
@@ -196,6 +203,13 @@
       "altText": "xbox-series-s",
       "isPrimary": false,
       "sortOrder": 1,
+      "publicId": null
+    },
+    {
+      "url": "/catalog/consoles/xbox-series-s-2.png",
+      "altText": "xbox-series-s",
+      "isPrimary": false,
+      "sortOrder": 2,
       "publicId": null
     }
   ],
@@ -4466,7 +4480,7 @@
   "ps5-game-ea-sports-fc-27": [
     {
       "url": "/catalog/games/ps5-game-ea-sports-fc-27/ps5-game-ea-sports-fc-27-showcase.jpg",
-      "altText": "EA Sports FC 27 PS5 showcase",
+      "altText": "ps5 game ea sports fc 27 product showcase",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4482,7 +4496,7 @@
   "ps5-game-grand-theft-auto-vi": [
     {
       "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-showcase.jpg",
-      "altText": "Grand Theft Auto VI PS5 official cover showcase",
+      "altText": "ps5 game grand theft auto vi product showcase",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4498,7 +4512,7 @@
   "xbox_series-game-grand-theft-auto-vi": [
     {
       "url": "/catalog/games/xbox_series-game-grand-theft-auto-vi/xbox_series-game-grand-theft-auto-vi-showcase.jpg",
-      "altText": "Grand Theft Auto VI Xbox Series showcase",
+      "altText": "xbox_series game grand theft auto vi product showcase",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4514,7 +4528,7 @@
   "xbox_series-game-ea-sports-fc-27": [
     {
       "url": "/catalog/games/xbox_series-game-ea-sports-fc-27/xbox_series-game-ea-sports-fc-27-showcase.jpg",
-      "altText": "EA Sports FC 27 Xbox Series showcase",
+      "altText": "xbox_series game ea sports fc 27 product showcase",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null

@@ -15,7 +15,7 @@ const PLATFORMS = ['PS5', 'PS4', 'PS3', 'PS2', 'SWITCH', 'SWITCH2', 'XBOX_SERIES
 const CONDITIONS = [
   { value: '', label: 'All' },
   { value: 'NEW', label: 'New' },
-  { value: 'PRE_OWNED_GOOD', label: 'Used' },
+  { value: 'PRE_OWNED_GOOD', label: 'Pre-owned' },
 ] as const;
 
 export function ShopClient() {

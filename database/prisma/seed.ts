@@ -461,7 +461,6 @@ async function main() {
 
   // Soft-remove GM catalog SKUs that are no longer in catalog-data (wrong New/Used pairs, etc.)
   const keepSkus = new Set(catalogProducts.map((p) => p.sku));
-  const keepSlugs = new Set(catalogProducts.map((p) => p.slug));
   const DEMO_SKUS = [
     'GM-PS5-DEMO-001',
     'GM-SWITCH-DEMO-001',
@@ -483,38 +482,6 @@ async function main() {
       data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
     });
     console.log(`Retired ${orphaned.length} obsolete catalog SKU(s).`);
-  }
-
-  // Extra safety: retire any leftover New/Used twin rows when a single listing exists
-  const activeCatalog = await prisma.product.findMany({
-    where: { deletedAt: null, status: ProductStatus.ACTIVE, sku: { startsWith: 'GM-' } },
-    select: { id: true, name: true, slug: true, sku: true, platform: true, condition: true },
-  });
-  const groups = new Map<string, typeof activeCatalog>();
-  for (const row of activeCatalog) {
-    const baseName = row.name.replace(/\s*\((New|Used)\)\s*$/i, '').trim().toLowerCase();
-    const key = `${baseName}|${row.platform ?? ''}`;
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key)!.push(row);
-  }
-  const twinIds: string[] = [];
-  for (const rows of groups.values()) {
-    if (rows.length < 2) continue;
-    // Prefer keep SKU/slug that matches current catalog; else prefer NEW; else first
-    const preferred =
-      rows.find((r) => keepSkus.has(r.sku) || keepSlugs.has(r.slug)) ??
-      rows.find((r) => r.condition === ProductCondition.NEW) ??
-      rows[0];
-    for (const r of rows) {
-      if (r.id !== preferred.id) twinIds.push(r.id);
-    }
-  }
-  if (twinIds.length) {
-    await prisma.product.updateMany({
-      where: { id: { in: twinIds } },
-      data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
-    });
-    console.log(`Retired ${twinIds.length} duplicate New/Used twin product(s).`);
   }
 
   // Backfill trade-in prices on any older rows still missing them

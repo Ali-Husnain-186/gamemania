@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ImagePlus, Loader2, X } from 'lucide-react';
+import { ImagePlus, Loader2, Search, X } from 'lucide-react';
 import { BrandLoader } from '@/components/ui/brand-loader';
 import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
+import { brandFallbackImage } from '@/lib/product-image';
 import { formatGbp } from '@/lib/utils';
 import { notify } from '@/lib/toast';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
@@ -38,11 +39,13 @@ type Product = {
   tradeInCreditPence?: number | null;
   platform?: string | null;
   condition?: string | null;
+  brand?: { id: string; name: string; slug: string } | null;
   images?: Array<{
     url: string;
     publicId?: string | null;
     isPrimary?: boolean;
     sortOrder?: number;
+    altText?: string | null;
   }>;
 };
 
@@ -96,6 +99,12 @@ function slotsFromProductImages(images?: Product['images']): ProductImageSlot[] 
   return slots;
 }
 
+function productListThumb(p: Product): string {
+  const primary = p.images?.find((i) => i.isPrimary) ?? p.images?.[0];
+  if (primary?.url) return primary.url;
+  return brandFallbackImage(p);
+}
+
 function FieldError({ message }: { message?: string }) {
   if (!message) return null;
   return <p className="mt-1 text-xs text-[var(--admin-danger)]">{message}</p>;
@@ -111,6 +120,9 @@ export default function ProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [uploadingSlot, setUploadingSlot] = useState<number | null>(null);
   const [pending, startTransition] = useTransition();
+  const [searchInput, setSearchInput] = useState('');
+  const [searchQ, setSearchQ] = useState('');
+  const [total, setTotal] = useState(0);
 
   const {
     register,
@@ -128,16 +140,23 @@ export default function ProductsPage() {
 
   const images = watch('images') ?? emptyImageSlots();
 
-  async function load() {
+  const load = useCallback(async (q: string) => {
     setLoading(true);
     setError(null);
     try {
+      const params = new URLSearchParams({
+        limit: '100',
+        sort: 'name_asc',
+      });
+      if (q.trim()) params.set('q', q.trim());
+
       const [list, cats, brs] = await Promise.all([
-        apiGet<Product[]>('/admin/products?limit=100'),
+        apiGet<Product[]>(`/admin/products?${params.toString()}`),
         apiGet<Category[]>('/admin/categories'),
         apiGet<Brand[]>('/admin/brands'),
       ]);
       setProducts(Array.isArray(list) ? list : []);
+      setTotal(Array.isArray(list) ? list.length : 0);
       setCategories(cats);
       setBrands(brs);
     } catch (err) {
@@ -145,11 +164,16 @@ export default function ProductsPage() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    void load();
-  }, []);
+    const t = window.setTimeout(() => setSearchQ(searchInput.trim()), 320);
+    return () => window.clearTimeout(t);
+  }, [searchInput]);
+
+  useEffect(() => {
+    void load(searchQ);
+  }, [load, searchQ]);
 
   function openCreate() {
     setEditingId(null);
@@ -283,7 +307,7 @@ export default function ProductsPage() {
         }
         setShowForm(false);
         notify.success(editingId ? 'Product updated' : 'Product created');
-        await load();
+        await load(searchQ);
       } catch (err) {
         const fieldMap = fieldErrorsFromApi(err);
         for (const [key, message] of Object.entries(fieldMap)) {
@@ -623,6 +647,24 @@ export default function ProductsPage() {
       ) : null}
 
       <Panel className="overflow-hidden">
+        <div className="flex flex-col gap-3 border-b border-[var(--admin-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative max-w-md flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--admin-muted)]" />
+            <input
+              type="search"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search by name, SKU, or description…"
+              className="w-full rounded-md border border-[var(--admin-border)] bg-black/20 py-2 pl-9 pr-3 text-sm text-[var(--admin-fg)] placeholder:text-[var(--admin-muted)]"
+            />
+          </div>
+          <p className="text-xs text-[var(--admin-muted)]">
+            {loading
+              ? 'Loading…'
+              : `${total} product${total === 1 ? '' : 's'}${searchQ ? ` matching “${searchQ}”` : ''}`}
+          </p>
+        </div>
+
         {loading ? (
           <div className="flex justify-center p-10">
             <BrandLoader
@@ -633,12 +675,15 @@ export default function ProductsPage() {
             />
           </div>
         ) : products.length === 0 ? (
-          <p className="p-6 text-sm text-[var(--admin-muted)]">No products found.</p>
+          <p className="p-6 text-sm text-[var(--admin-muted)]">
+            {searchQ ? `No products match “${searchQ}”.` : 'No products found.'}
+          </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] text-left text-sm">
+            <table className="w-full min-w-[800px] text-left text-sm">
               <thead>
                 <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
+                  <th className="w-16 px-4 py-3 font-medium">Image</th>
                   <th className="px-4 py-3 font-medium">Product</th>
                   <th className="px-4 py-3 font-medium">SKU</th>
                   <th className="px-4 py-3 font-medium">Price</th>
@@ -648,53 +693,67 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((p) => (
-                  <tr
-                    key={p.id}
-                    className="border-b border-[var(--admin-border)]/70 last:border-0 hover:bg-white/[0.02]"
-                  >
-                    <td className="px-4 py-3 font-medium">{p.name}</td>
-                    <td className="px-4 py-3 font-mono text-xs text-[var(--admin-muted)]">
-                      {p.sku}
-                    </td>
-                    <td className="px-4 py-3 font-mono">{formatGbp(p.price)}</td>
-                    <td className="px-4 py-3 font-mono">{p.stock ?? '—'}</td>
-                    <td className="px-4 py-3 text-[var(--admin-muted)]">{p.status}</td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-3">
-                        <button
-                          type="button"
-                          className="text-sm text-[var(--admin-accent)] hover:underline"
-                          onClick={() => openEdit(p)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="text-sm text-[var(--admin-danger)] hover:underline"
-                          disabled={pending}
-                          onClick={() => {
-                            if (!window.confirm(`Delete product “${p.name}”?`)) return;
-                            startTransition(async () => {
-                              try {
-                                await apiDelete(`/admin/products/${p.id}`);
-                                if (editingId === p.id) {
-                                  setShowForm(false);
-                                  setEditingId(null);
+                {products.map((p) => {
+                  const thumb = productListThumb(p);
+                  return (
+                    <tr
+                      key={p.id}
+                      className="border-b border-[var(--admin-border)]/70 last:border-0 hover:bg-white/[0.02]"
+                    >
+                      <td className="px-4 py-2">
+                        <div className="h-12 w-12 overflow-hidden rounded-md border border-[var(--admin-border)] bg-black/30">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={thumb}
+                            alt=""
+                            className="h-full w-full object-contain"
+                            loading="lazy"
+                          />
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 font-medium">{p.name}</td>
+                      <td className="px-4 py-3 font-mono text-xs text-[var(--admin-muted)]">
+                        {p.sku}
+                      </td>
+                      <td className="px-4 py-3 font-mono">{formatGbp(p.price)}</td>
+                      <td className="px-4 py-3 font-mono">{p.stock ?? '—'}</td>
+                      <td className="px-4 py-3 text-[var(--admin-muted)]">{p.status}</td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <button
+                            type="button"
+                            className="text-sm text-[var(--admin-accent)] hover:underline"
+                            onClick={() => openEdit(p)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            className="text-sm text-[var(--admin-danger)] hover:underline"
+                            disabled={pending}
+                            onClick={() => {
+                              if (!window.confirm(`Delete product “${p.name}”?`)) return;
+                              startTransition(async () => {
+                                try {
+                                  await apiDelete(`/admin/products/${p.id}`);
+                                  if (editingId === p.id) {
+                                    setShowForm(false);
+                                    setEditingId(null);
+                                  }
+                                  await load(searchQ);
+                                } catch (err) {
+                                  setError(err instanceof ApiError ? err.message : 'Delete failed');
                                 }
-                                await load();
-                              } catch (err) {
-                                setError(err instanceof ApiError ? err.message : 'Delete failed');
-                              }
-                            });
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                              });
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

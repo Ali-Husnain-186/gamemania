@@ -1,7 +1,7 @@
 /**
  * GameMania UK bulk catalog definitions.
- * New + Used expand into separate Product rows (PDP condition picker).
- * Shop lists New by default; Used is available via Pre-owned on the product page.
+ * One sellable product per title/console by default (no New/Used twins).
+ * Retro titles (PS2/PS3) are used-only singles. Opt into twins via bothConditions: true.
  * Prices are UK market estimates in pence — edit in admin as needed.
  */
 
@@ -58,8 +58,9 @@ function slugify(input: string): string {
 
 function expandFamily(f: Family): CatalogProductDef[] {
   const base = slugify(f.key);
-  // New + Pre-owned twins by default (shop hides -used; PDP shows the picker).
-  const both = f.bothConditions !== false && !f.usedOnly;
+  // One sellable listing per product by default (no New/Used twins).
+  // Set bothConditions: true only when you intentionally sell both.
+  const both = f.bothConditions === true && !f.usedOnly;
   const desc =
     f.description ??
     `${f.name} available at GameMania UK. Genuine stock with a 3-month warranty.`;
@@ -68,7 +69,7 @@ function expandFamily(f: Family): CatalogProductDef[] {
   const make = (condition: CatalogCondition, price: number, qty: number): CatalogProductDef => {
     const tag = condition === 'NEW' ? 'NEW' : 'USED';
     const label = condition === 'NEW' ? 'New' : 'Used';
-    const singleCondition = f.usedOnly || f.bothConditions === false;
+    const singleCondition = !both;
     const sku = singleCondition
       ? `GM-${f.platform}-${base}`.toUpperCase().replace(/[^A-Z0-9-]/g, '')
       : `GM-${f.platform}-${base}-${tag}`.toUpperCase().replace(/[^A-Z0-9-]/g, '');
@@ -290,16 +291,17 @@ function gameFamily(
     tradeInCash: Math.round(usedPrice * 0.35),
     tradeInCredit: Math.round(usedPrice * 0.42),
     usedOnly: opts?.usedOnly,
-    bothConditions: opts?.newOnly ? false : undefined,
+    // Single listing unless a future call sets dual stock via bothConditions
+    bothConditions: false,
     featured: opts?.featured,
     isPreorder: opts?.isPreorder,
   };
 }
 
-/** Modern titles: New + Pre-owned. Retro PS2/PS3: used-only. */
+/** Retro PS2/PS3: used-only. Everything else: one product (no New/Used twins). */
 function gameOpts(_name: string, platform: string): { usedOnly?: boolean; newOnly?: boolean } {
   if (platform === 'PS2' || platform === 'PS3') return { usedOnly: true };
-  return {};
+  return { newOnly: true };
 }
 
 const PS5_GAMES = [

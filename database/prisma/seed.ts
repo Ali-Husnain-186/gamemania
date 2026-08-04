@@ -26,6 +26,24 @@ function loadCatalogImages(): Record<string, SeedImage[]> {
   return {};
 }
 
+function platformBrandFallback(key: string, name: string): SeedImage[] {
+  const k = key.toLowerCase();
+  let url = '/brand/pcgames.png';
+  if (k.includes('ps5') || k.includes('ps4') || k.includes('ps3') || k.includes('ps2') || k.includes('dualsense') || k.includes('dualshock')) {
+    url = '/brand/playstation.png';
+  } else if (k.includes('xbox')) {
+    url = '/brand/pcgames.png';
+  } else if (k.includes('switch') || k.includes('joycon') || k.includes('nintendo')) {
+    url = '/brand/nintendo.png';
+  } else if (k.includes('controller') || k.includes('dual')) {
+    url = '/brand/wireless-controller.png';
+  } else if (k.includes('cable') || k.includes('access')) {
+    url = '/brand/accessories.png';
+  }
+  return [{ url, altText: name, isPrimary: true, sortOrder: 0 }];
+}
+
+/** Prefer exact art, then alias, then same-platform/related showcase, then brand art. */
 function imagesForKey(key: string, name: string, map: Record<string, SeedImage[]>): SeedImage[] {
   const aliases: Record<string, string> = {
     'switch2-game-the-legend-of-zelda-tears-of-the-kingdom-switch-2-edition':
@@ -33,15 +51,49 @@ function imagesForKey(key: string, name: string, map: Record<string, SeedImage[]
     'switch2-game-the-legend-of-zelda-breath-of-the-wild-switch-2-edition':
       'switch-game-the-legend-of-zelda-breath-of-the-wild',
   };
-  const found = map[key] ?? (aliases[key] ? map[aliases[key]] : undefined);
-  if (found?.length) return found.slice(0, 4);
-  const label = encodeURIComponent(name.slice(0, 24));
-  return [0, 1, 2].map((n) => ({
-    url: `https://placehold.co/800x800/0f172a/22d3ee?text=${label}+${n + 1}`,
-    altText: name,
-    isPrimary: n === 0,
-    sortOrder: n,
-  }));
+
+  const take = (imgs?: SeedImage[]) =>
+    imgs?.length
+      ? imgs.slice(0, 4).map((img, i) => ({
+          ...img,
+          altText: img.altText ?? name,
+          isPrimary: i === 0,
+          sortOrder: i,
+        }))
+      : null;
+
+  const exact = take(map[key] ?? (aliases[key] ? map[aliases[key]] : undefined));
+  if (exact) return exact;
+
+  // Related title across platforms (e.g. xbox_series-game-hogwarts-legacy ← ps5-game-hogwarts-legacy)
+  const tail = key.replace(/^(ps5|ps4|ps3|ps2|xbox_series|xbox|switch2|switch)-/, '');
+  if (tail) {
+    const relatedKey = Object.keys(map).find(
+      (k) => k !== key && k.endsWith(tail) && Array.isArray(map[k]) && map[k].length > 0,
+    );
+    if (relatedKey) {
+      const related = take(map[relatedKey]);
+      if (related) return related;
+    }
+  }
+
+  // Same platform family showcase (first key sharing prefix)
+  const prefixMatch = key.match(/^(ps5|ps4|ps3|ps2|xbox_series|xbox|switch2|switch)[-_]/);
+  if (prefixMatch) {
+    const prefix = prefixMatch[1];
+    const sibKey = Object.keys(map).find(
+      (k) =>
+        k !== key &&
+        (k.startsWith(`${prefix}-`) || k.startsWith(`${prefix}_`)) &&
+        map[k]?.length,
+    );
+    if (sibKey) {
+      const sib = take(map[sibKey]);
+      if (sib) return sib;
+    }
+  }
+
+  return platformBrandFallback(key, name);
 }
 
 async function main() {
@@ -482,6 +534,25 @@ async function main() {
       data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
     });
     console.log(`Retired ${orphaned.length} obsolete catalog SKU(s).`);
+  }
+
+  // Force-remove any leftover New/Used twin listings (name suffix, slug, or SKU tag).
+  const twinRetire = await prisma.product.updateMany({
+    where: {
+      deletedAt: null,
+      OR: [
+        { name: { endsWith: ' (New)' } },
+        { name: { endsWith: ' (Used)' } },
+        { slug: { endsWith: '-new' } },
+        { slug: { endsWith: '-used' } },
+        { sku: { endsWith: '-NEW' } },
+        { sku: { endsWith: '-USED' } },
+      ],
+    },
+    data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
+  });
+  if (twinRetire.count) {
+    console.log(`Retired ${twinRetire.count} New/Used twin product(s).`);
   }
 
   // Backfill trade-in prices on any older rows still missing them

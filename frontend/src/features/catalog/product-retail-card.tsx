@@ -114,8 +114,24 @@ export function ProductRetailCard({
   const [wishMsg, setWishMsg] = useState<string | null>(null);
 
   const productImage = product.images?.find((i) => i.isPrimary) ?? product.images?.[0];
-  const src = imageUrl ?? productImage?.url ?? null;
-  const alt = imageAlt ?? productImage?.altText ?? productImage?.alt ?? defaultTitle(product);
+  // Prefer explicit prop, then gallery, then platform brand art so cards never look empty
+  const { url: fallbackUrl, alt: fallbackAlt } = (() => {
+    if (imageUrl) return { url: imageUrl, alt: imageAlt ?? defaultTitle(product) };
+    if (productImage?.url) {
+      return {
+        url: productImage.url,
+        alt: imageAlt ?? productImage.altText ?? productImage.alt ?? defaultTitle(product),
+      };
+    }
+    const platform = (product.platform ?? '').toUpperCase();
+    const brand = product.brand?.slug ?? '';
+    let brandUrl = '/brand/pcgames.png';
+    if (platform.includes('PS') || brand === 'sony') brandUrl = '/brand/playstation.png';
+    else if (platform.includes('SWITCH') || brand === 'nintendo') brandUrl = '/brand/nintendo.png';
+    return { url: brandUrl, alt: imageAlt ?? defaultTitle(product) };
+  })();
+  const src = fallbackUrl;
+  const alt = fallbackAlt;
   const displayName = title ?? defaultTitle(product);
   const categoryText = category ?? defaultCategory(product);
   const platformText = platformLabel ?? formatPlatform(product.platform);

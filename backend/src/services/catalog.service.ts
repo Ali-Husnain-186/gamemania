@@ -49,6 +49,25 @@ const productPublicInclude = {
   inventory: { select: { quantity: true, reserved: true } },
 } satisfies Prisma.ProductInclude;
 
+type ProductImageRow = {
+  id: string;
+  url: string;
+  publicId: string | null;
+  altText: string | null;
+  isPrimary: boolean;
+  sortOrder?: number;
+};
+
+function brandPlaceholderUrl(platform: string | null, brandSlug?: string | null): string {
+  const p = (platform ?? '').toUpperCase();
+  const brand = (brandSlug ?? '').toLowerCase();
+  if (p.includes('PS') || brand === 'sony') return '/brand/playstation.png';
+  if (p.includes('SWITCH') || brand === 'nintendo') return '/brand/nintendo.png';
+  if (p.includes('XBOX') || brand === 'microsoft') return '/brand/pcgames.png';
+  if (brand === 'sony') return '/brand/playstation.png';
+  return '/brand/pcgames.png';
+}
+
 function mapProduct(product: {
   id: string;
   name: string;
@@ -68,14 +87,7 @@ function mapProduct(product: {
   releaseDate?: Date | null;
   tradeInCashPence?: number | null;
   tradeInCreditPence?: number | null;
-  images: Array<{
-    id: string;
-    url: string;
-    publicId: string | null;
-    altText: string | null;
-    isPrimary: boolean;
-    sortOrder?: number;
-  }>;
+  images: ProductImageRow[];
   category: { id: string; name: string; slug: string } | null;
   brand: { id: string; name: string; slug: string } | null;
   inventory: { quantity: number; reserved: number } | null;
@@ -107,6 +119,71 @@ function mapProduct(product: {
     brand: product.brand,
     stock: Math.max(0, available),
   };
+}
+
+/** When a product has no gallery, clone a same-platform image or use brand art. */
+async function mapProductsWithImageFallback(rows: Array<Parameters<typeof mapProduct>[0]>) {
+  const missing = rows.filter((r) => !r.images?.length);
+  const relatedByPlatform = new Map<string, ProductImageRow>();
+
+  if (missing.length) {
+    const platforms = [
+      ...new Set(missing.map((m) => m.platform).filter((p): p is string => Boolean(p))),
+    ];
+    if (platforms.length) {
+      const donors = await prisma.product.findMany({
+        where: {
+          deletedAt: null,
+          platform: { in: platforms },
+          images: { some: {} },
+        },
+        include: {
+          images: {
+            take: 1,
+            orderBy: [{ isPrimary: 'desc' }, { sortOrder: 'asc' }],
+          },
+        },
+        take: 80,
+      });
+      for (const d of donors) {
+        if (d.platform && d.images[0] && !relatedByPlatform.has(d.platform)) {
+          relatedByPlatform.set(d.platform, d.images[0]);
+        }
+      }
+    }
+  }
+
+  return rows.map((row) => {
+    const mapped = mapProduct(row);
+    if (mapped.images?.length) return mapped;
+
+    const related = row.platform ? relatedByPlatform.get(row.platform) : undefined;
+    if (related) {
+      mapped.images = [
+        {
+          id: related.id,
+          url: related.url,
+          publicId: related.publicId,
+          altText: related.altText ?? row.name,
+          isPrimary: true,
+          sortOrder: 0,
+        },
+      ];
+      return mapped;
+    }
+
+    mapped.images = [
+      {
+        id: `fallback-${row.id}`,
+        url: brandPlaceholderUrl(row.platform, row.brand?.slug),
+        publicId: null,
+        altText: row.name,
+        isPrimary: true,
+        sortOrder: 0,
+      },
+    ];
+    return mapped;
+  });
 }
 
 export async function listProducts(query: ProductListQuery, admin = false) {
@@ -203,7 +280,7 @@ export async function listProducts(query: ProductListQuery, admin = false) {
   ]);
 
   return {
-    items: rows.map(mapProduct),
+    items: await mapProductsWithImageFallback(rows),
     meta: {
       page: query.page,
       limit: query.limit,
@@ -219,7 +296,8 @@ export async function getProductBySlug(slug: string) {
     include: productPublicInclude,
   });
   if (!product) throw new NotFoundError('Product not found');
-  return mapProduct(product);
+  const [mapped] = await mapProductsWithImageFallback([product]);
+  return mapped;
 }
 
 export async function listCategories() {

@@ -1,14 +1,13 @@
 'use client';
 
-import { ProductRetailCard } from '@/features/catalog/product-retail-card';
-import type { Product } from '@/types/catalog';
+import {
+  ProductRetailCard,
+  type ProductRetailCardProps,
+} from '@/features/catalog/product-retail-card';
 
-type MarketplaceProductCardProps = {
-  product: Product;
-  index?: number;
-};
-
-/** Home grids — same CeX-layout retail card as shop. */
-export function MarketplaceProductCard({ product, index = 0 }: MarketplaceProductCardProps) {
-  return <ProductRetailCard product={product} index={index} />;
+/** Home grids — same CeX-layout retail card as shop. Pass any display overrides. */
+export function MarketplaceProductCard(props: ProductRetailCardProps) {
+  return <ProductRetailCard {...props} />;
 }
+
+export type { ProductRetailCardProps as MarketplaceProductCardProps };

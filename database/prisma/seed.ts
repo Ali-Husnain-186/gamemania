@@ -536,25 +536,6 @@ async function main() {
     console.log(`Retired ${orphaned.length} obsolete catalog SKU(s).`);
   }
 
-  // Force-remove any leftover New/Used twin listings (name suffix, slug, or SKU tag).
-  const twinRetire = await prisma.product.updateMany({
-    where: {
-      deletedAt: null,
-      OR: [
-        { name: { endsWith: ' (New)' } },
-        { name: { endsWith: ' (Used)' } },
-        { slug: { endsWith: '-new' } },
-        { slug: { endsWith: '-used' } },
-        { sku: { endsWith: '-NEW' } },
-        { sku: { endsWith: '-USED' } },
-      ],
-    },
-    data: { status: ProductStatus.DRAFT, deletedAt: new Date() },
-  });
-  if (twinRetire.count) {
-    console.log(`Retired ${twinRetire.count} New/Used twin product(s).`);
-  }
-
   // Backfill trade-in prices on any older rows still missing them
   const missingTradeIn = await prisma.product.findMany({
     where: {

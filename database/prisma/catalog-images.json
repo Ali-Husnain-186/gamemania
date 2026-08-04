@@ -8,17 +8,24 @@
       "publicId": null
     },
     {
+      "url": "/catalog/consoles/ps5-slim-disc-fixed.jpg",
+      "altText": "ps5 slim disc",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
       "url": "/catalog/consoles/ps5-slim-disc-1.png",
       "altText": "ps5-slim-disc",
       "isPrimary": false,
-      "sortOrder": 1,
+      "sortOrder": 2,
       "publicId": null
     },
     {
       "url": "/catalog/consoles/ps5-slim-disc-2.jpg",
       "altText": "ps5-slim-disc",
       "isPrimary": false,
-      "sortOrder": 2,
+      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -31,17 +38,24 @@
       "publicId": null
     },
     {
+      "url": "/catalog/consoles/ps5-slim-digital-fixed.jpg",
+      "altText": "ps5 slim digital",
+      "isPrimary": false,
+      "sortOrder": 1,
+      "publicId": null
+    },
+    {
       "url": "/catalog/consoles/ps5-slim-digital-1.png",
       "altText": "ps5-slim-digital",
       "isPrimary": false,
-      "sortOrder": 1,
+      "sortOrder": 2,
       "publicId": null
     },
     {
       "url": "/catalog/consoles/ps5-slim-digital-2.jpg",
       "altText": "ps5-slim-digital",
       "isPrimary": false,
-      "sortOrder": 2,
+      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -3237,14 +3251,14 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-white-1.png",
-      "altText": "dualsense-white",
+      "url": "/catalog/controllers/dualsense-white-fixed.jpg",
+      "altText": "DualSense white",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-white-2.png",
+      "url": "/catalog/controllers/dualsense-white-1.png",
       "altText": "dualsense-white",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3253,21 +3267,21 @@
   ],
   "dualsense-midnight-black": [
     {
-      "url": "/catalog/controllers/dualsense-midnight-black-showcase.jpg",
-      "altText": "dualsense midnight black retail image",
+      "url": "/catalog/controllers/dualsense-midnight-black-fixed.jpg",
+      "altText": "DualSense midnight-black",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-midnight-black-1.jpg",
-      "altText": "dualsense-midnight-black",
+      "url": "/catalog/controllers/dualsense-midnight-black-showcase.jpg",
+      "altText": "dualsense midnight black retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-midnight-black-2.jpg",
+      "url": "/catalog/controllers/dualsense-midnight-black-1.jpg",
       "altText": "dualsense-midnight-black",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3283,14 +3297,14 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-cosmic-red-1.jpg",
-      "altText": "dualsense-cosmic-red",
+      "url": "/catalog/controllers/dualsense-cosmic-red-fixed.jpg",
+      "altText": "DualSense cosmic-red",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-cosmic-red-2.png",
+      "url": "/catalog/controllers/dualsense-cosmic-red-1.jpg",
       "altText": "dualsense-cosmic-red",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3299,21 +3313,21 @@
   ],
   "dualsense-starlight-blue": [
     {
-      "url": "/catalog/controllers/dualsense-starlight-blue-showcase.jpg",
-      "altText": "dualsense starlight blue retail image",
+      "url": "/catalog/controllers/dualsense-starlight-blue-fixed.jpg",
+      "altText": "DualSense starlight-blue",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-starlight-blue-1.jpg",
-      "altText": "dualsense-starlight-blue",
+      "url": "/catalog/controllers/dualsense-starlight-blue-showcase.jpg",
+      "altText": "dualsense starlight blue retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-starlight-blue-2.png",
+      "url": "/catalog/controllers/dualsense-starlight-blue-1.jpg",
       "altText": "dualsense-starlight-blue",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3322,21 +3336,21 @@
   ],
   "dualsense-galactic-purple": [
     {
-      "url": "/catalog/controllers/dualsense-galactic-purple-showcase.jpg",
-      "altText": "dualsense galactic purple retail image",
+      "url": "/catalog/controllers/dualsense-galactic-purple-fixed.jpg",
+      "altText": "DualSense galactic-purple",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-galactic-purple-1.jpg",
-      "altText": "dualsense-galactic-purple",
+      "url": "/catalog/controllers/dualsense-galactic-purple-showcase.jpg",
+      "altText": "dualsense galactic purple retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-galactic-purple-2.png",
+      "url": "/catalog/controllers/dualsense-galactic-purple-1.jpg",
       "altText": "dualsense-galactic-purple",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3345,21 +3359,21 @@
   ],
   "dualsense-nova-pink": [
     {
-      "url": "/catalog/controllers/dualsense-nova-pink-showcase.jpg",
-      "altText": "dualsense nova pink retail image",
+      "url": "/catalog/controllers/dualsense-nova-pink-fixed.jpg",
+      "altText": "DualSense nova-pink",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-nova-pink-1.jpg",
-      "altText": "dualsense-nova-pink",
+      "url": "/catalog/controllers/dualsense-nova-pink-showcase.jpg",
+      "altText": "dualsense nova pink retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-nova-pink-2.png",
+      "url": "/catalog/controllers/dualsense-nova-pink-1.jpg",
       "altText": "dualsense-nova-pink",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3368,21 +3382,21 @@
   ],
   "dualsense-volcanic-red": [
     {
-      "url": "/catalog/controllers/dualsense-volcanic-red-showcase.jpg",
-      "altText": "dualsense volcanic red retail image",
+      "url": "/catalog/controllers/dualsense-volcanic-red-fixed.jpg",
+      "altText": "DualSense volcanic-red",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-volcanic-red-1.jpg",
-      "altText": "dualsense-volcanic-red",
+      "url": "/catalog/controllers/dualsense-volcanic-red-showcase.jpg",
+      "altText": "dualsense volcanic red retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-volcanic-red-2.png",
+      "url": "/catalog/controllers/dualsense-volcanic-red-1.jpg",
       "altText": "dualsense-volcanic-red",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3391,21 +3405,21 @@
   ],
   "dualsense-cobalt-blue": [
     {
-      "url": "/catalog/controllers/dualsense-cobalt-blue-showcase.jpg",
-      "altText": "dualsense cobalt blue retail image",
+      "url": "/catalog/controllers/dualsense-cobalt-blue-fixed.jpg",
+      "altText": "DualSense cobalt-blue",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-cobalt-blue-1.jpg",
-      "altText": "dualsense-cobalt-blue",
+      "url": "/catalog/controllers/dualsense-cobalt-blue-showcase.jpg",
+      "altText": "dualsense cobalt blue retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-cobalt-blue-2.png",
+      "url": "/catalog/controllers/dualsense-cobalt-blue-1.jpg",
       "altText": "dualsense-cobalt-blue",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3414,21 +3428,21 @@
   ],
   "dualsense-sterling-silver": [
     {
-      "url": "/catalog/controllers/dualsense-sterling-silver-showcase.jpg",
-      "altText": "dualsense sterling silver retail image",
+      "url": "/catalog/controllers/dualsense-sterling-silver-fixed.jpg",
+      "altText": "DualSense sterling-silver",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-sterling-silver-1.jpg",
-      "altText": "dualsense-sterling-silver",
+      "url": "/catalog/controllers/dualsense-sterling-silver-showcase.jpg",
+      "altText": "dualsense sterling silver retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-sterling-silver-2.png",
+      "url": "/catalog/controllers/dualsense-sterling-silver-1.jpg",
       "altText": "dualsense-sterling-silver",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3437,21 +3451,21 @@
   ],
   "dualsense-chroma-teal": [
     {
-      "url": "/catalog/controllers/dualsense-chroma-teal-showcase.jpg",
-      "altText": "dualsense chroma teal retail image",
+      "url": "/catalog/controllers/dualsense-chroma-teal-fixed.jpg",
+      "altText": "DualSense chroma-teal",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-chroma-teal-1.jpg",
-      "altText": "dualsense-chroma-teal",
+      "url": "/catalog/controllers/dualsense-chroma-teal-showcase.jpg",
+      "altText": "dualsense chroma teal retail image",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-chroma-teal-2.jpg",
+      "url": "/catalog/controllers/dualsense-chroma-teal-1.jpg",
       "altText": "dualsense-chroma-teal",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3467,14 +3481,14 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-chroma-indigo-1.jpg",
-      "altText": "dualsense-chroma-indigo",
+      "url": "/catalog/controllers/dualsense-chroma-indigo-fixed.jpg",
+      "altText": "DualSense chroma-indigo",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualsense-chroma-indigo-2.jpg",
+      "url": "/catalog/controllers/dualsense-chroma-indigo-1.jpg",
       "altText": "dualsense-chroma-indigo",
       "isPrimary": false,
       "sortOrder": 2,
@@ -3490,24 +3504,17 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-black-1.jpg",
-      "altText": "dualshock4-black",
+      "url": "/catalog/controllers/dualshock4-black-fixed.jpg",
+      "altText": "PS4 DualShock black",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-black-2.jpg",
+      "url": "/catalog/controllers/dualshock4-black-1.jpg",
       "altText": "dualshock4-black",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/controllers/dualshock4-black-3.jpg",
-      "altText": "dualshock4-black",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -3520,24 +3527,17 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-white-1.jpg",
-      "altText": "dualshock4-white",
+      "url": "/catalog/controllers/dualshock4-white-fixed.jpg",
+      "altText": "PS4 DualShock white",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-white-2.jpg",
+      "url": "/catalog/controllers/dualshock4-white-1.jpg",
       "altText": "dualshock4-white",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/controllers/dualshock4-white-3.jpg",
-      "altText": "dualshock4-white",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],
@@ -3550,24 +3550,17 @@
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-red-1.jpg",
-      "altText": "dualshock4-red",
+      "url": "/catalog/controllers/dualshock4-red-fixed.jpg",
+      "altText": "PS4 DualShock red",
       "isPrimary": false,
       "sortOrder": 1,
       "publicId": null
     },
     {
-      "url": "/catalog/controllers/dualshock4-red-2.jpg",
+      "url": "/catalog/controllers/dualshock4-red-1.jpg",
       "altText": "dualshock4-red",
       "isPrimary": false,
       "sortOrder": 2,
-      "publicId": null
-    },
-    {
-      "url": "/catalog/controllers/dualshock4-red-3.jpg",
-      "altText": "dualshock4-red",
-      "isPrimary": false,
-      "sortOrder": 3,
       "publicId": null
     }
   ],

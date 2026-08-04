@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 /**
- * Amazon/CeX-style flat retail images (no 3D plastic AI cases):
- * - Games: official cover + platform brand bar (PS5 / PS4 / Xbox / Switch / PS2)
- * - Hardware: product cutout on white
+ * Amazon/CeX-style flat retail cases:
+ * - Games: keep original cover art; wrap with official platform chrome
+ *   (PS5 white bar, Xbox Series green bars, PS2/PS3 black headers).
+ * - Hardware: product photo on light plate + optional model strip.
  *
- * Does NOT scrape CeX/Amazon. Uses local catalog art.
+ * Does NOT scrape CeX/Amazon. Uses local catalog art only.
  *
  *   node scripts/catalog/build-showcase.mjs
  */
@@ -43,60 +44,136 @@ function localPathFromUrl(url) {
   return fs.existsSync(abs) ? abs : null;
 }
 
-function platformTheme(platform) {
-  switch (platform) {
-    case 'PS5':
-      return { header: '#ffffff', text: '#000000', label: 'PS5', sub: '' };
-    case 'PS4':
-      return { header: '#003087', text: '#ffffff', label: 'PS4', sub: '' };
-    case 'PS3':
-      return { header: '#1a1a1a', text: '#ffffff', label: 'PS3', sub: '' };
-    case 'PS2':
-      return { header: '#000000', text: '#ffffff', label: 'PlayStation.2', sub: '' };
-    case 'XBOX':
-      return { header: '#107c10', text: '#ffffff', label: 'XBOX SERIES X|S', sub: '' };
-    case 'SWITCH':
-      return { header: '#e60012', text: '#ffffff', label: 'Nintendo Switch', sub: '' };
-    case 'SWITCH2':
-      return { header: '#e60012', text: '#ffffff', label: 'Nintendo Switch 2', sub: '' };
-    default:
-      return { header: '#222222', text: '#ffffff', label: 'GAME', sub: '' };
+/** Official retail header/footer chrome only — cover art is left unchanged. */
+function buildHeaderSvg(platform, boxW, headerH) {
+  if (platform === 'PS5') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#ffffff"/>
+  <!-- PlayStation family mark (simplified) -->
+  <g transform="translate(22,${Math.round(headerH * 0.22)})">
+    <circle cx="18" cy="18" r="16" fill="none" stroke="#000" stroke-width="2.5"/>
+    <text x="18" y="24" text-anchor="middle" font-family="Arial Black, Arial, sans-serif"
+      font-size="13" font-weight="900" fill="#000">PS</text>
+  </g>
+  <text x="64" y="${Math.round(headerH * 0.66)}"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="40" font-weight="900" fill="#000000" letter-spacing="1">PS5</text>
+</svg>`);
   }
+  if (platform === 'PS4') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#003087"/>
+  <text x="28" y="${Math.round(headerH * 0.66)}"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="38" font-weight="900" fill="#ffffff" letter-spacing="1">PS4</text>
+</svg>`);
+  }
+  if (platform === 'PS3') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#0a0a0a"/>
+  <text x="24" y="${Math.round(headerH * 0.64)}"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="34" font-weight="900" fill="#ffffff">PS3</text>
+  <text x="${boxW - 24}" y="${Math.round(headerH * 0.58)}" text-anchor="end"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="13" font-weight="600" fill="#cccccc" letter-spacing="0.5">PlayStation Network</text>
+</svg>`);
+  }
+  if (platform === 'PS2') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#000000"/>
+  <text x="22" y="${Math.round(headerH * 0.62)}"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="28" font-weight="900" fill="#ffffff">PlayStation 2</text>
+  <!-- Multicolour PS mark (approximate) -->
+  <g transform="translate(${boxW - 86},${Math.round(headerH * 0.2)})">
+    <circle cx="28" cy="28" r="26" fill="#111" stroke="#333" stroke-width="1"/>
+    <text x="16" y="24" font-family="Arial Black, Arial, sans-serif" font-size="14" fill="#e60012">P</text>
+    <text x="28" y="34" font-family="Arial Black, Arial, sans-serif" font-size="14" fill="#ffcc00">S</text>
+    <circle cx="14" cy="40" r="3" fill="#00a651"/>
+    <circle cx="42" cy="18" r="3" fill="#0072bc"/>
+  </g>
+</svg>`);
+  }
+  if (platform === 'XBOX') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#107c10"/>
+  <!-- Xbox sphere mark -->
+  <circle cx="40" cy="${headerH / 2}" r="20" fill="#ffffff"/>
+  <path d="M28 ${headerH / 2 - 2} Q40 ${headerH / 2 - 18} 52 ${headerH / 2 - 2}
+           Q40 ${headerH / 2 + 16} 28 ${headerH / 2 - 2} Z" fill="#107c10"/>
+  <text x="${boxW - 28}" y="${Math.round(headerH * 0.62)}" text-anchor="end"
+    font-family="Segoe UI, Arial, Helvetica, sans-serif"
+    font-size="22" font-weight="700" fill="#ffffff" letter-spacing="1.5">XBOX SERIES X</text>
+</svg>`);
+  }
+  if (platform === 'SWITCH' || platform === 'SWITCH2') {
+    const label = platform === 'SWITCH2' ? 'Nintendo Switch 2' : 'Nintendo Switch';
+    return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#e60012"/>
+  <text x="28" y="${Math.round(headerH * 0.64)}"
+    font-family="Arial Black, Arial, Helvetica, sans-serif"
+    font-size="26" font-weight="900" fill="#ffffff">${label}</text>
+</svg>`);
+  }
+  return Buffer.from(`
+<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#222222"/>
+  <text x="28" y="${Math.round(headerH * 0.64)}"
+    font-family="Arial Black, Arial, sans-serif" font-size="32" font-weight="900" fill="#fff">GAME</text>
+</svg>`);
+}
+
+function buildFooterSvg(platform, boxW, footerH) {
+  if (platform === 'XBOX') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${footerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#107c10"/>
+  <text x="24" y="${Math.round(footerH * 0.62)}"
+    font-family="Segoe UI, Arial, Helvetica, sans-serif"
+    font-size="14" font-weight="600" fill="#ffffff" letter-spacing="0.4">GAME DISC  |  Requires: Xbox Subscription &amp; Internet</text>
+</svg>`);
+  }
+  if (platform === 'PS2') {
+    return Buffer.from(`
+<svg width="${boxW}" height="${footerH}" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="transparent"/>
+  <rect x="${boxW - 72}" y="8" width="52" height="28" rx="2" fill="#ffffff"/>
+  <text x="${boxW - 46}" y="28" text-anchor="middle"
+    font-family="Arial Black, Arial, sans-serif" font-size="14" font-weight="900" fill="#000">PAL</text>
+</svg>`);
+  }
+  return null;
 }
 
 /**
- * Flat boxed front like CeX list photos:
- * pure white canvas + rectangular insert (platform brand bar + cover art).
- * No plastic case depth / 3D lighting.
+ * Flat boxed front: original cover art only in art region + official chrome.
  */
 async function buildGameBoxFlat(coverPath, platform, outPath) {
-  const theme = platformTheme(platform);
   const boxW = 620;
   const boxH = 860;
-  const headerH = platform === 'PS5' || platform === 'PS4' ? 96 : 88;
+  const headerH = platform === 'XBOX' || platform === 'PS5' ? 92 : 88;
+  const footerH = platform === 'XBOX' ? 52 : platform === 'PS2' ? 40 : 0;
   const left = Math.round((SIZE - boxW) / 2);
   const top = Math.round((SIZE - boxH) / 2);
   const artW = boxW;
-  const artH = boxH - headerH;
+  const artH = boxH - headerH - footerH;
 
+  // Cover art only — no filters that invent "AI plastic" cases
   const cover = await sharp(coverPath)
     .resize(artW, artH, { fit: 'cover', position: 'centre' })
-    .jpeg({ quality: 95 })
+    .jpeg({ quality: 96 })
     .toBuffer();
 
-  const fontSize =
-    theme.label.length > 14 ? 26 : theme.label.length > 8 ? 32 : platform === 'PS5' ? 44 : 38;
+  const headerSvg = buildHeaderSvg(platform, boxW, headerH);
+  const footerSvg = footerH ? buildFooterSvg(platform, boxW, footerH) : null;
 
-  const headerSvg = Buffer.from(`
-<svg width="${boxW}" height="${headerH}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="${theme.header}"/>
-  <text x="28" y="${Math.round(headerH * 0.64)}"
-    font-family="Arial Black, Arial, Helvetica, sans-serif"
-    font-size="${fontSize}" font-weight="900"
-    fill="${theme.text}" letter-spacing="0.5">${theme.label}</text>
-</svg>`);
-
-  // Soft outer edge only (no 3D plastic) — keeps product legible on cards
   const frame = Buffer.from(`
 <svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="#f3f4f6"/>
@@ -105,16 +182,18 @@ async function buildGameBoxFlat(coverPath, platform, outPath) {
       <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000000" flood-opacity="0.12"/>
     </filter>
   </defs>
-  <rect x="${left}" y="${top}" width="${boxW}" height="${boxH}" rx="4" ry="4" fill="#ffffff" filter="url(#soft)"/>
+  <rect x="${left}" y="${top}" width="${boxW}" height="${boxH}" rx="3" ry="3" fill="#ffffff" filter="url(#soft)"/>
 </svg>`);
 
-  await sharp(frame)
-    .composite([
-      { input: headerSvg, left, top },
-      { input: cover, left, top: top + headerH },
-    ])
-    .jpeg({ quality: 95 })
-    .toFile(outPath);
+  const layers = [
+    { input: headerSvg, left, top },
+    { input: cover, left, top: top + headerH },
+  ];
+  if (footerSvg) {
+    layers.push({ input: footerSvg, left, top: top + headerH + artH });
+  }
+
+  await sharp(frame).composite(layers).jpeg({ quality: 95 }).toFile(outPath);
 }
 
 async function buildHardwareWhite(srcPath, outPath, labelText = '') {
@@ -122,7 +201,7 @@ async function buildHardwareWhite(srcPath, outPath, labelText = '') {
   const resized = await sharp(srcPath)
     .resize(Math.round(SIZE * 0.86), maxH, {
       fit: 'contain',
-      background: { r: 243, g: 244, b: 246, alpha: 1 },
+      background: { r: 255, g: 255, b: 255, alpha: 1 },
     })
     .toBuffer();
 
@@ -134,8 +213,8 @@ async function buildHardwareWhite(srcPath, outPath, labelText = '') {
   if (labelText) {
     const badge = Buffer.from(`
 <svg width="${SIZE}" height="64" xmlns="http://www.w3.org/2000/svg">
-  <rect x="140" y="6" width="720" height="50" rx="10" fill="#0f172a"/>
-  <text x="500" y="40" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#ffffff">${labelText}</text>
+  <rect x="120" y="6" width="760" height="50" rx="10" fill="#0f172a"/>
+  <text x="500" y="40" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" fill="#ffffff">${labelText}</text>
 </svg>`);
     layers.push({ input: badge, left: 0, top: SIZE - 78 });
   }
@@ -145,7 +224,7 @@ async function buildHardwareWhite(srcPath, outPath, labelText = '') {
       width: SIZE,
       height: SIZE,
       channels: 3,
-      background: { r: 243, g: 244, b: 246 },
+      background: { r: 255, g: 255, b: 255 },
     },
   })
     .composite(layers)
@@ -158,6 +237,18 @@ function hardwareLabel(key) {
   if (key === 'ps5-slim-digital') return 'PS5 Slim · Digital Edition';
   if (key === 'ps5-original-disc') return 'PS5 Original · Disc Edition';
   if (key === 'ps5-original-digital') return 'PS5 Original · Digital Edition';
+  if (key.startsWith('dualsense-')) {
+    return key
+      .replace('dualsense-', 'DualSense · ')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+  if (key.startsWith('dualshock4-')) {
+    return key
+      .replace('dualshock4-', 'DualShock 4 · ')
+      .replace(/-/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  }
   return '';
 }
 
@@ -184,7 +275,15 @@ async function main() {
 
   for (const key of list) {
     const existing = map[key] || [];
+    // Prefer colour-fixed / primary sources over old showcases and SVG placeholders
     const srcUrl =
+      existing.find(
+        (i) =>
+          localPathFromUrl(i.url) &&
+          !String(i.url).includes('-showcase') &&
+          (String(i.url).includes('-fixed') || /\.(jpe?g|png|webp)$/i.test(String(i.url))) &&
+          !/\.svg$/i.test(String(i.url)),
+      )?.url ??
       existing.find(
         (i) =>
           localPathFromUrl(i.url) &&
@@ -228,9 +327,20 @@ async function main() {
         sortOrder: 0,
         publicId: null,
       };
-      const rest = existing
+      // Controllers: only keep colour-fixed + showcase (avoid wrong multi-colour galleries)
+      let rest = existing
         .filter((i) => i.url !== showcase.url)
         .map((i, idx) => ({ ...i, isPrimary: false, sortOrder: idx + 1 }));
+      if (key.includes('dualsense') || key.includes('dualshock')) {
+        rest = rest
+          .filter(
+            (i) =>
+              String(i.url).includes('-fixed') ||
+              (String(i.url).includes(key) && !String(i.url).includes('showcase')),
+          )
+          .slice(0, 2)
+          .map((i, idx) => ({ ...i, isPrimary: false, sortOrder: idx + 1 }));
+      }
       map[key] = [showcase, ...rest].slice(0, 4);
       console.log(`✓ ${key} (${platformFromKey(key)})`);
       ok += 1;

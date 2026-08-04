@@ -62,10 +62,18 @@ function defaultCategory(product: Product): string {
   };
   const noun = platformNoun[platform] ?? formatPlatform(product.platform);
 
-  if (slug.includes('controller') || /controller/i.test(cat ?? '')) {
+  if (
+    slug.includes('controller') ||
+    /controller/i.test(cat ?? '') ||
+    slug.includes('accessories')
+  ) {
     return `${noun} Controllers`;
   }
   if (slug.includes('console') || /console/i.test(cat ?? '')) {
+    if (platform === 'PS5') return 'PlayStation 5 Consoles';
+    if (platform === 'PS4') return 'PlayStation 4 Consoles';
+    if (platform === 'PS3') return 'PlayStation 3 Consoles';
+    if (platform === 'PS2') return 'PlayStation 2 Consoles';
     return `${noun} Consoles`;
   }
   if (cat && /game/i.test(cat)) return cat;
@@ -176,8 +184,8 @@ export function ProductRetailCard({
       transition={{ duration: 0.3, delay: Math.min(index * 0.04, 0.28) }}
       className="group flex h-full flex-col overflow-hidden rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] transition hover:-translate-y-0.5 hover:border-[var(--gm-cyan)]/55 hover:shadow-[0_12px_28px_rgba(0,0,0,0.22)] sm:rounded-2xl"
     >
-      {/* Image well — light grey plate like CeX */}
-      <div className="relative mx-2 mt-2 overflow-hidden rounded-lg bg-[#eef0f3] sm:mx-2.5 sm:mt-2.5 sm:rounded-xl">
+      {/* Image well — white plate (console cards) like storefront screenshot */}
+      <div className="relative mx-2 mt-2 overflow-hidden rounded-lg bg-white sm:mx-2.5 sm:mt-2.5 sm:rounded-xl">
         <div className="relative aspect-square">
           <Link
             href={productHref}
@@ -199,13 +207,6 @@ export function ProductRetailCard({
               </div>
             )}
           </Link>
-
-          {/* Platform chip when not a game box (controllers/consoles) — games already brand in-image */}
-          {platformText && platformText !== 'Game' && !product.category?.slug?.includes('game') ? (
-            <span className="pointer-events-none absolute bottom-2 left-2 z-[1] rounded bg-black/75 px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white">
-              {platformText}
-            </span>
-          ) : null}
 
           {/* Top-left badges */}
           <div className="pointer-events-none absolute left-2 top-2 z-[1] flex max-w-[70%] flex-col gap-1">
@@ -229,25 +230,38 @@ export function ProductRetailCard({
               e.stopPropagation();
               wishlistMutation.mutate();
             }}
-            className="absolute right-2 top-2 z-[1] inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/95 text-neutral-700 shadow-sm transition hover:text-[var(--gm-magenta)] sm:h-9 sm:w-9"
+            className="absolute right-2 top-2 z-[1] inline-flex h-8 w-8 items-center justify-center rounded-full bg-white text-neutral-700 shadow-sm ring-1 ring-black/5 transition hover:text-[var(--gm-magenta)] sm:h-9 sm:w-9"
           >
             <Heart className="h-4 w-4" />
           </button>
+
+          {/* Console / accessory platform strip (matches retail screenshots) */}
+          {platformText && platformText !== 'Game' && !product.category?.slug?.includes('game') ? (
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] flex items-center gap-2 bg-black/85 px-2 py-1.5">
+              <span className="shrink-0 rounded bg-black px-1.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white ring-1 ring-white/25">
+                {platformText}
+              </span>
+              <span className="truncate text-[10px] font-medium text-white/90 sm:text-[11px]">
+                {displayName.replace(/^PlayStation\s*/i, 'PS').slice(0, 42)}
+              </span>
+            </div>
+          ) : null}
         </div>
       </div>
 
       <div className="flex flex-1 flex-col px-3 pb-3 pt-2 sm:px-3.5 sm:pb-3.5">
-        {/* Rating on the right under image */}
-        <div className="flex items-center justify-end">
-          <span className="inline-flex items-center gap-0.5 text-[var(--gm-yellow)]">
+        {/* Category left · rating right */}
+        <div className="flex items-start justify-between gap-2">
+          <p className="min-w-0 flex-1 text-[11px] leading-snug text-[var(--gm-muted)]">
+            {categoryText}
+          </p>
+          <span className="inline-flex shrink-0 items-center gap-0.5 text-[var(--gm-yellow)]">
             <Star className="h-3.5 w-3.5 fill-current" />
             <span className="text-xs font-bold text-foreground/90">{rating.toFixed(1)}</span>
           </span>
         </div>
 
-        <p className="mt-1 text-[11px] leading-snug text-[var(--gm-muted)]">{categoryText}</p>
-
-        <Link href={productHref} className="mt-0.5 gm-focus rounded-sm">
+        <Link href={productHref} className="mt-1 gm-focus rounded-sm">
           <h3 className="line-clamp-2 text-sm font-bold leading-snug text-foreground transition group-hover:text-[var(--gm-yellow)]">
             {displayName}
           </h3>

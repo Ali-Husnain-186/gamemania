@@ -1,9 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { formatGBP, formatPlatform } from '@/lib/format';
-import { TradeValueBlock } from '@/features/catalog/trade-value-block';
+import { ProductRetailCard } from '@/features/catalog/product-retail-card';
 import type { Product } from '@/types/catalog';
 
 type ProductCardProps = {
@@ -11,56 +8,7 @@ type ProductCardProps = {
   index?: number;
 };
 
+/** Shop grid card — CeX-layout retail card. */
 export function ProductCard({ product, index = 0 }: ProductCardProps) {
-  const image = product.images?.find((i) => i.isPrimary) ?? product.images?.[0];
-
-  return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.3) }}
-    >
-      <Link
-        href={`/products/${product.slug}`}
-        className="group block gm-focus rounded-lg"
-        aria-label={`View ${product.name}`}
-      >
-        <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-[var(--gm-border)] bg-white transition group-hover:border-[var(--gm-cyan)]">
-          {image?.url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={image.url}
-              alt={image.altText || image.alt || product.name}
-              className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.03]"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center text-xs text-[var(--gm-muted)]">
-              No image
-            </div>
-          )}
-          {product.isPreorder ? (
-            <span className="absolute left-2 top-2 rounded bg-[var(--gm-magenta)] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
-              Pre-order
-            </span>
-          ) : null}
-        </div>
-        <div className="mt-3 space-y-1">
-          <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--gm-cyan)]">
-            {formatPlatform(product.platform) !== 'Game'
-              ? formatPlatform(product.platform)
-              : (product.brand?.name ?? 'Game')}
-          </p>
-          <h3 className="line-clamp-2 text-sm font-bold text-foreground transition group-hover:text-[var(--gm-yellow)]">
-            {product.name.replace(/\s*\((New|Used)\)\s*$/i, '')}
-          </h3>
-          <p className="gm-display text-lg text-[var(--gm-magenta)]">{formatGBP(product.price)}</p>
-          <TradeValueBlock
-            cashPence={product.tradeInCashPence}
-            creditPence={product.tradeInCreditPence}
-            compact
-          />
-        </div>
-      </Link>
-    </motion.article>
-  );
+  return <ProductRetailCard product={product} index={index} />;
 }

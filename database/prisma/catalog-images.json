@@ -2,7 +2,7 @@
   "ps5-slim-disc": [
     {
       "url": "/catalog/consoles/ps5-slim-disc-showcase.jpg",
-      "altText": "ps5 slim disc product showcase",
+      "altText": "ps5 slim disc retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -25,7 +25,7 @@
   "ps5-slim-digital": [
     {
       "url": "/catalog/consoles/ps5-slim-digital-showcase.jpg",
-      "altText": "ps5 slim digital product showcase",
+      "altText": "ps5 slim digital retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -48,7 +48,7 @@
   "ps5-original-disc": [
     {
       "url": "/catalog/consoles/ps5-original-disc-showcase.jpg",
-      "altText": "ps5 original disc product showcase",
+      "altText": "ps5 original disc retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -71,7 +71,7 @@
   "ps5-original-digital": [
     {
       "url": "/catalog/consoles/ps5-original-digital-showcase.jpg",
-      "altText": "ps5 original digital product showcase",
+      "altText": "ps5 original digital retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -94,7 +94,7 @@
   "ps4-console": [
     {
       "url": "/catalog/consoles/ps4-console-showcase.jpg",
-      "altText": "ps4 console product showcase",
+      "altText": "ps4 console retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -124,7 +124,7 @@
   "ps3-console": [
     {
       "url": "/catalog/consoles/ps3-console-showcase.jpg",
-      "altText": "ps3 console product showcase",
+      "altText": "ps3 console retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -147,7 +147,7 @@
   "ps2-console": [
     {
       "url": "/catalog/consoles/ps2-console-showcase.jpg",
-      "altText": "ps2 console product showcase",
+      "altText": "ps2 console retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -170,7 +170,7 @@
   "xbox-series-x": [
     {
       "url": "/catalog/consoles/xbox-series-x-showcase.jpg",
-      "altText": "xbox series x product showcase",
+      "altText": "xbox series x retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -193,7 +193,7 @@
   "xbox-series-s": [
     {
       "url": "/catalog/consoles/xbox-series-s-showcase.jpg",
-      "altText": "xbox series s product showcase",
+      "altText": "xbox series s retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -216,7 +216,7 @@
   "switch-oled": [
     {
       "url": "/catalog/consoles/switch-oled-showcase.jpg",
-      "altText": "switch oled product showcase",
+      "altText": "switch oled retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -246,7 +246,7 @@
   "switch-oled-mario": [
     {
       "url": "/catalog/consoles/switch-oled-mario-showcase.jpg",
-      "altText": "switch oled mario product showcase",
+      "altText": "switch oled mario retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -269,7 +269,7 @@
   "switch-oled-zelda": [
     {
       "url": "/catalog/consoles/switch-oled-zelda-showcase.jpg",
-      "altText": "switch oled zelda product showcase",
+      "altText": "switch oled zelda retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -292,7 +292,7 @@
   "switch-2-console": [
     {
       "url": "/catalog/consoles/switch-2-console-showcase.jpg",
-      "altText": "switch 2 console product showcase",
+      "altText": "switch 2 console retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -315,7 +315,7 @@
   "ps5-game-ea-sports-fc-26": [
     {
       "url": "/catalog/games/ps5-game-ea-sports-fc-26/ps5-game-ea-sports-fc-26-showcase.jpg",
-      "altText": "ps5 game ea sports fc 26 product showcase",
+      "altText": "ps5 game ea sports fc 26 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -338,7 +338,7 @@
   "ps5-game-call-of-duty-black-ops-7": [
     {
       "url": "/catalog/games/ps5-game-call-of-duty-black-ops-7/ps5-game-call-of-duty-black-ops-7-showcase.jpg",
-      "altText": "ps5 game call of duty black ops 7 product showcase",
+      "altText": "ps5 game call of duty black ops 7 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -368,7 +368,7 @@
   "ps5-game-call-of-duty-black-ops-6": [
     {
       "url": "/catalog/games/ps5-game-call-of-duty-black-ops-6/ps5-game-call-of-duty-black-ops-6-showcase.jpg",
-      "altText": "ps5 game call of duty black ops 6 product showcase",
+      "altText": "ps5 game call of duty black ops 6 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -398,7 +398,7 @@
   "ps5-game-grand-theft-auto-v-ps5": [
     {
       "url": "/catalog/games/ps5-game-grand-theft-auto-v-ps5/ps5-game-grand-theft-auto-v-ps5-showcase.jpg",
-      "altText": "ps5 game grand theft auto v ps5 product showcase",
+      "altText": "ps5 game grand theft auto v ps5 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -428,7 +428,7 @@
   "ps5-game-hogwarts-legacy": [
     {
       "url": "/catalog/games/ps5-game-hogwarts-legacy/ps5-game-hogwarts-legacy-showcase.jpg",
-      "altText": "ps5 game hogwarts legacy product showcase",
+      "altText": "ps5 game hogwarts legacy retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -458,7 +458,7 @@
   "ps5-game-marvels-spider-man-2": [
     {
       "url": "/catalog/games/ps5-game-marvels-spider-man-2/ps5-game-marvels-spider-man-2-showcase.jpg",
-      "altText": "ps5 game marvels spider man 2 product showcase",
+      "altText": "ps5 game marvels spider man 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -488,7 +488,7 @@
   "ps5-game-marvels-wolverine": [
     {
       "url": "/catalog/games/ps5-game-marvels-wolverine/ps5-game-marvels-wolverine-showcase.jpg",
-      "altText": "ps5 game marvels wolverine product showcase",
+      "altText": "ps5 game marvels wolverine retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -504,7 +504,7 @@
   "ps5-game-god-of-war-ragnar-k": [
     {
       "url": "/catalog/games/ps5-game-god-of-war-ragnar-k/ps5-game-god-of-war-ragnar-k-showcase.jpg",
-      "altText": "ps5 game god of war ragnar k product showcase",
+      "altText": "ps5 game god of war ragnar k retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -534,7 +534,7 @@
   "ps5-game-the-last-of-us-part-i": [
     {
       "url": "/catalog/games/ps5-game-the-last-of-us-part-i/ps5-game-the-last-of-us-part-i-showcase.jpg",
-      "altText": "ps5 game the last of us part i product showcase",
+      "altText": "ps5 game the last of us part i retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -564,7 +564,7 @@
   "ps5-game-the-last-of-us-part-ii-remastered": [
     {
       "url": "/catalog/games/ps5-game-the-last-of-us-part-ii-remastered/ps5-game-the-last-of-us-part-ii-remastered-showcase.jpg",
-      "altText": "ps5 game the last of us part ii remastered product showcase",
+      "altText": "ps5 game the last of us part ii remastered retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -594,7 +594,7 @@
   "ps5-game-horizon-forbidden-west": [
     {
       "url": "/catalog/games/ps5-game-horizon-forbidden-west/ps5-game-horizon-forbidden-west-showcase.jpg",
-      "altText": "ps5 game horizon forbidden west product showcase",
+      "altText": "ps5 game horizon forbidden west retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -624,7 +624,7 @@
   "ps5-game-gran-turismo-7": [
     {
       "url": "/catalog/games/ps5-game-gran-turismo-7/ps5-game-gran-turismo-7-showcase.jpg",
-      "altText": "ps5 game gran turismo 7 product showcase",
+      "altText": "ps5 game gran turismo 7 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -647,7 +647,7 @@
   "ps5-game-elden-ring": [
     {
       "url": "/catalog/games/ps5-game-elden-ring/ps5-game-elden-ring-showcase.jpg",
-      "altText": "ps5 game elden ring product showcase",
+      "altText": "ps5 game elden ring retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -677,7 +677,7 @@
   "ps5-game-mortal-kombat-1": [
     {
       "url": "/catalog/games/ps5-game-mortal-kombat-1/ps5-game-mortal-kombat-1-showcase.jpg",
-      "altText": "ps5 game mortal kombat 1 product showcase",
+      "altText": "ps5 game mortal kombat 1 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -707,7 +707,7 @@
   "ps5-game-assassins-creed-shadows": [
     {
       "url": "/catalog/games/ps5-game-assassins-creed-shadows/ps5-game-assassins-creed-shadows-showcase.jpg",
-      "altText": "ps5 game assassins creed shadows product showcase",
+      "altText": "ps5 game assassins creed shadows retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -737,7 +737,7 @@
   "ps5-game-resident-evil-4-remake": [
     {
       "url": "/catalog/games/ps5-game-resident-evil-4-remake/ps5-game-resident-evil-4-remake-showcase.jpg",
-      "altText": "ps5 game resident evil 4 remake product showcase",
+      "altText": "ps5 game resident evil 4 remake retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -767,7 +767,7 @@
   "ps5-game-final-fantasy-vii-rebirth": [
     {
       "url": "/catalog/games/ps5-game-final-fantasy-vii-rebirth/ps5-game-final-fantasy-vii-rebirth-showcase.jpg",
-      "altText": "ps5 game final fantasy vii rebirth product showcase",
+      "altText": "ps5 game final fantasy vii rebirth retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -797,7 +797,7 @@
   "ps5-game-silent-hill-2-remake": [
     {
       "url": "/catalog/games/ps5-game-silent-hill-2-remake/ps5-game-silent-hill-2-remake-showcase.jpg",
-      "altText": "ps5 game silent hill 2 remake product showcase",
+      "altText": "ps5 game silent hill 2 remake retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -827,7 +827,7 @@
   "ps5-game-dragon-ball-sparking-zero": [
     {
       "url": "/catalog/games/ps5-game-dragon-ball-sparking-zero/ps5-game-dragon-ball-sparking-zero-showcase.jpg",
-      "altText": "ps5 game dragon ball sparking zero product showcase",
+      "altText": "ps5 game dragon ball sparking zero retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -857,7 +857,7 @@
   "ps5-game-helldivers-2": [
     {
       "url": "/catalog/games/ps5-game-helldivers-2/ps5-game-helldivers-2-showcase.jpg",
-      "altText": "ps5 game helldivers 2 product showcase",
+      "altText": "ps5 game helldivers 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -887,7 +887,7 @@
   "ps4-game-fifa-23": [
     {
       "url": "/catalog/games/ps4-game-fifa-23/ps4-game-fifa-23-showcase.jpg",
-      "altText": "ps4 game fifa 23 product showcase",
+      "altText": "ps4 game fifa 23 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -917,7 +917,7 @@
   "ps4-game-ea-sports-fc-24": [
     {
       "url": "/catalog/games/ps4-game-ea-sports-fc-24/ps4-game-ea-sports-fc-24-showcase.jpg",
-      "altText": "ps4 game ea sports fc 24 product showcase",
+      "altText": "ps4 game ea sports fc 24 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -940,7 +940,7 @@
   "ps4-game-grand-theft-auto-v": [
     {
       "url": "/catalog/games/ps4-game-grand-theft-auto-v/ps4-game-grand-theft-auto-v-showcase.jpg",
-      "altText": "ps4 game grand theft auto v product showcase",
+      "altText": "ps4 game grand theft auto v retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -970,7 +970,7 @@
   "ps4-game-red-dead-redemption-2": [
     {
       "url": "/catalog/games/ps4-game-red-dead-redemption-2/ps4-game-red-dead-redemption-2-showcase.jpg",
-      "altText": "ps4 game red dead redemption 2 product showcase",
+      "altText": "ps4 game red dead redemption 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1000,7 +1000,7 @@
   "ps4-game-call-of-duty-modern-warfare": [
     {
       "url": "/catalog/games/ps4-game-call-of-duty-modern-warfare/ps4-game-call-of-duty-modern-warfare-showcase.jpg",
-      "altText": "ps4 game call of duty modern warfare product showcase",
+      "altText": "ps4 game call of duty modern warfare retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1030,7 +1030,7 @@
   "ps4-game-call-of-duty-black-ops-cold-war": [
     {
       "url": "/catalog/games/ps4-game-call-of-duty-black-ops-cold-war/ps4-game-call-of-duty-black-ops-cold-war-showcase.jpg",
-      "altText": "ps4 game call of duty black ops cold war product showcase",
+      "altText": "ps4 game call of duty black ops cold war retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1060,7 +1060,7 @@
   "ps4-game-call-of-duty-modern-warfare-ii": [
     {
       "url": "/catalog/games/ps4-game-call-of-duty-modern-warfare-ii/ps4-game-call-of-duty-modern-warfare-ii-showcase.jpg",
-      "altText": "ps4 game call of duty modern warfare ii product showcase",
+      "altText": "ps4 game call of duty modern warfare ii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1090,7 +1090,7 @@
   "ps4-game-marvels-spider-man": [
     {
       "url": "/catalog/games/ps4-game-marvels-spider-man/ps4-game-marvels-spider-man-showcase.jpg",
-      "altText": "ps4 game marvels spider man product showcase",
+      "altText": "ps4 game marvels spider man retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1120,7 +1120,7 @@
   "ps4-game-god-of-war": [
     {
       "url": "/catalog/games/ps4-game-god-of-war/ps4-game-god-of-war-showcase.jpg",
-      "altText": "ps4 game god of war product showcase",
+      "altText": "ps4 game god of war retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1150,7 +1150,7 @@
   "ps4-game-the-last-of-us-remastered": [
     {
       "url": "/catalog/games/ps4-game-the-last-of-us-remastered/ps4-game-the-last-of-us-remastered-showcase.jpg",
-      "altText": "ps4 game the last of us remastered product showcase",
+      "altText": "ps4 game the last of us remastered retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1180,7 +1180,7 @@
   "ps4-game-the-last-of-us-part-ii": [
     {
       "url": "/catalog/games/ps4-game-the-last-of-us-part-ii/ps4-game-the-last-of-us-part-ii-showcase.jpg",
-      "altText": "ps4 game the last of us part ii product showcase",
+      "altText": "ps4 game the last of us part ii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1210,7 +1210,7 @@
   "ps4-game-horizon-zero-dawn": [
     {
       "url": "/catalog/games/ps4-game-horizon-zero-dawn/ps4-game-horizon-zero-dawn-showcase.jpg",
-      "altText": "ps4 game horizon zero dawn product showcase",
+      "altText": "ps4 game horizon zero dawn retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1240,7 +1240,7 @@
   "ps4-game-horizon-forbidden-west": [
     {
       "url": "/catalog/games/ps4-game-horizon-forbidden-west/ps4-game-horizon-forbidden-west-showcase.jpg",
-      "altText": "ps4 game horizon forbidden west product showcase",
+      "altText": "ps4 game horizon forbidden west retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1270,7 +1270,7 @@
   "ps4-game-ghost-of-tsushima": [
     {
       "url": "/catalog/games/ps4-game-ghost-of-tsushima/ps4-game-ghost-of-tsushima-showcase.jpg",
-      "altText": "ps4 game ghost of tsushima product showcase",
+      "altText": "ps4 game ghost of tsushima retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1300,7 +1300,7 @@
   "ps4-game-uncharted-4-a-thief-s-end": [
     {
       "url": "/catalog/games/ps4-game-uncharted-4-a-thief-s-end/ps4-game-uncharted-4-a-thief-s-end-showcase.jpg",
-      "altText": "ps4 game uncharted 4 a thief s end product showcase",
+      "altText": "ps4 game uncharted 4 a thief s end retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1330,7 +1330,7 @@
   "ps4-game-minecraft-ps4-edition": [
     {
       "url": "/catalog/games/ps4-game-minecraft-ps4-edition/ps4-game-minecraft-ps4-edition-showcase.jpg",
-      "altText": "ps4 game minecraft ps4 edition product showcase",
+      "altText": "ps4 game minecraft ps4 edition retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1353,7 +1353,7 @@
   "ps4-game-gran-turismo-sport": [
     {
       "url": "/catalog/games/ps4-game-gran-turismo-sport/ps4-game-gran-turismo-sport-showcase.jpg",
-      "altText": "ps4 game gran turismo sport product showcase",
+      "altText": "ps4 game gran turismo sport retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1383,7 +1383,7 @@
   "ps4-game-resident-evil-village": [
     {
       "url": "/catalog/games/ps4-game-resident-evil-village/ps4-game-resident-evil-village-showcase.jpg",
-      "altText": "ps4 game resident evil village product showcase",
+      "altText": "ps4 game resident evil village retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1413,7 +1413,7 @@
   "ps4-game-assassins-creed-valhalla": [
     {
       "url": "/catalog/games/ps4-game-assassins-creed-valhalla/ps4-game-assassins-creed-valhalla-showcase.jpg",
-      "altText": "ps4 game assassins creed valhalla product showcase",
+      "altText": "ps4 game assassins creed valhalla retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1443,7 +1443,7 @@
   "ps4-game-hogwarts-legacy": [
     {
       "url": "/catalog/games/ps4-game-hogwarts-legacy/ps4-game-hogwarts-legacy-showcase.jpg",
-      "altText": "ps4 game hogwarts legacy product showcase",
+      "altText": "ps4 game hogwarts legacy retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1473,7 +1473,7 @@
   "xbox_series-game-ea-sports-fc-26": [
     {
       "url": "/catalog/games/xbox_series-game-ea-sports-fc-26/xbox_series-game-ea-sports-fc-26-showcase.jpg",
-      "altText": "xbox_series game ea sports fc 26 product showcase",
+      "altText": "xbox_series game ea sports fc 26 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1496,7 +1496,7 @@
   "xbox_series-game-call-of-duty-black-ops-6": [
     {
       "url": "/catalog/games/xbox_series-game-call-of-duty-black-ops-6/xbox_series-game-call-of-duty-black-ops-6-showcase.jpg",
-      "altText": "xbox_series game call of duty black ops 6 product showcase",
+      "altText": "xbox_series game call of duty black ops 6 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1526,7 +1526,7 @@
   "xbox_series-game-call-of-duty-modern-warfare-iii": [
     {
       "url": "/catalog/games/xbox_series-game-call-of-duty-modern-warfare-iii/xbox_series-game-call-of-duty-modern-warfare-iii-showcase.jpg",
-      "altText": "xbox_series game call of duty modern warfare iii product showcase",
+      "altText": "xbox_series game call of duty modern warfare iii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1556,7 +1556,7 @@
   "xbox_series-game-grand-theft-auto-v": [
     {
       "url": "/catalog/games/xbox_series-game-grand-theft-auto-v/xbox_series-game-grand-theft-auto-v-showcase.jpg",
-      "altText": "xbox_series game grand theft auto v product showcase",
+      "altText": "xbox_series game grand theft auto v retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1586,7 +1586,7 @@
   "xbox_series-game-hogwarts-legacy": [
     {
       "url": "/catalog/games/xbox_series-game-hogwarts-legacy/xbox_series-game-hogwarts-legacy-showcase.jpg",
-      "altText": "xbox_series game hogwarts legacy product showcase",
+      "altText": "xbox_series game hogwarts legacy retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1616,7 +1616,7 @@
   "xbox_series-game-forza-horizon-5": [
     {
       "url": "/catalog/games/xbox_series-game-forza-horizon-5/xbox_series-game-forza-horizon-5-showcase.jpg",
-      "altText": "xbox_series game forza horizon 5 product showcase",
+      "altText": "xbox_series game forza horizon 5 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1646,7 +1646,7 @@
   "xbox_series-game-halo-infinite": [
     {
       "url": "/catalog/games/xbox_series-game-halo-infinite/xbox_series-game-halo-infinite-showcase.jpg",
-      "altText": "xbox_series game halo infinite product showcase",
+      "altText": "xbox_series game halo infinite retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1676,7 +1676,7 @@
   "xbox_series-game-starfield": [
     {
       "url": "/catalog/games/xbox_series-game-starfield/xbox_series-game-starfield-showcase.jpg",
-      "altText": "xbox_series game starfield product showcase",
+      "altText": "xbox_series game starfield retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1706,7 +1706,7 @@
   "xbox_series-game-red-dead-redemption-2": [
     {
       "url": "/catalog/games/xbox_series-game-red-dead-redemption-2/xbox_series-game-red-dead-redemption-2-showcase.jpg",
-      "altText": "xbox_series game red dead redemption 2 product showcase",
+      "altText": "xbox_series game red dead redemption 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1736,7 +1736,7 @@
   "xbox_series-game-cyberpunk-2077": [
     {
       "url": "/catalog/games/xbox_series-game-cyberpunk-2077/xbox_series-game-cyberpunk-2077-showcase.jpg",
-      "altText": "xbox_series game cyberpunk 2077 product showcase",
+      "altText": "xbox_series game cyberpunk 2077 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1766,7 +1766,7 @@
   "xbox_series-game-assassins-creed-shadows": [
     {
       "url": "/catalog/games/xbox_series-game-assassins-creed-shadows/xbox_series-game-assassins-creed-shadows-showcase.jpg",
-      "altText": "xbox_series game assassins creed shadows product showcase",
+      "altText": "xbox_series game assassins creed shadows retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1796,7 +1796,7 @@
   "xbox_series-game-assassins-creed-valhalla": [
     {
       "url": "/catalog/games/xbox_series-game-assassins-creed-valhalla/xbox_series-game-assassins-creed-valhalla-showcase.jpg",
-      "altText": "xbox_series game assassins creed valhalla product showcase",
+      "altText": "xbox_series game assassins creed valhalla retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1826,7 +1826,7 @@
   "xbox_series-game-mortal-kombat-1": [
     {
       "url": "/catalog/games/xbox_series-game-mortal-kombat-1/xbox_series-game-mortal-kombat-1-showcase.jpg",
-      "altText": "xbox_series game mortal kombat 1 product showcase",
+      "altText": "xbox_series game mortal kombat 1 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1856,7 +1856,7 @@
   "xbox_series-game-elden-ring": [
     {
       "url": "/catalog/games/xbox_series-game-elden-ring/xbox_series-game-elden-ring-showcase.jpg",
-      "altText": "xbox_series game elden ring product showcase",
+      "altText": "xbox_series game elden ring retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1886,7 +1886,7 @@
   "xbox_series-game-minecraft": [
     {
       "url": "/catalog/games/xbox_series-game-minecraft/xbox_series-game-minecraft-showcase.jpg",
-      "altText": "xbox_series game minecraft product showcase",
+      "altText": "xbox_series game minecraft retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1916,7 +1916,7 @@
   "xbox_series-game-resident-evil-4-remake": [
     {
       "url": "/catalog/games/xbox_series-game-resident-evil-4-remake/xbox_series-game-resident-evil-4-remake-showcase.jpg",
-      "altText": "xbox_series game resident evil 4 remake product showcase",
+      "altText": "xbox_series game resident evil 4 remake retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1946,7 +1946,7 @@
   "xbox_series-game-wwe-2k26": [
     {
       "url": "/catalog/games/xbox_series-game-wwe-2k26/xbox_series-game-wwe-2k26-showcase.jpg",
-      "altText": "xbox_series game wwe 2k26 product showcase",
+      "altText": "xbox_series game wwe 2k26 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -1976,7 +1976,7 @@
   "xbox_series-game-wwe-2k25": [
     {
       "url": "/catalog/games/xbox_series-game-wwe-2k25/xbox_series-game-wwe-2k25-showcase.jpg",
-      "altText": "xbox_series game wwe 2k25 product showcase",
+      "altText": "xbox_series game wwe 2k25 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2006,7 +2006,7 @@
   "xbox_series-game-nba-2k26": [
     {
       "url": "/catalog/games/xbox_series-game-nba-2k26/xbox_series-game-nba-2k26-showcase.jpg",
-      "altText": "xbox_series game nba 2k26 product showcase",
+      "altText": "xbox_series game nba 2k26 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2066,7 +2066,7 @@
   "ps3-game-grand-theft-auto-v": [
     {
       "url": "/catalog/games/ps3-game-grand-theft-auto-v/ps3-game-grand-theft-auto-v-showcase.jpg",
-      "altText": "ps3 game grand theft auto v product showcase",
+      "altText": "ps3 game grand theft auto v retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2096,7 +2096,7 @@
   "ps3-game-red-dead-redemption": [
     {
       "url": "/catalog/games/ps3-game-red-dead-redemption/ps3-game-red-dead-redemption-showcase.jpg",
-      "altText": "ps3 game red dead redemption product showcase",
+      "altText": "ps3 game red dead redemption retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2126,7 +2126,7 @@
   "ps3-game-call-of-duty-black-ops": [
     {
       "url": "/catalog/games/ps3-game-call-of-duty-black-ops/ps3-game-call-of-duty-black-ops-showcase.jpg",
-      "altText": "ps3 game call of duty black ops product showcase",
+      "altText": "ps3 game call of duty black ops retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2156,7 +2156,7 @@
   "ps3-game-call-of-duty-modern-warfare-2": [
     {
       "url": "/catalog/games/ps3-game-call-of-duty-modern-warfare-2/ps3-game-call-of-duty-modern-warfare-2-showcase.jpg",
-      "altText": "ps3 game call of duty modern warfare 2 product showcase",
+      "altText": "ps3 game call of duty modern warfare 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2186,7 +2186,7 @@
   "ps3-game-call-of-duty-modern-warfare-3": [
     {
       "url": "/catalog/games/ps3-game-call-of-duty-modern-warfare-3/ps3-game-call-of-duty-modern-warfare-3-showcase.jpg",
-      "altText": "ps3 game call of duty modern warfare 3 product showcase",
+      "altText": "ps3 game call of duty modern warfare 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2216,7 +2216,7 @@
   "ps3-game-fifa-19": [
     {
       "url": "/catalog/games/ps3-game-fifa-19/ps3-game-fifa-19-showcase.jpg",
-      "altText": "ps3 game fifa 19 product showcase",
+      "altText": "ps3 game fifa 19 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2246,7 +2246,7 @@
   "ps3-game-fifa-18": [
     {
       "url": "/catalog/games/ps3-game-fifa-18/ps3-game-fifa-18-showcase.jpg",
-      "altText": "ps3 game fifa 18 product showcase",
+      "altText": "ps3 game fifa 18 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2276,7 +2276,7 @@
   "ps3-game-the-last-of-us": [
     {
       "url": "/catalog/games/ps3-game-the-last-of-us/ps3-game-the-last-of-us-showcase.jpg",
-      "altText": "ps3 game the last of us product showcase",
+      "altText": "ps3 game the last of us retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2306,7 +2306,7 @@
   "ps3-game-uncharted-2-among-thieves": [
     {
       "url": "/catalog/games/ps3-game-uncharted-2-among-thieves/ps3-game-uncharted-2-among-thieves-showcase.jpg",
-      "altText": "ps3 game uncharted 2 among thieves product showcase",
+      "altText": "ps3 game uncharted 2 among thieves retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2336,7 +2336,7 @@
   "ps3-game-uncharted-3-drakes-deception": [
     {
       "url": "/catalog/games/ps3-game-uncharted-3-drakes-deception/ps3-game-uncharted-3-drakes-deception-showcase.jpg",
-      "altText": "ps3 game uncharted 3 drakes deception product showcase",
+      "altText": "ps3 game uncharted 3 drakes deception retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2366,7 +2366,7 @@
   "ps3-game-gran-turismo-6": [
     {
       "url": "/catalog/games/ps3-game-gran-turismo-6/ps3-game-gran-turismo-6-showcase.jpg",
-      "altText": "ps3 game gran turismo 6 product showcase",
+      "altText": "ps3 game gran turismo 6 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2389,7 +2389,7 @@
   "ps3-game-skyrim": [
     {
       "url": "/catalog/games/ps3-game-skyrim/ps3-game-skyrim-showcase.jpg",
-      "altText": "ps3 game skyrim product showcase",
+      "altText": "ps3 game skyrim retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2419,7 +2419,7 @@
   "ps3-game-minecraft-ps3-edition": [
     {
       "url": "/catalog/games/ps3-game-minecraft-ps3-edition/ps3-game-minecraft-ps3-edition-showcase.jpg",
-      "altText": "ps3 game minecraft ps3 edition product showcase",
+      "altText": "ps3 game minecraft ps3 edition retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2449,7 +2449,7 @@
   "ps3-game-batman-arkham-city": [
     {
       "url": "/catalog/games/ps3-game-batman-arkham-city/ps3-game-batman-arkham-city-showcase.jpg",
-      "altText": "ps3 game batman arkham city product showcase",
+      "altText": "ps3 game batman arkham city retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2479,7 +2479,7 @@
   "ps3-game-batman-arkham-asylum": [
     {
       "url": "/catalog/games/ps3-game-batman-arkham-asylum/ps3-game-batman-arkham-asylum-showcase.jpg",
-      "altText": "ps3 game batman arkham asylum product showcase",
+      "altText": "ps3 game batman arkham asylum retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2509,7 +2509,7 @@
   "ps3-game-god-of-war-iii": [
     {
       "url": "/catalog/games/ps3-game-god-of-war-iii/ps3-game-god-of-war-iii-showcase.jpg",
-      "altText": "ps3 game god of war iii product showcase",
+      "altText": "ps3 game god of war iii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2532,7 +2532,7 @@
   "ps3-game-metal-gear-solid-4": [
     {
       "url": "/catalog/games/ps3-game-metal-gear-solid-4/ps3-game-metal-gear-solid-4-showcase.jpg",
-      "altText": "ps3 game metal gear solid 4 product showcase",
+      "altText": "ps3 game metal gear solid 4 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2562,7 +2562,7 @@
   "ps3-game-littlebigplanet-2": [
     {
       "url": "/catalog/games/ps3-game-littlebigplanet-2/ps3-game-littlebigplanet-2-showcase.jpg",
-      "altText": "ps3 game littlebigplanet 2 product showcase",
+      "altText": "ps3 game littlebigplanet 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2592,7 +2592,7 @@
   "ps3-game-far-cry-3": [
     {
       "url": "/catalog/games/ps3-game-far-cry-3/ps3-game-far-cry-3-showcase.jpg",
-      "altText": "ps3 game far cry 3 product showcase",
+      "altText": "ps3 game far cry 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2622,7 +2622,7 @@
   "ps3-game-assassins-creed-iv-black-flag": [
     {
       "url": "/catalog/games/ps3-game-assassins-creed-iv-black-flag/ps3-game-assassins-creed-iv-black-flag-showcase.jpg",
-      "altText": "ps3 game assassins creed iv black flag product showcase",
+      "altText": "ps3 game assassins creed iv black flag retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2652,7 +2652,7 @@
   "ps2-game-grand-theft-auto-san-andreas": [
     {
       "url": "/catalog/games/ps2-game-grand-theft-auto-san-andreas/ps2-game-grand-theft-auto-san-andreas-showcase.jpg",
-      "altText": "ps2 game grand theft auto san andreas product showcase",
+      "altText": "ps2 game grand theft auto san andreas retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2682,7 +2682,7 @@
   "ps2-game-grand-theft-auto-vice-city": [
     {
       "url": "/catalog/games/ps2-game-grand-theft-auto-vice-city/ps2-game-grand-theft-auto-vice-city-showcase.jpg",
-      "altText": "ps2 game grand theft auto vice city product showcase",
+      "altText": "ps2 game grand theft auto vice city retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2712,7 +2712,7 @@
   "ps2-game-grand-theft-auto-iii": [
     {
       "url": "/catalog/games/ps2-game-grand-theft-auto-iii/ps2-game-grand-theft-auto-iii-showcase.jpg",
-      "altText": "ps2 game grand theft auto iii product showcase",
+      "altText": "ps2 game grand theft auto iii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2742,7 +2742,7 @@
   "ps2-game-gran-turismo-4": [
     {
       "url": "/catalog/games/ps2-game-gran-turismo-4/ps2-game-gran-turismo-4-showcase.jpg",
-      "altText": "ps2 game gran turismo 4 product showcase",
+      "altText": "ps2 game gran turismo 4 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2772,7 +2772,7 @@
   "ps2-game-gran-turismo-3": [
     {
       "url": "/catalog/games/ps2-game-gran-turismo-3/ps2-game-gran-turismo-3-showcase.jpg",
-      "altText": "ps2 game gran turismo 3 product showcase",
+      "altText": "ps2 game gran turismo 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2802,7 +2802,7 @@
   "ps2-game-fifa-14": [
     {
       "url": "/catalog/games/ps2-game-fifa-14/ps2-game-fifa-14-showcase.jpg",
-      "altText": "ps2 game fifa 14 product showcase",
+      "altText": "ps2 game fifa 14 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2832,7 +2832,7 @@
   "ps2-game-fifa-13": [
     {
       "url": "/catalog/games/ps2-game-fifa-13/ps2-game-fifa-13-showcase.jpg",
-      "altText": "ps2 game fifa 13 product showcase",
+      "altText": "ps2 game fifa 13 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2862,7 +2862,7 @@
   "ps2-game-call-of-duty-world-at-war-final-fronts": [
     {
       "url": "/catalog/games/ps2-game-call-of-duty-world-at-war-final-fronts/ps2-game-call-of-duty-world-at-war-final-fronts-showcase.jpg",
-      "altText": "ps2 game call of duty world at war final fronts product showcase",
+      "altText": "ps2 game call of duty world at war final fronts retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2892,7 +2892,7 @@
   "ps2-game-call-of-duty-3": [
     {
       "url": "/catalog/games/ps2-game-call-of-duty-3/ps2-game-call-of-duty-3-showcase.jpg",
-      "altText": "ps2 game call of duty 3 product showcase",
+      "altText": "ps2 game call of duty 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2922,7 +2922,7 @@
   "ps2-game-need-for-speed-underground-2": [
     {
       "url": "/catalog/games/ps2-game-need-for-speed-underground-2/ps2-game-need-for-speed-underground-2-showcase.jpg",
-      "altText": "ps2 game need for speed underground 2 product showcase",
+      "altText": "ps2 game need for speed underground 2 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2952,7 +2952,7 @@
   "ps2-game-need-for-speed-most-wanted": [
     {
       "url": "/catalog/games/ps2-game-need-for-speed-most-wanted/ps2-game-need-for-speed-most-wanted-showcase.jpg",
-      "altText": "ps2 game need for speed most wanted product showcase",
+      "altText": "ps2 game need for speed most wanted retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -2982,7 +2982,7 @@
   "ps2-game-need-for-speed-carbon": [
     {
       "url": "/catalog/games/ps2-game-need-for-speed-carbon/ps2-game-need-for-speed-carbon-showcase.jpg",
-      "altText": "ps2 game need for speed carbon product showcase",
+      "altText": "ps2 game need for speed carbon retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3035,7 +3035,7 @@
   "ps2-game-wwe-smackdown-here-comes-the-pain": [
     {
       "url": "/catalog/games/ps2-game-wwe-smackdown-here-comes-the-pain/ps2-game-wwe-smackdown-here-comes-the-pain-showcase.jpg",
-      "altText": "ps2 game wwe smackdown here comes the pain product showcase",
+      "altText": "ps2 game wwe smackdown here comes the pain retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3058,7 +3058,7 @@
   "ps2-game-wwe-smackdown-vs-raw-2007": [
     {
       "url": "/catalog/games/ps2-game-wwe-smackdown-vs-raw-2007/ps2-game-wwe-smackdown-vs-raw-2007-showcase.jpg",
-      "altText": "ps2 game wwe smackdown vs raw 2007 product showcase",
+      "altText": "ps2 game wwe smackdown vs raw 2007 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3088,7 +3088,7 @@
   "ps2-game-god-of-war": [
     {
       "url": "/catalog/games/ps2-game-god-of-war/ps2-game-god-of-war-showcase.jpg",
-      "altText": "ps2 game god of war product showcase",
+      "altText": "ps2 game god of war retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3118,7 +3118,7 @@
   "ps2-game-god-of-war-ii": [
     {
       "url": "/catalog/games/ps2-game-god-of-war-ii/ps2-game-god-of-war-ii-showcase.jpg",
-      "altText": "ps2 game god of war ii product showcase",
+      "altText": "ps2 game god of war ii retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3148,7 +3148,7 @@
   "ps2-game-tekken-5": [
     {
       "url": "/catalog/games/ps2-game-tekken-5/ps2-game-tekken-5-showcase.jpg",
-      "altText": "ps2 game tekken 5 product showcase",
+      "altText": "ps2 game tekken 5 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3171,7 +3171,7 @@
   "ps2-game-kingdom-hearts": [
     {
       "url": "/catalog/games/ps2-game-kingdom-hearts/ps2-game-kingdom-hearts-showcase.jpg",
-      "altText": "ps2 game kingdom hearts product showcase",
+      "altText": "ps2 game kingdom hearts retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3201,7 +3201,7 @@
   "ps2-game-resident-evil-4": [
     {
       "url": "/catalog/games/ps2-game-resident-evil-4/ps2-game-resident-evil-4-showcase.jpg",
-      "altText": "ps2 game resident evil 4 product showcase",
+      "altText": "ps2 game resident evil 4 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3231,7 +3231,7 @@
   "dualsense-white": [
     {
       "url": "/catalog/controllers/dualsense-white-showcase.jpg",
-      "altText": "dualsense white product showcase",
+      "altText": "dualsense white retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3254,7 +3254,7 @@
   "dualsense-midnight-black": [
     {
       "url": "/catalog/controllers/dualsense-midnight-black-showcase.jpg",
-      "altText": "dualsense midnight black product showcase",
+      "altText": "dualsense midnight black retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3277,7 +3277,7 @@
   "dualsense-cosmic-red": [
     {
       "url": "/catalog/controllers/dualsense-cosmic-red-showcase.jpg",
-      "altText": "dualsense cosmic red product showcase",
+      "altText": "dualsense cosmic red retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3300,7 +3300,7 @@
   "dualsense-starlight-blue": [
     {
       "url": "/catalog/controllers/dualsense-starlight-blue-showcase.jpg",
-      "altText": "dualsense starlight blue product showcase",
+      "altText": "dualsense starlight blue retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3323,7 +3323,7 @@
   "dualsense-galactic-purple": [
     {
       "url": "/catalog/controllers/dualsense-galactic-purple-showcase.jpg",
-      "altText": "dualsense galactic purple product showcase",
+      "altText": "dualsense galactic purple retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3346,7 +3346,7 @@
   "dualsense-nova-pink": [
     {
       "url": "/catalog/controllers/dualsense-nova-pink-showcase.jpg",
-      "altText": "dualsense nova pink product showcase",
+      "altText": "dualsense nova pink retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3369,7 +3369,7 @@
   "dualsense-volcanic-red": [
     {
       "url": "/catalog/controllers/dualsense-volcanic-red-showcase.jpg",
-      "altText": "dualsense volcanic red product showcase",
+      "altText": "dualsense volcanic red retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3392,7 +3392,7 @@
   "dualsense-cobalt-blue": [
     {
       "url": "/catalog/controllers/dualsense-cobalt-blue-showcase.jpg",
-      "altText": "dualsense cobalt blue product showcase",
+      "altText": "dualsense cobalt blue retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3415,7 +3415,7 @@
   "dualsense-sterling-silver": [
     {
       "url": "/catalog/controllers/dualsense-sterling-silver-showcase.jpg",
-      "altText": "dualsense sterling silver product showcase",
+      "altText": "dualsense sterling silver retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3438,7 +3438,7 @@
   "dualsense-chroma-teal": [
     {
       "url": "/catalog/controllers/dualsense-chroma-teal-showcase.jpg",
-      "altText": "dualsense chroma teal product showcase",
+      "altText": "dualsense chroma teal retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3461,7 +3461,7 @@
   "dualsense-chroma-indigo": [
     {
       "url": "/catalog/controllers/dualsense-chroma-indigo-showcase.jpg",
-      "altText": "dualsense chroma indigo product showcase",
+      "altText": "dualsense chroma indigo retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3484,7 +3484,7 @@
   "dualshock4-black": [
     {
       "url": "/catalog/controllers/dualshock4-black-showcase.jpg",
-      "altText": "dualshock4 black product showcase",
+      "altText": "dualshock4 black retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3514,7 +3514,7 @@
   "dualshock4-white": [
     {
       "url": "/catalog/controllers/dualshock4-white-showcase.jpg",
-      "altText": "dualshock4 white product showcase",
+      "altText": "dualshock4 white retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3544,7 +3544,7 @@
   "dualshock4-red": [
     {
       "url": "/catalog/controllers/dualshock4-red-showcase.jpg",
-      "altText": "dualshock4 red product showcase",
+      "altText": "dualshock4 red retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3574,7 +3574,7 @@
   "switch2-joycon-blue-red": [
     {
       "url": "/catalog/controllers/switch2-joycon-blue-red-showcase.jpg",
-      "altText": "switch2 joycon blue red product showcase",
+      "altText": "switch2 joycon blue red retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3604,7 +3604,7 @@
   "switch2-joycon-black": [
     {
       "url": "/catalog/controllers/switch2-joycon-black-showcase.jpg",
-      "altText": "switch2 joycon black product showcase",
+      "altText": "switch2 joycon black retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3634,7 +3634,7 @@
   "switch2-joycon-white": [
     {
       "url": "/catalog/controllers/switch2-joycon-white-showcase.jpg",
-      "altText": "switch2 joycon white product showcase",
+      "altText": "switch2 joycon white retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3664,7 +3664,7 @@
   "switch2-joycon-other-official-colours": [
     {
       "url": "/catalog/controllers/switch2-joycon-other-official-colours-showcase.jpg",
-      "altText": "switch2 joycon other official colours product showcase",
+      "altText": "switch2 joycon other official colours retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3784,7 +3784,7 @@
   "ps2-game-spider-man-2-2004": [
     {
       "url": "/catalog/games/ps2-game-spider-man-2-2004/ps2-game-spider-man-2-2004-showcase.jpg",
-      "altText": "ps2 game spider man 2 2004 product showcase",
+      "altText": "ps2 game spider man 2 2004 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3814,7 +3814,7 @@
   "switch-game-the-legend-of-zelda-tears-of-the-kingdom": [
     {
       "url": "/catalog/games/switch-game-the-legend-of-zelda-tears-of-the-kingdom/switch-game-the-legend-of-zelda-tears-of-the-kingdom-showcase.jpg",
-      "altText": "switch game the legend of zelda tears of the kingdom product showcase",
+      "altText": "switch game the legend of zelda tears of the kingdom retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3837,7 +3837,7 @@
   "switch-game-the-legend-of-zelda-breath-of-the-wild": [
     {
       "url": "/catalog/games/switch-game-the-legend-of-zelda-breath-of-the-wild/switch-game-the-legend-of-zelda-breath-of-the-wild-showcase.jpg",
-      "altText": "switch game the legend of zelda breath of the wild product showcase",
+      "altText": "switch game the legend of zelda breath of the wild retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3867,7 +3867,7 @@
   "switch-game-mario-kart-8-deluxe": [
     {
       "url": "/catalog/games/switch-game-mario-kart-8-deluxe/switch-game-mario-kart-8-deluxe-showcase.jpg",
-      "altText": "switch game mario kart 8 deluxe product showcase",
+      "altText": "switch game mario kart 8 deluxe retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3897,7 +3897,7 @@
   "switch-game-super-mario-odyssey": [
     {
       "url": "/catalog/games/switch-game-super-mario-odyssey/switch-game-super-mario-odyssey-showcase.jpg",
-      "altText": "switch game super mario odyssey product showcase",
+      "altText": "switch game super mario odyssey retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3927,7 +3927,7 @@
   "switch-game-super-smash-bros-ultimate": [
     {
       "url": "/catalog/games/switch-game-super-smash-bros-ultimate/switch-game-super-smash-bros-ultimate-showcase.jpg",
-      "altText": "switch game super smash bros ultimate product showcase",
+      "altText": "switch game super smash bros ultimate retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3950,7 +3950,7 @@
   "switch-game-animal-crossing-new-horizons": [
     {
       "url": "/catalog/games/switch-game-animal-crossing-new-horizons/switch-game-animal-crossing-new-horizons-showcase.jpg",
-      "altText": "switch game animal crossing new horizons product showcase",
+      "altText": "switch game animal crossing new horizons retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -3973,7 +3973,7 @@
   "switch-game-pok-mon-scarlet": [
     {
       "url": "/catalog/games/switch-game-pok-mon-scarlet/switch-game-pok-mon-scarlet-showcase.jpg",
-      "altText": "switch game pok mon scarlet product showcase",
+      "altText": "switch game pok mon scarlet retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4003,7 +4003,7 @@
   "switch-game-pok-mon-violet": [
     {
       "url": "/catalog/games/switch-game-pok-mon-violet/switch-game-pok-mon-violet-showcase.jpg",
-      "altText": "switch game pok mon violet product showcase",
+      "altText": "switch game pok mon violet retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4033,7 +4033,7 @@
   "switch-game-nintendo-switch-sports": [
     {
       "url": "/catalog/games/switch-game-nintendo-switch-sports/switch-game-nintendo-switch-sports-showcase.jpg",
-      "altText": "switch game nintendo switch sports product showcase",
+      "altText": "switch game nintendo switch sports retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4063,7 +4063,7 @@
   "switch-game-luigi-s-mansion-3": [
     {
       "url": "/catalog/games/switch-game-luigi-s-mansion-3/switch-game-luigi-s-mansion-3-showcase.jpg",
-      "altText": "switch game luigi s mansion 3 product showcase",
+      "altText": "switch game luigi s mansion 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4079,7 +4079,7 @@
   "switch-game-super-mario-party": [
     {
       "url": "/catalog/games/switch-game-super-mario-party/switch-game-super-mario-party-showcase.jpg",
-      "altText": "switch game super mario party product showcase",
+      "altText": "switch game super mario party retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4109,7 +4109,7 @@
   "switch-game-splatoon-3": [
     {
       "url": "/catalog/games/switch-game-splatoon-3/switch-game-splatoon-3-showcase.jpg",
-      "altText": "switch game splatoon 3 product showcase",
+      "altText": "switch game splatoon 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4139,7 +4139,7 @@
   "switch-game-metroid-dread": [
     {
       "url": "/catalog/games/switch-game-metroid-dread/switch-game-metroid-dread-showcase.jpg",
-      "altText": "switch game metroid dread product showcase",
+      "altText": "switch game metroid dread retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4169,7 +4169,7 @@
   "switch-game-fire-emblem-three-houses": [
     {
       "url": "/catalog/games/switch-game-fire-emblem-three-houses/switch-game-fire-emblem-three-houses-showcase.jpg",
-      "altText": "switch game fire emblem three houses product showcase",
+      "altText": "switch game fire emblem three houses retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4199,7 +4199,7 @@
   "switch-game-xenoblade-chronicles-3": [
     {
       "url": "/catalog/games/switch-game-xenoblade-chronicles-3/switch-game-xenoblade-chronicles-3-showcase.jpg",
-      "altText": "switch game xenoblade chronicles 3 product showcase",
+      "altText": "switch game xenoblade chronicles 3 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4229,7 +4229,7 @@
   "switch2-game-mario-kart-world": [
     {
       "url": "/catalog/games/switch2-game-mario-kart-world/switch2-game-mario-kart-world-showcase.jpg",
-      "altText": "switch2 game mario kart world product showcase",
+      "altText": "switch2 game mario kart world retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4252,7 +4252,7 @@
   "switch2-game-nintendo-switch-2-welcome-tour": [
     {
       "url": "/catalog/games/switch2-game-nintendo-switch-2-welcome-tour/switch2-game-nintendo-switch-2-welcome-tour-showcase.jpg",
-      "altText": "switch2 game nintendo switch 2 welcome tour product showcase",
+      "altText": "switch2 game nintendo switch 2 welcome tour retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4275,7 +4275,7 @@
   "switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition": [
     {
       "url": "/catalog/games/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition/switch2-game-kirby-and-the-forgotten-land-nintendo-switch-2-edition-showcase.jpg",
-      "altText": "switch2 game kirby and the forgotten land nintendo switch 2 edition product showcase",
+      "altText": "switch2 game kirby and the forgotten land nintendo switch 2 edition retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4305,7 +4305,7 @@
   "switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition": [
     {
       "url": "/catalog/games/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition/switch2-game-super-mario-party-jamboree-nintendo-switch-2-edition-showcase.jpg",
-      "altText": "switch2 game super mario party jamboree nintendo switch 2 edition product showcase",
+      "altText": "switch2 game super mario party jamboree nintendo switch 2 edition retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4328,7 +4328,7 @@
   "switch2-game-metroid-prime-4-beyond": [
     {
       "url": "/catalog/games/switch2-game-metroid-prime-4-beyond/switch2-game-metroid-prime-4-beyond-showcase.jpg",
-      "altText": "switch2 game metroid prime 4 beyond product showcase",
+      "altText": "switch2 game metroid prime 4 beyond retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4351,7 +4351,7 @@
   "switch2-game-donkey-kong-bananza": [
     {
       "url": "/catalog/games/switch2-game-donkey-kong-bananza/switch2-game-donkey-kong-bananza-showcase.jpg",
-      "altText": "switch2 game donkey kong bananza product showcase",
+      "altText": "switch2 game donkey kong bananza retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4374,7 +4374,7 @@
   "switch2-game-pok-mon-legends-z-a": [
     {
       "url": "/catalog/games/switch2-game-pok-mon-legends-z-a/switch2-game-pok-mon-legends-z-a-showcase.jpg",
-      "altText": "switch2 game pok mon legends z a product showcase",
+      "altText": "switch2 game pok mon legends z a retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4404,7 +4404,7 @@
   "switch2-game-mario-tennis-fever": [
     {
       "url": "/catalog/games/switch2-game-mario-tennis-fever/switch2-game-mario-tennis-fever-showcase.jpg",
-      "altText": "switch2 game mario tennis fever product showcase",
+      "altText": "switch2 game mario tennis fever retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4480,7 +4480,7 @@
   "ps5-game-ea-sports-fc-27": [
     {
       "url": "/catalog/games/ps5-game-ea-sports-fc-27/ps5-game-ea-sports-fc-27-showcase.jpg",
-      "altText": "ps5 game ea sports fc 27 product showcase",
+      "altText": "ps5 game ea sports fc 27 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4496,7 +4496,7 @@
   "ps5-game-grand-theft-auto-vi": [
     {
       "url": "/catalog/games/ps5-game-grand-theft-auto-vi/ps5-game-grand-theft-auto-vi-showcase.jpg",
-      "altText": "ps5 game grand theft auto vi product showcase",
+      "altText": "ps5 game grand theft auto vi retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4512,7 +4512,7 @@
   "xbox_series-game-grand-theft-auto-vi": [
     {
       "url": "/catalog/games/xbox_series-game-grand-theft-auto-vi/xbox_series-game-grand-theft-auto-vi-showcase.jpg",
-      "altText": "xbox_series game grand theft auto vi product showcase",
+      "altText": "xbox_series game grand theft auto vi retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null
@@ -4528,7 +4528,7 @@
   "xbox_series-game-ea-sports-fc-27": [
     {
       "url": "/catalog/games/xbox_series-game-ea-sports-fc-27/xbox_series-game-ea-sports-fc-27-showcase.jpg",
-      "altText": "xbox_series game ea sports fc 27 product showcase",
+      "altText": "xbox_series game ea sports fc 27 retail image",
       "isPrimary": true,
       "sortOrder": 0,
       "publicId": null

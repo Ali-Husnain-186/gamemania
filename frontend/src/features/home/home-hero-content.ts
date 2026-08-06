@@ -17,6 +17,8 @@ export type HomeHeroContent = {
   taglineDesktop: string;
   backgroundImageUrl: string;
   backgroundAlt: string;
+  /** Optional Cloudinary public id when uploaded from admin */
+  backgroundPublicId?: string;
   slides: HeroSlide[];
 };
 
@@ -66,6 +68,10 @@ export function normalizeHomeHero(raw: unknown): HomeHeroContent {
     taglineDesktop: String(o.taglineDesktop ?? DEFAULT_HOME_HERO.taglineDesktop),
     backgroundImageUrl: String(o.backgroundImageUrl ?? DEFAULT_HOME_HERO.backgroundImageUrl),
     backgroundAlt: String(o.backgroundAlt ?? DEFAULT_HOME_HERO.backgroundAlt),
+    backgroundPublicId:
+      typeof o.backgroundPublicId === 'string' && o.backgroundPublicId.trim()
+        ? o.backgroundPublicId.trim()
+        : undefined,
     slides: slides.length ? slides : [...DEFAULT_HOME_HERO.slides],
   };
 }

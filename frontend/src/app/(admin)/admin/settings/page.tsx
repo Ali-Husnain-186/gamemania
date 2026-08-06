@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
+import { ImagePlus, Loader2, X } from 'lucide-react';
 import { apiGet, apiPatch, ApiError } from '@/lib/api';
+import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { PageHeader, Panel } from '@/features/admin/components/page-shell';
 import {
   DEFAULT_HOME_HERO,
@@ -38,6 +40,7 @@ export default function SettingsPage() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [hero, setHero] = useState<HomeHeroContent>(DEFAULT_HOME_HERO);
+  const [heroUploading, setHeroUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -135,6 +138,36 @@ export default function SettingsPage() {
     setHero((h) => ({ ...h, [key]: value }));
   }
 
+  async function onHeroImagePick(file?: File | null) {
+    if (!file) return;
+    setHeroUploading(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const uploaded = await uploadProductImage(file);
+      setHero((h) => ({
+        ...h,
+        backgroundImageUrl: uploaded.url,
+        backgroundPublicId: uploaded.publicId,
+      }));
+      setMessage('Hero image uploaded — click Save homepage hero to publish.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Hero image upload failed');
+    } finally {
+      setHeroUploading(false);
+    }
+  }
+
+  function clearHeroImage() {
+    setHero((h) => ({
+      ...h,
+      backgroundImageUrl: DEFAULT_HOME_HERO.backgroundImageUrl,
+      backgroundPublicId: undefined,
+    }));
+  }
+
+  const heroPreview = hero.backgroundImageUrl || DEFAULT_HOME_HERO.backgroundImageUrl;
+
   return (
     <>
       <PageHeader
@@ -178,6 +211,54 @@ export default function SettingsPage() {
             </span>
           </div>
 
+          <div>
+            <p className="mb-2 text-xs text-[var(--admin-muted)]">Hero background image</p>
+            <div className="max-w-xl rounded-md border border-[var(--admin-border)] bg-black/20 p-3">
+              <div className="relative overflow-hidden rounded-md border border-[var(--admin-border)]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={heroPreview}
+                  alt={hero.backgroundAlt || 'Hero background preview'}
+                  className="aspect-[21/9] w-full object-cover"
+                />
+                {heroUploading ? (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/55">
+                    <Loader2 className="h-8 w-8 animate-spin text-[var(--admin-accent)]" />
+                  </div>
+                ) : null}
+              </div>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-[var(--admin-accent)] px-3 py-2 text-xs font-semibold text-black">
+                  <ImagePlus className="h-3.5 w-3.5" aria-hidden />
+                  {heroUploading ? 'Uploading…' : 'Change image'}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="sr-only"
+                    disabled={heroUploading || pending}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      void onHeroImagePick(file);
+                    }}
+                  />
+                </label>
+                <button
+                  type="button"
+                  disabled={heroUploading || pending}
+                  onClick={clearHeroImage}
+                  className="inline-flex items-center gap-1 rounded-md border border-[var(--admin-border)] px-3 py-2 text-xs text-[var(--admin-muted)]"
+                >
+                  <X className="h-3.5 w-3.5" aria-hidden />
+                  Reset to default
+                </button>
+              </div>
+              <p className="mt-2 text-[10px] text-[var(--admin-muted)]">
+                Uploads to Cloudinary (same as products). Remember to click Save homepage hero.
+              </p>
+            </div>
+          </div>
+
           <div className="grid gap-3 md:grid-cols-2">
             <label className="text-xs text-[var(--admin-muted)]">
               Eyebrow (above title)
@@ -188,12 +269,11 @@ export default function SettingsPage() {
               />
             </label>
             <label className="text-xs text-[var(--admin-muted)]">
-              Background image URL
+              Background image alt text
               <input
                 className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm text-white"
-                placeholder="/brand/hero-main.jpg"
-                value={hero.backgroundImageUrl}
-                onChange={(e) => setHeroField('backgroundImageUrl', e.target.value)}
+                value={hero.backgroundAlt}
+                onChange={(e) => setHeroField('backgroundAlt', e.target.value)}
               />
             </label>
             <label className="text-xs text-[var(--admin-muted)]">
@@ -243,14 +323,6 @@ export default function SettingsPage() {
                 className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm text-white"
                 value={hero.taglineDesktop}
                 onChange={(e) => setHeroField('taglineDesktop', e.target.value)}
-              />
-            </label>
-            <label className="text-xs text-[var(--admin-muted)] md:col-span-2">
-              Background image alt text
-              <input
-                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm text-white"
-                value={hero.backgroundAlt}
-                onChange={(e) => setHeroField('backgroundAlt', e.target.value)}
               />
             </label>
           </div>
@@ -325,7 +397,7 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              disabled={pending}
+              disabled={pending || heroUploading}
               onClick={saveHero}
               className="rounded-md bg-[var(--admin-accent)] px-3 py-2 text-sm font-medium text-black disabled:opacity-50"
             >
@@ -333,7 +405,7 @@ export default function SettingsPage() {
             </button>
             <button
               type="button"
-              disabled={pending}
+              disabled={pending || heroUploading}
               onClick={() => setHero(DEFAULT_HOME_HERO)}
               className="rounded-md border border-[var(--admin-border)] px-3 py-2 text-sm"
             >

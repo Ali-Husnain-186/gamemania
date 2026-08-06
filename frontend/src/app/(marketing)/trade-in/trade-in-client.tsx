@@ -229,7 +229,7 @@ export function TradeInClient() {
               className="absolute inset-0 -z-10 scale-110 rounded-full bg-[var(--gm-cyan)]/30 blur-3xl"
             />
             <Image
-              src="/brand/game-mania-logo-tab.png"
+              src="/brand/game-mania-logo-nav.png"
               alt="GameMania"
               width={320}
               height={320}

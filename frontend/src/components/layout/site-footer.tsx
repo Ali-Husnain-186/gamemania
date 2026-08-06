@@ -90,7 +90,7 @@ export function SiteFooter() {
         <div>
           <Link href="/" className="inline-flex items-center gap-3 gm-focus rounded-sm">
             <Image
-              src="/brand/game-mania-logo.png"
+              src="/brand/game-mania-logo-nav.png"
               alt="GameMania UK"
               width={56}
               height={56}

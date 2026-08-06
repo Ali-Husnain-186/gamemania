@@ -78,7 +78,7 @@ export function SiteHeader() {
           aria-label="GameMania UK home"
         >
           <Image
-            src="/brand/game-mania-logo.png"
+            src="/brand/game-mania-logo-nav.png"
             alt=""
             width={96}
             height={96}

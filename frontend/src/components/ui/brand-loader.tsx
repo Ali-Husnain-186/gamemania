@@ -49,7 +49,7 @@ export function BrandLoader({
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="gm-loader-logo relative overflow-hidden rounded-full border-2 border-[var(--gm-cyan)]/50 bg-black shadow-[0_0_28px_rgba(1,166,194,0.35)]">
             <Image
-              src="/brand/game-mania-logo.png"
+              src="/brand/game-mania-logo-nav.png"
               alt=""
               width={s.logo}
               height={s.logo}

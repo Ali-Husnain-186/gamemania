@@ -88,9 +88,10 @@ export const metadata: Metadata = {
     images: [DEFAULT_OG_IMAGE],
   },
   icons: {
-    icon: [{ url: '/brand/game-mania-logo.png', type: 'image/png' }],
-    shortcut: '/brand/game-mania-logo.png',
-    apple: '/brand/game-mania-logo.png',
+    // Tab favicon: previous logo (fits browser tab better than the new wide art)
+    icon: [{ url: '/brand/game-mania-logo-tab.png', type: 'image/png' }],
+    shortcut: '/brand/game-mania-logo-tab.png',
+    apple: '/brand/game-mania-logo-tab.png',
   },
   other: {
     'geo.region': 'GB',

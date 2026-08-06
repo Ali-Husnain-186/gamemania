@@ -82,7 +82,7 @@ function defaultCategory(product: Product): string {
 }
 
 function defaultConditionLabel(product: Product): string | null {
-  if (product.isPreorder) return null;
+  if (product.isPreorder && product.condition === 'NEW') return null;
   if (!showsConditionVariant(product.name)) return null;
   if (!product.condition || product.condition === 'NEW') return 'New';
   if (product.condition === 'PRE_OWNED_EXCELLENT') return 'A · Excellent';
@@ -210,7 +210,7 @@ export function ProductRetailCard({
 
           {/* Top-left badges */}
           <div className="pointer-events-none absolute left-2 top-2 z-[1] flex max-w-[70%] flex-col gap-1">
-            {product.isPreorder ? (
+            {product.isPreorder && product.condition === 'NEW' ? (
               <span className="w-fit rounded-full bg-[var(--gm-magenta)] px-2 py-1 text-[9px] font-extrabold uppercase tracking-wide text-white sm:text-[10px]">
                 Pre-order
               </span>

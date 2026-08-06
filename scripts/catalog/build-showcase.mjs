@@ -186,17 +186,33 @@ function headerSvg(platform, w, h) {
 }
 
 /**
- * Front-face retail case matching user refs:
- * thin plastic rim + insert header + cover art (full width under header).
+ * Front-face retail case using official top bars from frontend/public/images
+ * (ps5-top, ps4-top, ps3-top, playstaion2-top, XBOX-sereis-top).
  */
+async function platformTopBar(platform) {
+  const file =
+    platform === 'PS5'
+      ? 'ps5-top.png'
+      : platform === 'PS4'
+        ? 'ps4-top.png'
+        : platform === 'PS3'
+          ? 'ps3-top.png'
+          : platform === 'PS2'
+            ? 'playstaion2-top.png'
+            : platform === 'XBOX'
+              ? 'XBOX-sereis-top.png'
+              : null;
+  if (!file) return null;
+  const abs = path.join(PUBLIC, 'images', file);
+  return fs.existsSync(abs) ? abs : null;
+}
+
 async function buildRetailFace(coverPath, platform, outPath) {
-  // Case proportions similar to standard UK game faces
   const caseW = 620;
   const caseH = 880;
   const left = Math.round((SIZE - caseW) / 2);
   const top = Math.round((SIZE - caseH) / 2);
 
-  // Rim width by platform (matches refs)
   let rim = 14;
   let rimColor = '#1a56c4';
   let rimDeep = '#0b2f78';
@@ -225,7 +241,6 @@ async function buildRetailFace(coverPath, platform, outPath) {
       break;
     case 'PS2':
       rim = 18;
-      // Bright cobalt blue PAL PS2 plastic
       rimColor = '#0072ce';
       rimDeep = '#004a8c';
       headerH = 72;
@@ -254,6 +269,25 @@ async function buildRetailFace(coverPath, platform, outPath) {
   const faceY = top + rim;
   const faceW = caseW - rim * 2;
   const faceH = caseH - rim * 2;
+
+  // Prefer client-supplied official top bar PNGs
+  const topPath = await platformTopBar(platform);
+  let headerBuf = null;
+  if (topPath) {
+    const meta = await sharp(topPath).metadata();
+    const srcW = meta.width || 1200;
+    const srcH = meta.height || 120;
+    headerH = Math.max(56, Math.round(faceW * (srcH / srcW)));
+    headerBuf = await sharp(topPath)
+      .resize(faceW, headerH, { fit: 'fill' })
+      .png()
+      .toBuffer();
+    // Official bars already include accents (e.g. PS3 red rule)
+    redRule = 0;
+  } else {
+    headerBuf = headerSvg(platform, faceW, headerH);
+  }
+
   const artH = faceH - headerH - redRule;
   const artW = faceW;
 
@@ -262,10 +296,8 @@ async function buildRetailFace(coverPath, platform, outPath) {
     .jpeg({ quality: 96 })
     .toBuffer();
 
-  const header = headerSvg(platform, faceW, headerH);
-
   const layers = [
-    { input: header, left: faceX, top: faceY },
+    { input: headerBuf, left: faceX, top: faceY },
     { input: cover, left: faceX, top: faceY + headerH + redRule },
   ];
 
@@ -277,8 +309,7 @@ async function buildRetailFace(coverPath, platform, outPath) {
     layers.splice(1, 0, { input: rule, left: faceX, top: faceY + headerH });
   }
 
-  // PS2 PAL plate under logo (top-right of art) — ref EyeToy style
-  if (platform === 'PS2') {
+  if (platform === 'PS2' && !topPath) {
     const pal = Buffer.from(`
 <svg width="${faceW}" height="${artH}" xmlns="http://www.w3.org/2000/svg">
   <rect x="${faceW - 56}" y="10" width="46" height="24" fill="#fff"/>
@@ -288,7 +319,6 @@ async function buildRetailFace(coverPath, platform, outPath) {
     layers.push({ input: pal, left: faceX, top: faceY + headerH + redRule });
   }
 
-  // Soft plastic sheen on left/right rim only (not over art)
   const shell = Buffer.from(`
 <svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
   <defs>
@@ -309,9 +339,7 @@ async function buildRetailFace(coverPath, platform, outPath) {
   <rect width="100%" height="100%" fill="#f0f1f3"/>
   <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="4" ry="4"
     fill="url(#rimG)" filter="url(#drop)"/>
-  <!-- face plate (art lands on top) -->
   <rect x="${faceX}" y="${faceY}" width="${faceW}" height="${faceH}" fill="#0a0a0a"/>
-  <!-- rim sheen (left/top edge of plastic frame) -->
   <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="4" fill="url(#shine)"/>
   <rect x="${faceX}" y="${faceY}" width="${faceW}" height="${faceH}" fill="#0a0a0a"/>
 </svg>`);

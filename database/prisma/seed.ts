@@ -454,7 +454,7 @@ async function main() {
           status: ProductStatus.ACTIVE,
           deletedAt: null,
           isFeatured: Boolean(item.isFeatured),
-          isPreorder: Boolean(item.isPreorder),
+          isPreorder: Boolean(item.isPreorder) && condition === ProductCondition.NEW,
           tradeInCashPence: item.tradeInCashPence,
           tradeInCreditPence: item.tradeInCreditPence,
           inventory: {
@@ -491,7 +491,7 @@ async function main() {
           condition,
           status: ProductStatus.ACTIVE,
           isFeatured: Boolean(item.isFeatured),
-          isPreorder: Boolean(item.isPreorder),
+          isPreorder: Boolean(item.isPreorder) && condition === ProductCondition.NEW,
           tradeInCashPence: item.tradeInCashPence,
           tradeInCreditPence: item.tradeInCreditPence,
           inventory: { create: { quantity: item.quantity, reserved: 0, lowStockThreshold: 2 } },
@@ -510,6 +510,15 @@ async function main() {
     catalogUpserts += 1;
   }
   console.log(`Catalog products upserted: ${catalogUpserts}`);
+
+  // Safety: never show Pre-order on Used / pre-owned listings
+  const clearedPreorder = await prisma.product.updateMany({
+    where: { isPreorder: true, condition: { not: ProductCondition.NEW } },
+    data: { isPreorder: false },
+  });
+  if (clearedPreorder.count) {
+    console.log(`Cleared isPreorder on ${clearedPreorder.count} used products`);
+  }
 
   // Soft-remove GM catalog SKUs that are no longer in catalog-data (wrong New/Used pairs, etc.)
   const keepSkus = new Set(catalogProducts.map((p) => p.sku));

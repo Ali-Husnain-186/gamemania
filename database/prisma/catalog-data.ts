@@ -90,7 +90,8 @@ function expandFamily(f: Family): CatalogProductDef[] {
       imageKey: f.key,
       quantity: qty,
       isFeatured: Boolean(f.featured) && (condition === 'NEW' || f.usedOnly),
-      isPreorder: Boolean(f.isPreorder),
+      // Pre-order is sell-side New only — never show on Used / pre-owned twins
+      isPreorder: Boolean(f.isPreorder) && condition === 'NEW',
     };
   };
 
@@ -114,8 +115,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'PS5 Slim disc edition console.',
     newPrice: 44999,
     usedPrice: 34999,
-    tradeInCash: 22000,
-    tradeInCredit: 25000,
+    tradeInCash: 26500,
+    tradeInCredit: 29500,
     featured: true,
   },
   {
@@ -127,8 +128,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'PS5 Slim digital edition console.',
     newPrice: 38999,
     usedPrice: 29999,
-    tradeInCash: 18000,
-    tradeInCredit: 21000,
+    tradeInCash: 22000,
+    tradeInCredit: 25000,
   },
   {
     key: 'ps5-original-disc',
@@ -139,8 +140,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'Original PS5 disc (fat) model.',
     newPrice: 42999,
     usedPrice: 31999,
-    tradeInCash: 20000,
-    tradeInCredit: 23000,
+    tradeInCash: 24000,
+    tradeInCredit: 27000,
   },
   {
     key: 'ps5-original-digital',
@@ -151,8 +152,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'Original PS5 digital (fat) model.',
     newPrice: 36999,
     usedPrice: 27999,
-    tradeInCash: 16000,
-    tradeInCredit: 19000,
+    tradeInCash: 20000,
+    tradeInCredit: 23000,
   },
   {
     key: 'ps4-console',
@@ -163,8 +164,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'PlayStation 4 console.',
     newPrice: 19999,
     usedPrice: 12999,
-    tradeInCash: 6000,
-    tradeInCredit: 7500,
+    tradeInCash: 7500,
+    tradeInCredit: 9000,
   },
   {
     key: 'ps3-console',
@@ -175,8 +176,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'PlayStation 3 console (pre-owned).',
     newPrice: 12999,
     usedPrice: 6999,
-    tradeInCash: 2500,
-    tradeInCredit: 3200,
+    tradeInCash: 3200,
+    tradeInCredit: 4000,
     usedOnly: true,
   },
   {
@@ -201,8 +202,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'Xbox Series X console.',
     newPrice: 44999,
     usedPrice: 33999,
-    tradeInCash: 21000,
-    tradeInCredit: 24000,
+    tradeInCash: 25000,
+    tradeInCredit: 28000,
     featured: true,
   },
   {
@@ -214,8 +215,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'Xbox Series S console.',
     newPrice: 24999,
     usedPrice: 17999,
-    tradeInCash: 10000,
-    tradeInCredit: 12000,
+    tradeInCash: 12000,
+    tradeInCredit: 14500,
   },
   {
     key: 'switch-oled',
@@ -226,8 +227,8 @@ const CONSOLES: Family[] = [
     shortDescription: 'Nintendo Switch OLED console.',
     newPrice: 30999,
     usedPrice: 22999,
-    tradeInCash: 14000,
-    tradeInCredit: 16500,
+    tradeInCash: 16500,
+    tradeInCredit: 19000,
     featured: true,
   },
   {
@@ -287,8 +288,9 @@ function gameFamily(
     shortDescription: `${name} for ${platform.replace('_', ' ')}.`,
     newPrice,
     usedPrice,
-    tradeInCash: Math.round(usedPrice * 0.35),
-    tradeInCredit: Math.round(usedPrice * 0.42),
+    // Closer to typical UK high-street buyback bands (not a live CeX scrape)
+    tradeInCash: Math.round(usedPrice * 0.48),
+    tradeInCredit: Math.round(usedPrice * 0.58),
     usedOnly: opts?.usedOnly,
     bothConditions: opts?.newOnly ? false : undefined,
     featured: opts?.featured,

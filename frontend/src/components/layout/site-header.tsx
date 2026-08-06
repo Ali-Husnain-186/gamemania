@@ -8,6 +8,7 @@ import {
   Heart,
   Home,
   LogIn,
+  Mail,
   Menu,
   Moon,
   RefreshCcw,
@@ -30,6 +31,7 @@ const nav = [
   { href: '/trade-in', label: 'Trade-In', icon: RefreshCcw },
   { href: '/wishlist', label: 'Wishlist', icon: Heart },
   { href: '/account', label: 'Account', icon: User },
+  { href: '/contact', label: 'Contact', icon: Mail },
 ];
 
 export function SiteHeader() {
@@ -71,7 +73,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-50 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-2.5 sm:h-[4.5rem] sm:gap-3 sm:px-4 md:px-6">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-2.5 sm:h-[5rem] sm:gap-3 sm:px-4 md:px-6">
         <Link
           href="/"
           className="flex min-w-0 shrink items-center gap-1.5 rounded-sm gm-focus sm:gap-2.5"
@@ -80,14 +82,14 @@ export function SiteHeader() {
           <Image
             src="/brand/game-mania-logo.png"
             alt=""
-            width={72}
-            height={72}
-            className="h-11 w-11 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-[3.75rem] sm:w-[3.75rem] md:h-[4.25rem] md:w-[4.25rem]"
+            width={96}
+            height={96}
+            className="h-14 w-14 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-[4.75rem] sm:w-[4.75rem] md:h-[5.25rem] md:w-[5.25rem]"
             priority
           />
           <BrandWordmark
             showUk
-            className="hidden whitespace-nowrap text-[1.05rem] [text-shadow:0_1px_0_#000] md:inline md:text-[1.45rem] lg:text-[1.7rem]"
+            className="hidden whitespace-nowrap text-[1.15rem] [text-shadow:0_1px_0_#000] md:inline md:text-[1.55rem] lg:text-[1.85rem]"
             gameClassName="[text-shadow:0_1px_0_#000]"
             maniaClassName="[text-shadow:0_1px_0_#000]"
             ukClassName="[text-shadow:0_1px_0_#000]"

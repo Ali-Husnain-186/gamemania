@@ -219,7 +219,7 @@ export function ProductDetailClient() {
             </div>
           ) : null}
 
-          {product.isPreorder ? (
+          {product.isPreorder && product.condition === 'NEW' ? (
             <p className="mt-2 inline-flex rounded bg-[var(--gm-magenta)] px-2 py-0.5 text-[10px] font-extrabold uppercase text-white">
               Pre-order
             </p>
@@ -236,9 +236,53 @@ export function ProductDetailClient() {
           <p className="mt-4 text-[var(--gm-muted)]">
             {product.shortDescription ?? product.description ?? 'Premium gaming product.'}
           </p>
-          <p className="mt-3 text-xs text-[var(--gm-muted)]">
-            Includes a 3-month warranty on all products.
-          </p>
+
+          {/* Trust details — Condition / Included / Warranty / Dispatch */}
+          <dl className="mt-5 grid gap-3 rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] p-4 text-sm sm:grid-cols-2">
+            <div>
+              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                Condition
+              </dt>
+              <dd className="mt-1 font-semibold text-[var(--gm-fg)]">
+                {product.condition === 'NEW' ? 'Brand new · Boxed' : 'Pre-owned · Unboxed / tested'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                What’s included
+              </dt>
+              <dd className="mt-1 font-semibold text-[var(--gm-fg)]">
+                {product.condition === 'NEW'
+                  ? 'Original packaging where supplied by manufacturer'
+                  : 'Console/item as listed · necessary cables where stated in description'}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                Warranty
+              </dt>
+              <dd className="mt-1 font-semibold text-[var(--gm-fg)]">3 months on all products</dd>
+            </div>
+            <div>
+              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                Dispatch time
+              </dt>
+              <dd className="mt-1 font-semibold text-[var(--gm-fg)]">
+                {product.isPreorder && product.condition === 'NEW'
+                  ? 'Ships on/after release date'
+                  : '1–2 working days'}
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                Real photos
+              </dt>
+              <dd className="mt-1 text-[var(--gm-muted)]">
+                Gallery images show this product (or matching retail stock). Add more detail anytime
+                in Admin → Products description (e.g. “boxed”, “unboxed”, accessories).
+              </dd>
+            </div>
+          </dl>
 
           <div className="mt-8 flex flex-wrap gap-3">
             <button

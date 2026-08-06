@@ -62,11 +62,12 @@ export function FeaturedCategories() {
                 />
               </div>
 
-              <div className="flex min-h-[4.5rem] flex-col justify-center gap-2 border-t border-[var(--gm-cyan)]/15 px-4 py-3 sm:min-h-[5rem] sm:px-5">
-                <h3 className="gm-display text-base leading-tight text-[var(--gm-yellow)] sm:text-xl">
+              {/* Title + Explore below image so Explore never covers card text */}
+              <div className="flex flex-col gap-2.5 border-t border-[var(--gm-cyan)]/15 px-4 py-4 sm:px-5">
+                <h3 className="gm-display text-base leading-snug text-[var(--gm-yellow)] sm:text-xl">
                   {card.title}
                 </h3>
-                <span className="w-fit rounded-full bg-[var(--gm-cyan)] px-3 py-1 text-[10px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
+                <span className="w-fit rounded-full bg-[var(--gm-cyan)] px-3 py-1.5 text-[10px] font-extrabold text-black transition group-hover:bg-[var(--gm-yellow)] sm:text-xs">
                   Explore
                 </span>
               </div>

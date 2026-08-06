@@ -78,11 +78,11 @@ export function SiteHeader() {
           aria-label="GameMania UK home"
         >
           <Image
-            src="/brand/game-mania-logo-nav.png"
+            src="/brand/game-mania-logo-tab.png"
             alt=""
-            width={120}
-            height={120}
-            className="my-1.5 h-12 w-auto max-w-[4.5rem] shrink-0 object-contain sm:my-2 sm:h-[4.5rem] sm:max-w-[5.5rem] md:h-[5rem] md:max-w-[6rem]"
+            width={96}
+            height={96}
+            className="my-1.5 h-12 w-12 shrink-0 object-contain sm:my-2 sm:h-[4.25rem] sm:w-[4.25rem] md:h-[4.75rem] md:w-[4.75rem]"
             priority
           />
           <BrandWordmark

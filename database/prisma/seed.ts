@@ -290,6 +290,34 @@ async function main() {
     create: { key: 'loyalty.points_per_pound', value: 1, group: 'loyalty' },
   });
 
+  // Homepage hero (editable in Admin → Settings). Preserve existing admin edits on re-seed.
+  const existingHero = await prisma.setting.findUnique({ where: { key: 'home.hero' } });
+  if (!existingHero) {
+    await prisma.setting.create({
+      data: {
+        key: 'home.hero',
+        group: 'home',
+        value: {
+          eyebrow: 'Built by Gamers, For Gamers',
+          titleLine1: 'Trade. Play.',
+          titleLine2: 'Repeat.',
+          subtitle:
+            "UK's trade-in gaming store — sell your kit for cash or store credit, then shop new & pre-owned games the same day.",
+          subtitleHighlight: 'sell your kit for cash or store credit',
+          taglineMobile: 'Games • Consoles • Trade In',
+          taglineDesktop: 'Games • Consoles • Accessories • Trade In',
+          backgroundImageUrl: '/brand/hero-main.jpg',
+          backgroundAlt: 'GameMania UK gaming setup',
+          slides: [
+            { label: 'Video Games', href: '/shop?category=video-games', cta: 'Shop Video Games' },
+            { label: 'Consoles', href: '/shop?category=game-consoles', cta: 'Shop Consoles' },
+            { label: 'Accessories', href: '/shop?category=accessories', cta: 'Shop accessories' },
+            { label: 'Trade-ins', href: '/trade-in', cta: 'Get a trade-in quote' },
+          ],
+        },
+      },
+    });
+  }
   // Featured storefront categories
   const categoryDefs = [
     {

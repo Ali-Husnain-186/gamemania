@@ -41,7 +41,6 @@ export function SiteHeader() {
   const { isAuthenticated, status, logout } = useAuth();
   const itemCount = useCartStore((s) => s.itemCount());
   const [open, setOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [mounted, setMounted] = useState(false);
 
@@ -51,7 +50,6 @@ export function SiteHeader() {
 
   useEffect(() => {
     setOpen(false);
-    setSearchOpen(false);
   }, [pathname]);
 
   const isDark = !mounted || resolvedTheme !== 'light';
@@ -67,16 +65,16 @@ export function SiteHeader() {
     e.preventDefault();
     const q = query.trim();
     router.push(q ? `/shop?q=${encodeURIComponent(q)}` : '/shop');
-    setSearchOpen(false);
     setOpen(false);
   }
 
   return (
     <header className="sticky top-0 z-50 bg-[#01A6C2] shadow-[0_4px_18px_rgba(1,166,194,0.35)]">
+      {/* Main nav row — no search here */}
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-2.5 sm:h-[5rem] sm:gap-3 sm:px-4 md:px-6">
         <Link
           href="/"
-          className="flex min-w-0 shrink items-center gap-1.5 rounded-sm gm-focus sm:gap-2.5"
+          className="flex min-w-0 shrink items-center gap-1.5 gm-focus sm:gap-2.5"
           aria-label="GameMania UK home"
         >
           <Image
@@ -84,7 +82,7 @@ export function SiteHeader() {
             alt=""
             width={96}
             height={96}
-            className="h-14 w-14 shrink-0 rounded-full border-0 object-cover outline-none ring-0 sm:h-[4.75rem] sm:w-[4.75rem] md:h-[5.25rem] md:w-[5.25rem]"
+            className="h-14 w-14 shrink-0 object-contain sm:h-[4.75rem] sm:w-[4.75rem] md:h-[5.25rem] md:w-[5.25rem]"
             priority
           />
           <BrandWordmark
@@ -95,31 +93,6 @@ export function SiteHeader() {
             ukClassName="[text-shadow:0_1px_0_#000]"
           />
         </Link>
-
-        <form
-          onSubmit={onSearch}
-          className="mx-2 hidden min-w-0 flex-1 items-center gap-1.5 md:flex lg:mx-4"
-          role="search"
-        >
-          <label className="sr-only" htmlFor="header-search">
-            Search
-          </label>
-          <input
-            id="header-search"
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search games, consoles…"
-            className="min-h-9 w-full min-w-0 rounded-full border-2 border-white/45 bg-black/15 px-3.5 py-1.5 text-sm text-white placeholder:text-white/65 focus:border-white focus:outline-none"
-          />
-          <button
-            type="submit"
-            className="inline-flex h-9 shrink-0 items-center gap-1 rounded-full bg-[var(--gm-yellow)] px-3 text-xs font-extrabold text-black"
-          >
-            <Search className="h-3.5 w-3.5" aria-hidden />
-            Search
-          </button>
-        </form>
 
         <nav className="ml-auto hidden items-center gap-4 xl:flex xl:gap-5" aria-label="Primary">
           {nav
@@ -142,16 +115,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 xl:ml-0">
-          <button
-            type="button"
-            onClick={() => setSearchOpen((v) => !v)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-white/45 text-white transition hover:border-white hover:bg-white/10 md:hidden sm:h-9 sm:w-9 gm-focus"
-            aria-label="Search"
-            aria-expanded={searchOpen}
-          >
-            <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
-          </button>
-
           <button
             type="button"
             onClick={() => setTheme(isDark ? 'light' : 'dark')}
@@ -228,26 +191,33 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {searchOpen ? (
-        <div className="border-t-2 border-white/20 bg-[#01A6C2] px-3 py-3 md:hidden sm:px-4">
-          <form onSubmit={onSearch} className="mx-auto flex max-w-6xl gap-2">
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search games, consoles, accessories…"
-              className="min-w-0 flex-1 rounded-lg border-2 border-white/40 bg-black/20 px-3 py-2 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="shrink-0 rounded-lg bg-[var(--gm-yellow)] px-4 py-2 text-sm font-bold text-black"
-            >
-              Search
-            </button>
-          </form>
-        </div>
-      ) : null}
+      {/* Search strip — always directly under the navbar */}
+      <div className="border-t border-white/25 bg-[#0196b0] px-3 py-2.5 sm:px-4 sm:py-3">
+        <form
+          onSubmit={onSearch}
+          className="mx-auto flex max-w-6xl items-center gap-2"
+          role="search"
+        >
+          <label className="sr-only" htmlFor="header-search">
+            Search
+          </label>
+          <input
+            id="header-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search games, consoles, accessories…"
+            className="min-h-10 min-w-0 flex-1 rounded-lg border-2 border-white/40 bg-black/20 px-3.5 py-2 text-sm text-white placeholder:text-white/65 focus:border-white focus:outline-none"
+          />
+          <button
+            type="submit"
+            className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg bg-[var(--gm-yellow)] px-4 text-sm font-extrabold text-black"
+          >
+            <Search className="h-4 w-4" aria-hidden />
+            Search
+          </button>
+        </form>
+      </div>
 
       {open ? (
         <nav

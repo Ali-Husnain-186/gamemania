@@ -213,56 +213,29 @@ async function buildRetailFace(coverPath, platform, outPath) {
   const left = Math.round((SIZE - caseW) / 2);
   const top = Math.round((SIZE - caseH) / 2);
 
-  let rim = 14;
-  let rimColor = '#1a56c4';
-  let rimDeep = '#0b2f78';
+  // Official top PNGs already include the plastic edge line — do NOT add a second rim.
+  const topPath = await platformTopBar(platform);
+
   let headerH = 92;
   let redRule = 0;
+  let rim = 0;
+  let rimColor = '#333';
+  let rimDeep = '#111';
 
-  switch (platform) {
-    case 'PS5':
-      rim = 16;
-      rimColor = '#1e6fe0';
-      rimDeep = '#0a3d9c';
-      headerH = 96;
-      break;
-    case 'PS4':
-      rim = 16;
-      rimColor = '#1a5fd0';
-      rimDeep = '#003087';
-      headerH = 88;
-      break;
-    case 'PS3':
-      rim = 10;
-      rimColor = '#1a1a1a';
-      rimDeep = '#000000';
-      headerH = 78;
-      redRule = 4;
-      break;
-    case 'PS2':
-      rim = 18;
-      rimColor = '#0072ce';
-      rimDeep = '#004a8c';
-      headerH = 72;
-      break;
-    case 'XBOX':
-      rim = 16;
-      rimColor = '#107c10';
-      rimDeep = '#0a520a';
-      headerH = 72;
-      break;
-    case 'SWITCH':
-    case 'SWITCH2':
-      rim = 10;
-      rimColor = '#e60012';
-      rimDeep = '#b0000e';
-      headerH = 72;
-      break;
-    default:
-      rim = 10;
-      rimColor = '#333';
-      rimDeep = '#111';
-      headerH = 70;
+  if (!topPath) {
+    // Fallback only for platforms without a supplied top image (e.g. Switch)
+    switch (platform) {
+      case 'SWITCH':
+      case 'SWITCH2':
+        rim = 8;
+        rimColor = '#e60012';
+        rimDeep = '#b0000e';
+        headerH = 72;
+        break;
+      default:
+        rim = 0;
+        headerH = 80;
+    }
   }
 
   const faceX = left + rim;
@@ -270,22 +243,19 @@ async function buildRetailFace(coverPath, platform, outPath) {
   const faceW = caseW - rim * 2;
   const faceH = caseH - rim * 2;
 
-  // Prefer client-supplied official top bar PNGs
-  const topPath = await platformTopBar(platform);
-  let headerBuf = null;
+  let headerBuf;
   if (topPath) {
     const meta = await sharp(topPath).metadata();
     const srcW = meta.width || 1200;
     const srcH = meta.height || 120;
-    headerH = Math.max(56, Math.round(faceW * (srcH / srcW)));
+    headerH = Math.max(48, Math.round(faceW * (srcH / srcW)));
     headerBuf = await sharp(topPath)
       .resize(faceW, headerH, { fit: 'fill' })
       .png()
       .toBuffer();
-    // Official bars already include accents (e.g. PS3 red rule)
-    redRule = 0;
   } else {
     headerBuf = headerSvg(platform, faceW, headerH);
+    if (platform === 'PS3') redRule = 4;
   }
 
   const artH = faceH - headerH - redRule;
@@ -309,38 +279,26 @@ async function buildRetailFace(coverPath, platform, outPath) {
     layers.splice(1, 0, { input: rule, left: faceX, top: faceY + headerH });
   }
 
-  if (platform === 'PS2' && !topPath) {
-    const pal = Buffer.from(`
-<svg width="${faceW}" height="${artH}" xmlns="http://www.w3.org/2000/svg">
-  <rect x="${faceW - 56}" y="10" width="46" height="24" fill="#fff"/>
-  <text x="${faceW - 33}" y="27" text-anchor="middle"
-    font-family="Arial Black, Arial, sans-serif" font-size="13" font-weight="900" fill="#000">PAL</text>
-</svg>`);
-    layers.push({ input: pal, left: faceX, top: faceY + headerH + redRule });
-  }
-
+  // Soft white plate + shadow only (no coloured plastic frame when official top is used)
   const shell = Buffer.from(`
 <svg width="${SIZE}" height="${SIZE}" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <filter id="drop" x="-12%" y="-12%" width="124%" height="124%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.22"/>
+    </filter>
+    ${
+      rim > 0
+        ? `
     <linearGradient id="rimG" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="${rimColor}"/>
-      <stop offset="55%" stop-color="${rimDeep}"/>
-      <stop offset="100%" stop-color="${rimColor}"/>
-    </linearGradient>
-    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fff" stop-opacity="0.28"/>
-      <stop offset="40%" stop-color="#fff" stop-opacity="0.06"/>
-      <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
-    </linearGradient>
-    <filter id="drop" x="-12%" y="-12%" width="124%" height="124%">
-      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000" flood-opacity="0.28"/>
-    </filter>
+      <stop offset="100%" stop-color="${rimDeep}"/>
+    </linearGradient>`
+        : ''
+    }
   </defs>
   <rect width="100%" height="100%" fill="#f0f1f3"/>
-  <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="4" ry="4"
-    fill="url(#rimG)" filter="url(#drop)"/>
-  <rect x="${faceX}" y="${faceY}" width="${faceW}" height="${faceH}" fill="#0a0a0a"/>
-  <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="4" fill="url(#shine)"/>
+  <rect x="${left}" y="${top}" width="${caseW}" height="${caseH}" rx="2" ry="2"
+    fill="${rim > 0 ? 'url(#rimG)' : '#ffffff'}" filter="url(#drop)"/>
   <rect x="${faceX}" y="${faceY}" width="${faceW}" height="${faceH}" fill="#0a0a0a"/>
 </svg>`);
 

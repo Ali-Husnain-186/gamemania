@@ -49,8 +49,8 @@ type Product = {
   }>;
 };
 
-type Category = { id: string; name: string };
-type Brand = { id: string; name: string };
+type Category = { id: string; name: string; slug?: string };
+type Brand = { id: string; name: string; slug?: string };
 
 const MAX_IMAGES = 4;
 const PAGE_SIZE = 20;
@@ -61,6 +61,17 @@ type ListMeta = {
   total?: number;
   totalPages?: number;
 };
+
+/** Quick filters for admin product list (API: category slug and/or brand slug). */
+const QUICK_FILTERS = [
+  { id: 'all', label: 'All', category: '', brand: '' },
+  { id: 'games', label: 'Games', category: 'video-games', brand: '' },
+  { id: 'consoles', label: 'Consoles', category: 'game-consoles', brand: '' },
+  { id: 'accessories', label: 'Accessories', category: 'accessories', brand: '' },
+  { id: 'playstation', label: 'PlayStation', category: '', brand: 'sony' },
+  { id: 'xbox', label: 'Xbox', category: '', brand: 'microsoft' },
+  { id: 'nintendo', label: 'Nintendo', category: '', brand: 'nintendo' },
+] as const;
 
 const defaults: ProductFormValues = {
   name: '',
@@ -133,6 +144,9 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
+  const [categorySlug, setCategorySlug] = useState('');
+  const [brandSlug, setBrandSlug] = useState('');
+  const [quickId, setQuickId] = useState<(typeof QUICK_FILTERS)[number]['id']>('all');
 
   const {
     register,
@@ -150,7 +164,20 @@ export default function ProductsPage() {
 
   const images = watch('images') ?? emptyImageSlots();
 
-  const load = useCallback(async (q: string, pageNum: number) => {
+  const loadLookups = useCallback(async () => {
+    try {
+      const [cats, brs] = await Promise.all([
+        apiGet<Category[]>('/admin/categories'),
+        apiGet<Brand[]>('/admin/brands'),
+      ]);
+      setCategories(Array.isArray(cats) ? cats : []);
+      setBrands(Array.isArray(brs) ? brs : []);
+    } catch {
+      /* list load will surface errors */
+    }
+  }, []);
+
+  const load = useCallback(async (q: string, pageNum: number, category: string, brand: string) => {
     setLoading(true);
     setError(null);
     try {
@@ -160,12 +187,12 @@ export default function ProductsPage() {
         sort: 'name_asc',
       });
       if (q.trim()) params.set('q', q.trim());
+      if (category.trim()) params.set('category', category.trim());
+      if (brand.trim()) params.set('brand', brand.trim());
 
-      const [listResult, cats, brs] = await Promise.all([
-        apiGetWithMeta<Product[], ListMeta>(`/admin/products?${params.toString()}`),
-        apiGet<Category[]>('/admin/categories'),
-        apiGet<Brand[]>('/admin/brands'),
-      ]);
+      const listResult = await apiGetWithMeta<Product[], ListMeta>(
+        `/admin/products?${params.toString()}`,
+      );
 
       const items = Array.isArray(listResult.data) ? listResult.data : [];
       const meta = listResult.meta ?? {};
@@ -179,14 +206,16 @@ export default function ProductsPage() {
       setTotal(nextTotal);
       setTotalPages(nextTotalPages);
       if (pageNum > nextTotalPages) setPage(nextTotalPages);
-      setCategories(cats);
-      setBrands(brs);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to load products.');
     } finally {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    void loadLookups();
+  }, [loadLookups]);
 
   useEffect(() => {
     const t = window.setTimeout(() => {
@@ -197,8 +226,24 @@ export default function ProductsPage() {
   }, [searchInput]);
 
   useEffect(() => {
-    void load(searchQ, page);
-  }, [load, searchQ, page]);
+    void load(searchQ, page, categorySlug, brandSlug);
+  }, [load, searchQ, page, categorySlug, brandSlug]);
+
+  function applyQuickFilter(id: (typeof QUICK_FILTERS)[number]['id']) {
+    const preset = QUICK_FILTERS.find((f) => f.id === id) ?? QUICK_FILTERS[0];
+    setQuickId(preset.id);
+    setCategorySlug(preset.category);
+    setBrandSlug(preset.brand);
+    setPage(1);
+  }
+
+  function onCategorySelect(slug: string) {
+    setCategorySlug(slug);
+    setPage(1);
+    const match = QUICK_FILTERS.find((f) => f.category === slug && f.brand === brandSlug);
+    if (match) setQuickId(match.id);
+    else if (!slug && !brandSlug) setQuickId('all');
+  }
 
   function openCreate() {
     setEditingId(null);
@@ -332,7 +377,7 @@ export default function ProductsPage() {
         }
         setShowForm(false);
         notify.success(editingId ? 'Product updated' : 'Product created');
-        await load(searchQ, page);
+        await load(searchQ, page, categorySlug, brandSlug);
       } catch (err) {
         const fieldMap = fieldErrorsFromApi(err);
         for (const [key, message] of Object.entries(fieldMap)) {
@@ -672,28 +717,94 @@ export default function ProductsPage() {
       ) : null}
 
       <Panel className="overflow-hidden">
-        <div className="flex flex-col gap-3 border-b border-[var(--admin-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative max-w-md flex-1">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--admin-muted)]" />
-            <input
-              type="search"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search by name, SKU, or description…"
-              className="w-full rounded-md border border-[var(--admin-border)] bg-black/20 py-2 pl-9 pr-3 text-sm text-[var(--admin-fg)] placeholder:text-[var(--admin-muted)]"
-            />
+        <div className="flex flex-col gap-3 border-b border-[var(--admin-border)] px-4 py-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="relative max-w-md flex-1">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--admin-muted)]" />
+              <input
+                type="search"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search by name, SKU, or description…"
+                className="w-full rounded-md border border-[var(--admin-border)] bg-black/20 py-2 pl-9 pr-3 text-sm text-[var(--admin-fg)] placeholder:text-[var(--admin-muted)]"
+              />
+            </div>
+            <p className="text-xs text-[var(--admin-muted)]">
+              {loading
+                ? 'Loading…'
+                : total === 0
+                  ? searchQ || categorySlug || brandSlug
+                    ? 'No products match these filters'
+                    : 'No products'
+                  : `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} of ${total}${
+                      searchQ ? ` matching “${searchQ}”` : ''
+                    }`}
+            </p>
           </div>
-          <p className="text-xs text-[var(--admin-muted)]">
-            {loading
-              ? 'Loading…'
-              : total === 0
-                ? searchQ
-                  ? `No products matching “${searchQ}”`
-                  : 'No products'
-                : `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} of ${total}${
-                    searchQ ? ` matching “${searchQ}”` : ''
-                  }`}
-          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {QUICK_FILTERS.map((f) => (
+              <button
+                key={f.id}
+                type="button"
+                onClick={() => applyQuickFilter(f.id)}
+                className={`rounded-md px-3 py-1.5 text-xs font-semibold transition ${
+                  quickId === f.id
+                    ? 'bg-[var(--admin-accent)] text-black'
+                    : 'border border-[var(--admin-border)] text-[var(--admin-muted)] hover:text-[var(--admin-fg)]'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <label className="flex min-w-[200px] flex-1 flex-col gap-1 text-xs text-[var(--admin-muted)]">
+              Category
+              <select
+                value={categorySlug}
+                onChange={(e) => onCategorySelect(e.target.value)}
+                className="rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm text-[var(--admin-fg)]"
+              >
+                <option value="">All categories</option>
+                {categories
+                  .filter((c) => c.slug)
+                  .map((c) => (
+                    <option key={c.id} value={c.slug}>
+                      {c.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label className="flex min-w-[180px] flex-1 flex-col gap-1 text-xs text-[var(--admin-muted)]">
+              Brand / platform
+              <select
+                value={brandSlug}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setBrandSlug(next);
+                  setPage(1);
+                  const match = QUICK_FILTERS.find(
+                    (f) => f.brand === next && f.category === categorySlug,
+                  );
+                  if (match) setQuickId(match.id);
+                  else if (!next && !categorySlug) setQuickId('all');
+                  else setQuickId(quickId === 'all' ? 'all' : quickId);
+                }}
+                className="rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm text-[var(--admin-fg)]"
+              >
+                <option value="">All brands</option>
+                {brands
+                  .filter((b) => b.slug)
+                  .map((b) => (
+                    <option key={b.id} value={b.slug}>
+                      {b.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+          </div>
         </div>
 
         {loading ? (
@@ -707,7 +818,9 @@ export default function ProductsPage() {
           </div>
         ) : products.length === 0 ? (
           <p className="p-6 text-sm text-[var(--admin-muted)]">
-            {searchQ ? `No products match “${searchQ}”.` : 'No products found.'}
+            {searchQ || categorySlug || brandSlug
+              ? 'No products match these filters.'
+              : 'No products found.'}
           </p>
         ) : (
           <div className="overflow-x-auto">
@@ -771,7 +884,7 @@ export default function ProductsPage() {
                                     setShowForm(false);
                                     setEditingId(null);
                                   }
-                                  await load(searchQ, page);
+                                  await load(searchQ, page, categorySlug, brandSlug);
                                 } catch (err) {
                                   setError(err instanceof ApiError ? err.message : 'Delete failed');
                                 }

@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ImagePlus, Loader2, Search, X } from 'lucide-react';
 import { BrandLoader } from '@/components/ui/brand-loader';
-import { apiDelete, apiGet, apiPatch, apiPost, ApiError } from '@/lib/api';
+import { apiDelete, apiGet, apiGetWithMeta, apiPatch, apiPost, ApiError } from '@/lib/api';
 import { uploadProductImage } from '@/lib/cloudinary-upload';
 import { fieldErrorsFromApi, firstApiErrorMessage } from '@/lib/field-errors';
 import { brandFallbackImage } from '@/lib/product-image';
@@ -53,6 +53,14 @@ type Category = { id: string; name: string };
 type Brand = { id: string; name: string };
 
 const MAX_IMAGES = 4;
+const PAGE_SIZE = 20;
+
+type ListMeta = {
+  page?: number;
+  limit?: number;
+  total?: number;
+  totalPages?: number;
+};
 
 const defaults: ProductFormValues = {
   name: '',
@@ -122,7 +130,9 @@ export default function ProductsPage() {
   const [pending, startTransition] = useTransition();
   const [searchInput, setSearchInput] = useState('');
   const [searchQ, setSearchQ] = useState('');
+  const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   const {
     register,
@@ -140,23 +150,35 @@ export default function ProductsPage() {
 
   const images = watch('images') ?? emptyImageSlots();
 
-  const load = useCallback(async (q: string) => {
+  const load = useCallback(async (q: string, pageNum: number) => {
     setLoading(true);
     setError(null);
     try {
       const params = new URLSearchParams({
-        limit: '100',
+        page: String(pageNum),
+        limit: String(PAGE_SIZE),
         sort: 'name_asc',
       });
       if (q.trim()) params.set('q', q.trim());
 
-      const [list, cats, brs] = await Promise.all([
-        apiGet<Product[]>(`/admin/products?${params.toString()}`),
+      const [listResult, cats, brs] = await Promise.all([
+        apiGetWithMeta<Product[], ListMeta>(`/admin/products?${params.toString()}`),
         apiGet<Category[]>('/admin/categories'),
         apiGet<Brand[]>('/admin/brands'),
       ]);
-      setProducts(Array.isArray(list) ? list : []);
-      setTotal(Array.isArray(list) ? list.length : 0);
+
+      const items = Array.isArray(listResult.data) ? listResult.data : [];
+      const meta = listResult.meta ?? {};
+      const nextTotal = typeof meta.total === 'number' ? meta.total : items.length;
+      const nextTotalPages =
+        typeof meta.totalPages === 'number'
+          ? Math.max(1, meta.totalPages)
+          : Math.max(1, Math.ceil(nextTotal / PAGE_SIZE) || 1);
+
+      setProducts(items);
+      setTotal(nextTotal);
+      setTotalPages(nextTotalPages);
+      if (pageNum > nextTotalPages) setPage(nextTotalPages);
       setCategories(cats);
       setBrands(brs);
     } catch (err) {
@@ -167,13 +189,16 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setSearchQ(searchInput.trim()), 320);
+    const t = window.setTimeout(() => {
+      setSearchQ(searchInput.trim());
+      setPage(1);
+    }, 320);
     return () => window.clearTimeout(t);
   }, [searchInput]);
 
   useEffect(() => {
-    void load(searchQ);
-  }, [load, searchQ]);
+    void load(searchQ, page);
+  }, [load, searchQ, page]);
 
   function openCreate() {
     setEditingId(null);
@@ -307,7 +332,7 @@ export default function ProductsPage() {
         }
         setShowForm(false);
         notify.success(editingId ? 'Product updated' : 'Product created');
-        await load(searchQ);
+        await load(searchQ, page);
       } catch (err) {
         const fieldMap = fieldErrorsFromApi(err);
         for (const [key, message] of Object.entries(fieldMap)) {
@@ -661,7 +686,13 @@ export default function ProductsPage() {
           <p className="text-xs text-[var(--admin-muted)]">
             {loading
               ? 'Loading…'
-              : `${total} product${total === 1 ? '' : 's'}${searchQ ? ` matching “${searchQ}”` : ''}`}
+              : total === 0
+                ? searchQ
+                  ? `No products matching “${searchQ}”`
+                  : 'No products'
+                : `Showing ${(page - 1) * PAGE_SIZE + 1}–${Math.min(page * PAGE_SIZE, total)} of ${total}${
+                    searchQ ? ` matching “${searchQ}”` : ''
+                  }`}
           </p>
         </div>
 
@@ -740,7 +771,7 @@ export default function ProductsPage() {
                                     setShowForm(false);
                                     setEditingId(null);
                                   }
-                                  await load(searchQ);
+                                  await load(searchQ, page);
                                 } catch (err) {
                                   setError(err instanceof ApiError ? err.message : 'Delete failed');
                                 }
@@ -758,6 +789,63 @@ export default function ProductsPage() {
             </table>
           </div>
         )}
+
+        {!loading && total > 0 ? (
+          <div className="flex flex-col gap-3 border-t border-[var(--admin-border)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-[var(--admin-muted)]">
+              Page {page} of {totalPages}
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                disabled={page <= 1 || loading}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className="rounded-md border border-[var(--admin-border)] px-3 py-1.5 text-xs font-medium disabled:opacity-40"
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter((n) => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
+                .reduce<Array<number | 'ellipsis'>>((acc, n, idx, arr) => {
+                  if (idx > 0) {
+                    const prev = arr[idx - 1]!;
+                    if (n - prev > 1) acc.push('ellipsis');
+                  }
+                  acc.push(n);
+                  return acc;
+                }, [])
+                .map((item, idx) =>
+                  item === 'ellipsis' ? (
+                    <span key={`e-${idx}`} className="px-1 text-xs text-[var(--admin-muted)]">
+                      …
+                    </span>
+                  ) : (
+                    <button
+                      key={item}
+                      type="button"
+                      disabled={loading || item === page}
+                      onClick={() => setPage(item)}
+                      className={`min-w-8 rounded-md px-2.5 py-1.5 text-xs font-medium ${
+                        item === page
+                          ? 'bg-[var(--admin-accent)] text-black'
+                          : 'border border-[var(--admin-border)] disabled:opacity-40'
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  ),
+                )}
+              <button
+                type="button"
+                disabled={page >= totalPages || loading}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className="rounded-md border border-[var(--admin-border)] px-3 py-1.5 text-xs font-medium disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        ) : null}
       </Panel>
     </>
   );

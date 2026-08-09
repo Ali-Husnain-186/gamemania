@@ -96,7 +96,10 @@ type RequestOptions = Omit<RequestInit, 'body'> & {
   body?: unknown;
 };
 
-async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function requestFull<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<{ data: T; meta?: unknown }> {
   const { body, headers: initHeaders, ...rest } = options;
   const headers = new Headers(initHeaders);
 
@@ -144,10 +147,25 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
   }
 
   if (json && typeof json === 'object' && 'data' in json) {
-    return (json as ApiSuccessBody<T>).data;
+    const parsed = json as ApiSuccessBody<T>;
+    return { data: parsed.data, meta: parsed.meta };
   }
 
-  return json as T;
+  return { data: json as T };
+}
+
+async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { data } = await requestFull<T>(path, options);
+  return data;
+}
+
+/** Like apiGet, but also returns response `meta` (pagination, etc.). */
+export async function apiGetWithMeta<T, M = unknown>(
+  path: string,
+  init?: Omit<RequestOptions, 'body' | 'method'>,
+): Promise<{ data: T; meta?: M }> {
+  const result = await requestFull<T>(path, { ...init, method: 'GET' });
+  return { data: result.data, meta: result.meta as M | undefined };
 }
 
 export function apiGet<T>(

@@ -77,7 +77,7 @@ export const metadata: Metadata = {
         url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: 'GAME MANIA UK — games, consoles and trade-ins',
+        alt: 'GAMEMANIA UK',
       },
     ],
   },

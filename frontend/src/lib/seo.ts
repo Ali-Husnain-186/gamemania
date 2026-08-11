@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 
 export const SITE_NAME = 'GameMania UK';
 export const SITE_TAGLINE = 'Trade.Play.Repeat';
-export const SITE_TITLE = `${SITE_NAME} / ${SITE_TAGLINE}`;
+/** Default document / share title — clean brand, no tagline clutter. */
+export const SITE_TITLE = 'GAMEMANIA UK';
 export const DEFAULT_DESCRIPTION =
   'Buy games, consoles and accessories in the UK. Trade in for store credit or cash. Free UK shipping on orders £60+. Genuine products with a 3-month warranty.';
 
-export const DEFAULT_OG_IMAGE = '/brand/hero-banner-hd.jpg';
+/** Professional logo share card for WhatsApp / iMessage / social previews. */
+export const DEFAULT_OG_IMAGE = '/brand/og-share-banner.png';
 
 export function getSiteUrl(): string {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gamemaniaauk.co.uk').trim();

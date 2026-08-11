@@ -143,14 +143,11 @@ function wrapEmailLayout(input: {
             <td style="background:${BRAND.ink};padding:22px 28px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="vertical-align:middle;">
-                    <img src="${siteUrl('/brand/game-mania-logo.png')}" alt="GameMania UK" width="48" height="48" style="display:block;border-radius:999px;border:0;" />
+                  <td style="vertical-align:middle;width:56px;">
+                    <img src="${siteUrl('/brand/game-mania-logo-tab.png')}" alt="GAMEMANIA UK" width="48" height="48" style="display:block;border-radius:999px;border:0;" />
                   </td>
-                  <td style="padding-left:12px;font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:0.04em;color:${BRAND.white};">
-                    <span style="color:${BRAND.yellow};">Game</span><span style="color:${BRAND.magenta};">Mania</span> <span style="color:${BRAND.white};">UK</span>
-                  </td>
-                  <td align="right" style="font-family:Arial,Helvetica,sans-serif;font-size:12px;color:${BRAND.yellow};font-weight:700;">
-                    UK Gaming Marketplace
+                  <td style="padding-left:14px;vertical-align:middle;font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:800;letter-spacing:0.08em;color:${BRAND.white};text-transform:uppercase;">
+                    GAMEMANIA UK
                   </td>
                 </tr>
               </table>

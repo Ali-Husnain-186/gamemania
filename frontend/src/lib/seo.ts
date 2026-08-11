@@ -7,8 +7,8 @@ export const SITE_TITLE = 'GAMEMANIA UK';
 export const DEFAULT_DESCRIPTION =
   'Buy games, consoles and accessories in the UK. Trade in for store credit or cash. Free UK shipping on orders £60+. Genuine products with a 3-month warranty.';
 
-/** Professional logo share card for WhatsApp / iMessage / social previews. */
-export const DEFAULT_OG_IMAGE = '/brand/og-share-banner.png';
+/** Professional HD logo share card for WhatsApp / iMessage / social (1200×630). */
+export const DEFAULT_OG_IMAGE = '/brand/og-share-hd.png';
 
 export function getSiteUrl(): string {
   const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? 'https://gamemaniaauk.co.uk').trim();
@@ -52,7 +52,11 @@ export function buildPageMetadata({
   const desc = truncateMeta(description);
   const url = absoluteUrl(path);
   const ogImage = image?.trim() || DEFAULT_OG_IMAGE;
-  const displayTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const displayTitle =
+    title.includes(SITE_NAME) || title.toUpperCase() === 'GAMEMANIA UK'
+      ? title
+      : `${title} | ${SITE_NAME}`;
+  const ogTitle = absoluteTitle ? title : displayTitle;
 
   return {
     title: absoluteTitle ? { absolute: title } : title,
@@ -67,13 +71,13 @@ export function buildPageMetadata({
       locale: 'en_GB',
       url,
       siteName: SITE_NAME,
-      title: displayTitle,
+      title: ogTitle,
       description: desc,
-      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE_NAME }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: 'GAMEMANIA UK' }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: displayTitle,
+      title: ogTitle,
       description: desc,
       images: [ogImage],
     },

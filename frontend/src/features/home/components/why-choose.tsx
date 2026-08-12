@@ -42,7 +42,7 @@ export function WhyChoose() {
     <section className="mx-auto max-w-6xl px-3 py-8 sm:px-6 sm:py-16">
       <SectionHeading
         eyebrow="Trust"
-        title="Why choose GAME MANIA"
+        title="WHY CHOOSE GAMEMANIA UK"
         description="Built for gamers who want quality stock, fair prices and a smooth experience."
       />
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-3">

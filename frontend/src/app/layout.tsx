@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Bangers, Nunito } from 'next/font/google';
+import { GoogleAnalytics } from '@/components/analytics/google-analytics';
 import { SiteChrome } from '@/components/layout/site-chrome';
 import { JsonLd } from '@/components/seo/json-ld';
 import {
@@ -106,6 +107,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col antialiased" suppressHydrationWarning>
+        <GoogleAnalytics />
         <JsonLd data={organizationJsonLd()} />
         <JsonLd data={websiteJsonLd()} />
         <AppProviders>

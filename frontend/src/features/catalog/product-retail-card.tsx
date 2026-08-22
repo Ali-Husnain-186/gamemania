@@ -8,6 +8,7 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP, formatPlatform } from '@/lib/format';
+import { getProductWarranty } from '@/lib/product-warranty';
 import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import { TradeValueBlock, showsConditionVariant } from '@/features/catalog/trade-value-block';
@@ -109,8 +110,8 @@ export function ProductRetailCard({
   category,
   platformLabel,
   rating: ratingProp,
-  showWarranty = true,
-  warrantyLabel = '3-mo warranty',
+  showWarranty: showWarrantyProp,
+  warrantyLabel: warrantyLabelProp,
   conditionLabel: conditionProp,
   showTradeValues = true,
   showCartButton = true,
@@ -142,6 +143,9 @@ export function ProductRetailCard({
   const alt = fallbackAlt;
   const displayName = title ?? defaultTitle(product);
   const categoryText = category ?? defaultCategory(product);
+  const warranty = getProductWarranty(product);
+  const showWarranty = showWarrantyProp ?? warranty.show;
+  const warrantyLabel = warrantyLabelProp ?? warranty.label;
   const platformText = platformLabel ?? formatPlatform(product.platform);
   const rating = ratingProp ?? defaultRating(product, index);
   const conditionText =

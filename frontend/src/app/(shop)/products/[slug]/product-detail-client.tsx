@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { TradeValueBlock } from '@/features/catalog/trade-value-block';
 import { formatGBP } from '@/lib/format';
+import { getProductWarranty } from '@/lib/product-warranty';
 import { notify } from '@/lib/toast';
 import { useCartStore } from '@/stores/cart-store';
 import type { Cart } from '@/types/cart';
@@ -110,6 +111,7 @@ export function ProductDetailClient() {
   }
 
   const product = productQuery.data;
+  const warranty = getProductWarranty(product);
   const hasTradeIn =
     (product.tradeInCashPence != null && product.tradeInCashPence > 0) ||
     (product.tradeInCreditPence != null && product.tradeInCreditPence > 0);
@@ -257,12 +259,14 @@ export function ProductDetailClient() {
                   : 'Console/item as listed · necessary cables where stated in description'}
               </dd>
             </div>
-            <div>
-              <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
-                Warranty
-              </dt>
-              <dd className="mt-1 font-semibold text-[var(--gm-fg)]">3 months on all products</dd>
-            </div>
+            {warranty.detail ? (
+              <div>
+                <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
+                  Warranty
+                </dt>
+                <dd className="mt-1 font-semibold text-[var(--gm-fg)]">{warranty.detail}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="text-[10px] font-extrabold uppercase tracking-wide text-[var(--gm-muted)]">
                 Dispatch time

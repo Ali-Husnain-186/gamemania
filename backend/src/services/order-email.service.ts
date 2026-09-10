@@ -213,9 +213,142 @@ export async function emailPaymentPending(orderId: string) {
   return emailOrderStatusUpdate(orderId, 'AWAITING_PAYMENT');
 }
 
+function shopNotifyRecipients(): string[] {
+  return String(env.ADMIN_ORDER_NOTIFY_EMAIL ?? '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+type ShopNotifyOrder = {
+  email: string;
+  orderNumber: string;
+  grandTotal: number;
+  subtotal?: number;
+  shippingTotal?: number;
+  discountTotal?: number;
+  notes?: string | null;
+  trackingNumber?: string | null;
+  trackingCarrier?: string | null;
+  items?: Array<{ name: string; quantity: number; lineTotal: number; sku?: string }>;
+  shippingAddress?: {
+    fullName: string;
+    line1: string;
+    line2: string | null;
+    city: string;
+    county?: string | null;
+    postcode: string;
+    country?: string;
+    phone?: string | null;
+  } | null;
+};
+
+/** Copy every order-status email to the shop inbox (info@…). */
+function notifyShopInbox(input: {
+  status: OrderStatus;
+  order: ShopNotifyOrder;
+  customerSubject: string;
+}) {
+  const recipients = shopNotifyRecipients();
+  if (!recipients.length) return;
+
+  const o = input.order;
+  const accent = statusAccent(input.status);
+  const itemLines = (o.items ?? [])
+    .map((i) => `• ${i.name}${i.sku ? ` (${i.sku})` : ''} × ${i.quantity} — ${gbp(i.lineTotal)}`)
+    .join('\n');
+
+  const address = o.shippingAddress
+    ? [
+        o.shippingAddress.fullName,
+        o.shippingAddress.line1,
+        o.shippingAddress.line2,
+        [o.shippingAddress.city, o.shippingAddress.county].filter(Boolean).join(', '),
+        o.shippingAddress.postcode,
+        o.shippingAddress.country,
+        o.shippingAddress.phone ? `Phone: ${o.shippingAddress.phone}` : null,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : '';
+
+  const subject = `[Shop] ${statusLabel(input.status)} — ${o.orderNumber}`;
+  const text = [
+    `Order status update (shop copy)`,
+    ``,
+    `Status: ${statusLabel(input.status)}`,
+    `Order: ${o.orderNumber}`,
+    `Customer: ${o.email}`,
+    `Total: ${gbp(o.grandTotal)}`,
+    o.trackingNumber
+      ? `Tracking: ${o.trackingNumber} (${o.trackingCarrier || 'Royal Mail'})`
+      : null,
+    o.notes ? `Notes: ${o.notes}` : null,
+    ``,
+    `Customer email subject: ${input.customerSubject}`,
+    ``,
+    `Items:`,
+    itemLines || '—',
+    address ? `\nShipping:\n${address}` : '',
+    ``,
+    `Admin: ${siteUrl('/admin/orders')}`,
+  ]
+    .filter((line) => line !== null)
+    .join('\n');
+
+  const bodyHtml = `
+    <p style="margin:0 0 8px;color:${BRAND.muted};">Shop copy — customer was also emailed for this status.</p>
+    ${metaCard([
+      { label: 'Order', value: escapeHtml(o.orderNumber) },
+      { label: 'Customer', value: escapeHtml(o.email) },
+      {
+        label: 'Status',
+        value: `<span style="color:${accent};text-transform:capitalize;">${escapeHtml(statusLabel(input.status))}</span>`,
+      },
+      { label: 'Total', value: gbp(o.grandTotal) },
+      ...(o.trackingNumber
+        ? [
+            {
+              label: 'Tracking',
+              value: `<span style="font-family:monospace;">${escapeHtml(o.trackingNumber)}</span> (${escapeHtml(o.trackingCarrier || 'Royal Mail')})`,
+            },
+          ]
+        : []),
+      ...(o.notes ? [{ label: 'Notes', value: escapeHtml(o.notes) }] : []),
+    ])}
+    <h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
+    <p style="margin:0;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(itemLines || '—')}</p>
+    ${
+      address
+        ? `<h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Shipping</h2>
+           <p style="margin:0;padding:14px 16px;background:${BRAND.bg};border-radius:12px;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(address)}</p>`
+        : ''
+    }
+  `;
+
+  const html = wrapEmailLayout({
+    preheader: `${statusLabel(input.status)} — ${o.orderNumber} (${o.email})`,
+    title: `Order ${statusLabel(input.status)}`,
+    statusBadge: statusLabel(input.status),
+    statusColor: accent,
+    bodyHtml,
+    ctaLabel: 'Open admin orders',
+    ctaUrl: siteUrl('/admin/orders'),
+  });
+
+  for (const to of recipients) {
+    void sendOrderEmail({ to, subject, text, html }).then((mail) => {
+      if (!mail.sent) {
+        console.error('[order-email] shop notify failed', o.orderNumber, to, mail.error);
+      }
+    });
+  }
+}
+
 /**
  * Email the customer for an order status.
  * Skips if status unchanged or no customer email.
+ * Always also notifies the shop inbox (ADMIN_ORDER_NOTIFY_EMAIL).
  */
 export async function emailOrderStatusUpdate(
   orderId: string,
@@ -249,6 +382,18 @@ export async function emailOrderStatusUpdate(
   const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
   const accent = statusAccent(nextStatus);
 
+  const itemLines = order.items.map((i) => `• ${i.name} × ${i.quantity}`).join('\n');
+  const address = order.shippingAddress
+    ? [
+        order.shippingAddress.fullName,
+        order.shippingAddress.line1,
+        order.shippingAddress.line2,
+        `${order.shippingAddress.city} ${order.shippingAddress.postcode}`,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : '';
+
   const text = [
     `Hi,`,
     ``,
@@ -257,6 +402,10 @@ export async function emailOrderStatusUpdate(
     `Reference: ${order.orderNumber}`,
     `Status: ${statusLabel(nextStatus)}`,
     `Total: ${gbp(order.grandTotal)}`,
+    ``,
+    `Items:`,
+    itemLines || '—',
+    address ? `\nDelivery:\n${address}` : '',
     ``,
     `View: ${viewUrl}`,
     ``,
@@ -276,6 +425,12 @@ export async function emailOrderStatusUpdate(
         value: `<span style="color:${BRAND.magenta};">${gbp(order.grandTotal)}</span>`,
       },
     ])}
+    ${
+      itemLines
+        ? `<h2 style="margin:18px 0 8px;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
+           <p style="margin:0;white-space:pre-line;font-size:14px;color:${BRAND.ink};">${escapeHtml(itemLines)}</p>`
+        : ''
+    }
   `;
 
   const html = wrapEmailLayout({
@@ -288,7 +443,9 @@ export async function emailOrderStatusUpdate(
     ctaUrl: viewUrl,
   });
 
-  return sendOrderEmail({ to: order.email, subject, text, html });
+  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
+  notifyShopInbox({ status: nextStatus, order, customerSubject: subject });
+  return customerResult;
 }
 
 function royalMailTrackUrl(trackingNumber: string) {
@@ -407,7 +564,9 @@ async function sendShippedOrderEmail(order: {
     ctaUrl: trackUrl ?? viewUrl,
   });
 
-  return sendOrderEmail({ to: order.email, subject, text, html });
+  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
+  notifyShopInbox({ status: 'SHIPPED', order, customerSubject: subject });
+  return customerResult;
 }
 
 async function sendPaidOrderEmail(order: {
@@ -516,78 +675,6 @@ async function sendPaidOrderEmail(order: {
   });
 
   const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
-
-  // Shop notification — full order details to info inbox
-  const adminTo = env.ADMIN_ORDER_NOTIFY_EMAIL?.trim();
-  if (adminTo) {
-    const adminSubject = `New order ${order.orderNumber} — ${gbp(order.grandTotal)}`;
-    const adminText = [
-      `New paid order on GameMania UK`,
-      ``,
-      `Order: ${order.orderNumber}`,
-      `Customer email: ${order.email}`,
-      `Total: ${gbp(order.grandTotal)}`,
-      `Subtotal: ${gbp(order.subtotal)}`,
-      `Shipping: ${gbp(order.shippingTotal)}`,
-      `Discount: ${gbp(order.discountTotal)}`,
-      order.notes ? `Notes: ${order.notes}` : null,
-      ``,
-      `Items:`,
-      lines || '—',
-      address ? `\nShipping address:\n${address}` : '\nShipping address: (none)',
-      ``,
-      `Admin: ${siteUrl('/admin/orders')}`,
-    ]
-      .filter((line) => line !== null)
-      .join('\n');
-
-    const adminBodyHtml = `
-      <p style="margin:0 0 8px;color:${BRAND.muted};">A customer has placed a <strong style="color:${BRAND.ink};">paid order</strong>.</p>
-      ${metaCard([
-        { label: 'Order', value: escapeHtml(order.orderNumber) },
-        { label: 'Customer', value: escapeHtml(order.email) },
-        {
-          label: 'Total',
-          value: `<span style="color:${BRAND.magenta};font-size:18px;">${gbp(order.grandTotal)}</span>`,
-        },
-        { label: 'Subtotal', value: gbp(order.subtotal) },
-        { label: 'Shipping', value: gbp(order.shippingTotal) },
-        { label: 'Discount', value: gbp(order.discountTotal) },
-        ...(order.notes ? [{ label: 'Notes', value: escapeHtml(order.notes) }] : []),
-      ])}
-      <h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-        ${itemRows || `<tr><td style="padding:12px 0;color:${BRAND.muted};">No items</td></tr>`}
-      </table>
-      ${
-        address
-          ? `<h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Shipping</h2>
-             <p style="margin:0;padding:14px 16px;background:${BRAND.bg};border-radius:12px;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(address)}</p>`
-          : ''
-      }
-    `;
-
-    const adminHtml = wrapEmailLayout({
-      preheader: `New order ${order.orderNumber} from ${order.email}`,
-      title: 'New order received',
-      statusBadge: 'Paid',
-      statusColor: '#159947',
-      bodyHtml: adminBodyHtml,
-      ctaLabel: 'Open admin orders',
-      ctaUrl: siteUrl('/admin/orders'),
-    });
-
-    void sendOrderEmail({
-      to: adminTo,
-      subject: adminSubject,
-      text: adminText,
-      html: adminHtml,
-    }).then((mail) => {
-      if (!mail.sent) {
-        console.error('[order-email] admin notify failed', order.orderNumber, mail.error);
-      }
-    });
-  }
-
+  notifyShopInbox({ status: 'PAID', order, customerSubject: subject });
   return customerResult;
 }

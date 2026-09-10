@@ -49,6 +49,8 @@ export async function adminListOrders(query: {
         user: { select: { id: true, email: true, firstName: true, lastName: true } },
         items: true,
         payments: { select: { id: true, provider: true, status: true, amount: true } },
+        shippingAddress: true,
+        billingAddress: true,
       },
     }),
     prisma.order.count({ where }),

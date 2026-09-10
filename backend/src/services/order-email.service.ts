@@ -291,30 +291,39 @@ async function sendPaidOrderEmail(order: {
   email: string;
   orderNumber: string;
   grandTotal: number;
+  subtotal: number;
+  shippingTotal: number;
+  discountTotal: number;
+  notes: string | null;
   userId: string | null;
-  items: Array<{ name: string; quantity: number; lineTotal: number }>;
+  items: Array<{ name: string; quantity: number; lineTotal: number; sku: string }>;
   shippingAddress: {
     fullName: string;
     line1: string;
     line2: string | null;
     city: string;
+    county: string | null;
     postcode: string;
+    country: string;
+    phone: string | null;
   } | null;
 }) {
   const lines = order.items
-    .map((i) => `• ${i.name} × ${i.quantity} — ${gbp(i.lineTotal)}`)
+    .map((i) => `• ${i.name} (${i.sku}) × ${i.quantity} — ${gbp(i.lineTotal)}`)
     .join('\n');
 
-  const address = order.shippingAddress
+  const addressLines = order.shippingAddress
     ? [
         order.shippingAddress.fullName,
         order.shippingAddress.line1,
         order.shippingAddress.line2,
-        `${order.shippingAddress.city} ${order.shippingAddress.postcode}`,
-      ]
-        .filter(Boolean)
-        .join('\n')
-    : '';
+        [order.shippingAddress.city, order.shippingAddress.county].filter(Boolean).join(', '),
+        `${order.shippingAddress.postcode}`,
+        order.shippingAddress.country,
+        order.shippingAddress.phone ? `Phone: ${order.shippingAddress.phone}` : null,
+      ].filter(Boolean)
+    : [];
+  const address = addressLines.join('\n');
 
   const subject = `Order confirmed — ${order.orderNumber}`;
   const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
@@ -341,7 +350,7 @@ async function sendPaidOrderEmail(order: {
       <tr>
         <td style="padding:12px 0;border-bottom:1px solid ${BRAND.border};font-size:14px;color:${BRAND.ink};">
           <strong>${escapeHtml(i.name)}</strong><br/>
-          <span style="color:${BRAND.muted};font-size:12px;">Qty ${i.quantity}</span>
+          <span style="color:${BRAND.muted};font-size:12px;">SKU ${escapeHtml(i.sku)} · Qty ${i.quantity}</span>
         </td>
         <td align="right" style="padding:12px 0;border-bottom:1px solid ${BRAND.border};font-size:14px;font-weight:700;color:${BRAND.ink};white-space:nowrap;">
           ${gbp(i.lineTotal)}
@@ -383,5 +392,79 @@ async function sendPaidOrderEmail(order: {
     ctaUrl: viewUrl,
   });
 
-  return sendOrderEmail({ to: order.email, subject, text, html });
+  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
+
+  // Shop notification — full order details to info inbox
+  const adminTo = env.ADMIN_ORDER_NOTIFY_EMAIL?.trim();
+  if (adminTo) {
+    const adminSubject = `New order ${order.orderNumber} — ${gbp(order.grandTotal)}`;
+    const adminText = [
+      `New paid order on GameMania UK`,
+      ``,
+      `Order: ${order.orderNumber}`,
+      `Customer email: ${order.email}`,
+      `Total: ${gbp(order.grandTotal)}`,
+      `Subtotal: ${gbp(order.subtotal)}`,
+      `Shipping: ${gbp(order.shippingTotal)}`,
+      `Discount: ${gbp(order.discountTotal)}`,
+      order.notes ? `Notes: ${order.notes}` : null,
+      ``,
+      `Items:`,
+      lines || '—',
+      address ? `\nShipping address:\n${address}` : '\nShipping address: (none)',
+      ``,
+      `Admin: ${siteUrl('/admin/orders')}`,
+    ]
+      .filter((line) => line !== null)
+      .join('\n');
+
+    const adminBodyHtml = `
+      <p style="margin:0 0 8px;color:${BRAND.muted};">A customer has placed a <strong style="color:${BRAND.ink};">paid order</strong>.</p>
+      ${metaCard([
+        { label: 'Order', value: escapeHtml(order.orderNumber) },
+        { label: 'Customer', value: escapeHtml(order.email) },
+        {
+          label: 'Total',
+          value: `<span style="color:${BRAND.magenta};font-size:18px;">${gbp(order.grandTotal)}</span>`,
+        },
+        { label: 'Subtotal', value: gbp(order.subtotal) },
+        { label: 'Shipping', value: gbp(order.shippingTotal) },
+        { label: 'Discount', value: gbp(order.discountTotal) },
+        ...(order.notes ? [{ label: 'Notes', value: escapeHtml(order.notes) }] : []),
+      ])}
+      <h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+        ${itemRows || `<tr><td style="padding:12px 0;color:${BRAND.muted};">No items</td></tr>`}
+      </table>
+      ${
+        address
+          ? `<h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Shipping</h2>
+             <p style="margin:0;padding:14px 16px;background:${BRAND.bg};border-radius:12px;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(address)}</p>`
+          : ''
+      }
+    `;
+
+    const adminHtml = wrapEmailLayout({
+      preheader: `New order ${order.orderNumber} from ${order.email}`,
+      title: 'New order received',
+      statusBadge: 'Paid',
+      statusColor: '#159947',
+      bodyHtml: adminBodyHtml,
+      ctaLabel: 'Open admin orders',
+      ctaUrl: siteUrl('/admin/orders'),
+    });
+
+    void sendOrderEmail({
+      to: adminTo,
+      subject: adminSubject,
+      text: adminText,
+      html: adminHtml,
+    }).then((mail) => {
+      if (!mail.sent) {
+        console.error('[order-email] admin notify failed', order.orderNumber, mail.error);
+      }
+    });
+  }
+
+  return customerResult;
 }

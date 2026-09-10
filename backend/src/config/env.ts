@@ -39,6 +39,8 @@ const envSchema = z.object({
   // Prefer Resend (free tier). Falls back to SMTP if RESEND_API_KEY is empty.
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().default('GAME MANIA <beth.t@example.com>'),
+  /** Shop inbox — receives a copy of every paid order (items + shipping). */
+  ADMIN_ORDER_NOTIFY_EMAIL: z.string().email().default('info@gamemaniaauk.co.uk'),
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
@@ -82,6 +84,7 @@ const data = parsed.success
       SMTP_PASS: process.env.SMTP_PASS,
       RESEND_API_KEY: process.env.RESEND_API_KEY,
       EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <beth.t@example.com>',
+      ADMIN_ORDER_NOTIFY_EMAIL: process.env.ADMIN_ORDER_NOTIFY_EMAIL ?? 'info@gamemaniaauk.co.uk',
       CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
       CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
       CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,

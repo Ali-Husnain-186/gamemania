@@ -47,6 +47,9 @@ type Order = {
   grandTotal: number;
   currency: string;
   notes?: string | null;
+  trackingNumber?: string | null;
+  trackingCarrier?: string | null;
+  shippedAt?: string | null;
   createdAt: string;
   placedAt?: string | null;
   user?: { email: string; firstName?: string | null; lastName?: string | null } | null;
@@ -89,12 +92,27 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [pending, startTransition] = useTransition();
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [trackingDrafts, setTrackingDrafts] = useState<
+    Record<string, { trackingNumber: string; trackingCarrier: string }>
+  >({});
 
   async function load() {
     setLoading(true);
     try {
       const data = await apiGet<{ items: Order[] }>('/admin/orders?limit=50');
-      setOrders(data.items ?? []);
+      const items = data.items ?? [];
+      setOrders(items);
+      setTrackingDrafts(
+        Object.fromEntries(
+          items.map((o) => [
+            o.id,
+            {
+              trackingNumber: o.trackingNumber ?? '',
+              trackingCarrier: o.trackingCarrier ?? 'Royal Mail',
+            },
+          ]),
+        ),
+      );
       setError(null);
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Failed to load orders');
@@ -107,17 +125,74 @@ export default function OrdersPage() {
     void load();
   }, []);
 
-  function updateStatus(id: string, status: string) {
+  function updateStatus(
+    id: string,
+    status: string,
+    extras?: { trackingNumber?: string; trackingCarrier?: string },
+  ) {
     startTransition(async () => {
       try {
-        await apiPatch(`/admin/orders/${id}`, { status });
-        notify.success('Order status updated');
+        await apiPatch(`/admin/orders/${id}`, {
+          status,
+          ...(extras?.trackingNumber !== undefined
+            ? { trackingNumber: extras.trackingNumber || null }
+            : {}),
+          ...(extras?.trackingCarrier !== undefined
+            ? { trackingCarrier: extras.trackingCarrier || 'Royal Mail' }
+            : {}),
+        });
+        notify.success(
+          status === 'SHIPPED' && extras?.trackingNumber
+            ? 'Shipped — customer emailed with tracking'
+            : 'Order status updated',
+        );
         await load();
       } catch (err) {
         const message = err instanceof ApiError ? err.message : 'Update failed';
         setError(message);
         notify.error(message);
       }
+    });
+  }
+
+  function onStatusChange(order: Order, nextStatus: string) {
+    const draft = trackingDrafts[order.id] ?? {
+      trackingNumber: order.trackingNumber ?? '',
+      trackingCarrier: order.trackingCarrier ?? 'Royal Mail',
+    };
+
+    if (nextStatus === 'SHIPPED') {
+      const tracking = window.prompt(
+        'Royal Mail tracking number (from Click & Drop).\nCustomer will get an email with this tracking link.',
+        draft.trackingNumber || '',
+      );
+      if (tracking === null) return; // cancelled
+      const trimmed = tracking.trim();
+      if (!trimmed) {
+        const okNoTrack = window.confirm(
+          'No tracking number entered. Mark as SHIPPED anyway? (You can add tracking later.)',
+        );
+        if (!okNoTrack) return;
+      }
+      updateStatus(order.id, 'SHIPPED', {
+        trackingNumber: trimmed,
+        trackingCarrier: draft.trackingCarrier || 'Royal Mail',
+      });
+      return;
+    }
+
+    updateStatus(order.id, nextStatus);
+  }
+
+  function saveTracking(order: Order) {
+    const draft = trackingDrafts[order.id];
+    if (!draft?.trackingNumber.trim()) {
+      notify.error('Enter a tracking number first');
+      return;
+    }
+    updateStatus(order.id, order.status === 'SHIPPED' ? 'SHIPPED' : 'SHIPPED', {
+      trackingNumber: draft.trackingNumber.trim(),
+      trackingCarrier: draft.trackingCarrier.trim() || 'Royal Mail',
     });
   }
 
@@ -140,7 +215,7 @@ export default function OrdersPage() {
     <>
       <PageHeader
         title="Orders"
-        description="Full order details — customer email, shipping address, items and status."
+        description="Full order details, shipping address, and Royal Mail tracking emails when you mark orders shipped."
       />
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
       <Panel className="overflow-hidden">
@@ -161,6 +236,7 @@ export default function OrdersPage() {
                   <th className="px-3 py-3 font-medium">Items</th>
                   <th className="px-3 py-3 font-medium">Totals</th>
                   <th className="px-3 py-3 font-medium">Payment</th>
+                  <th className="px-3 py-3 font-medium">Tracking</th>
                   <th className="px-3 py-3 font-medium">Status</th>
                   <th className="px-3 py-3 font-medium">Placed</th>
                   <th className="px-3 py-3 font-medium" />
@@ -169,7 +245,7 @@ export default function OrdersPage() {
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="px-4 py-10 text-center text-[var(--admin-muted)]">
+                    <td colSpan={12} className="px-4 py-10 text-center text-[var(--admin-muted)]">
                       No orders yet
                     </td>
                   </tr>
@@ -225,12 +301,24 @@ export default function OrdersPage() {
                           <td className="max-w-[140px] px-3 py-3 text-[10px] text-[var(--admin-muted)]">
                             {paymentSummary}
                           </td>
+                          <td className="max-w-[150px] px-3 py-3 font-mono text-[10px]">
+                            {o.trackingNumber ? (
+                              <div>
+                                <div>{o.trackingNumber}</div>
+                                <div className="text-[var(--admin-muted)]">
+                                  {o.trackingCarrier || 'Royal Mail'}
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-[var(--admin-muted)]">—</span>
+                            )}
+                          </td>
                           <td className="px-3 py-3">
                             <select
                               className="rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1 text-xs"
                               value={o.status}
                               disabled={pending}
-                              onChange={(e) => updateStatus(o.id, e.target.value)}
+                              onChange={(e) => onStatusChange(o, e.target.value)}
                             >
                               {STATUSES.map((s) => (
                                 <option key={s} value={s}>
@@ -255,8 +343,8 @@ export default function OrdersPage() {
                         </tr>
                         {expandedId === o.id ? (
                           <tr className="border-b border-[var(--admin-border)]/70 bg-black/20">
-                            <td colSpan={11} className="px-4 py-4">
-                              <div className="grid gap-4 md:grid-cols-3">
+                            <td colSpan={12} className="px-4 py-4">
+                              <div className="grid gap-4 md:grid-cols-4">
                                 <div>
                                   <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--admin-muted)]">
                                     Items
@@ -294,6 +382,76 @@ export default function OrdersPage() {
                                   <p className="mt-2 text-xs text-[var(--admin-muted)]">
                                     {paymentSummary}
                                   </p>
+                                </div>
+                                <div>
+                                  <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--admin-muted)]">
+                                    Royal Mail tracking
+                                  </p>
+                                  <p className="mb-2 text-[10px] text-[var(--admin-muted)]">
+                                    Paste tracking from{' '}
+                                    <a
+                                      href="https://business.parcel.royalmail.com/"
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="text-[var(--admin-accent)] underline"
+                                    >
+                                      Click &amp; Drop
+                                    </a>
+                                    . Customer is emailed with track link.
+                                  </p>
+                                  <label className="mb-2 block text-[10px] text-[var(--admin-muted)]">
+                                    Carrier
+                                    <input
+                                      className="mt-1 w-full rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1.5 text-xs text-white"
+                                      value={
+                                        trackingDrafts[o.id]?.trackingCarrier ??
+                                        o.trackingCarrier ??
+                                        'Royal Mail'
+                                      }
+                                      onChange={(e) =>
+                                        setTrackingDrafts((prev) => ({
+                                          ...prev,
+                                          [o.id]: {
+                                            trackingNumber:
+                                              prev[o.id]?.trackingNumber ?? o.trackingNumber ?? '',
+                                            trackingCarrier: e.target.value,
+                                          },
+                                        }))
+                                      }
+                                    />
+                                  </label>
+                                  <label className="mb-2 block text-[10px] text-[var(--admin-muted)]">
+                                    Tracking number
+                                    <input
+                                      className="mt-1 w-full rounded border border-[var(--admin-border)] bg-black/20 px-2 py-1.5 font-mono text-xs text-white"
+                                      placeholder="e.g. AB123456789GB"
+                                      value={
+                                        trackingDrafts[o.id]?.trackingNumber ??
+                                        o.trackingNumber ??
+                                        ''
+                                      }
+                                      onChange={(e) =>
+                                        setTrackingDrafts((prev) => ({
+                                          ...prev,
+                                          [o.id]: {
+                                            trackingCarrier:
+                                              prev[o.id]?.trackingCarrier ??
+                                              o.trackingCarrier ??
+                                              'Royal Mail',
+                                            trackingNumber: e.target.value,
+                                          },
+                                        }))
+                                      }
+                                    />
+                                  </label>
+                                  <button
+                                    type="button"
+                                    disabled={pending}
+                                    onClick={() => saveTracking(o)}
+                                    className="rounded-md bg-[var(--admin-accent)] px-3 py-1.5 text-xs font-semibold text-black disabled:opacity-50"
+                                  >
+                                    Save &amp; email customer
+                                  </button>
                                 </div>
                               </div>
                             </td>

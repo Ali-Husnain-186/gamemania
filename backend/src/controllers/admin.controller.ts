@@ -27,13 +27,20 @@ export async function adminListOrdersController(req: Request, res: Response, nex
 
 export async function adminUpdateOrderController(req: Request, res: Response, next: NextFunction) {
   try {
-    const order = await adminService.adminUpdateOrderStatus(req.params.id, req.body.status);
+    const order = await adminService.adminUpdateOrderStatus(req.params.id, req.body.status, {
+      trackingNumber: req.body.trackingNumber,
+      trackingCarrier: req.body.trackingCarrier,
+    });
     await auditService.writeAuditLog({
       userId: req.user?.id,
       action: 'order.status_update',
       entityType: 'Order',
       entityId: order.id,
-      metadata: { status: req.body.status },
+      metadata: {
+        status: req.body.status,
+        trackingNumber: req.body.trackingNumber ?? null,
+        trackingCarrier: req.body.trackingCarrier ?? null,
+      },
       ipAddress: req.ip,
     });
     ok(res, order);

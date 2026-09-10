@@ -59,7 +59,7 @@ const STATUS_COPY: Record<OrderStatus, { subject: string; title: string; body: s
   SHIPPED: {
     subject: 'Your order has shipped',
     title: 'Order shipped',
-    body: 'Your order is on its way. You’ll get another update when it’s delivered.',
+    body: 'Your order is on its way with Royal Mail. Track it using the details below.',
   },
   DELIVERED: {
     subject: 'Your order has been delivered',
@@ -240,6 +240,10 @@ export async function emailOrderStatusUpdate(
     return sendPaidOrderEmail(order);
   }
 
+  if (nextStatus === 'SHIPPED') {
+    return sendShippedOrderEmail(order);
+  }
+
   const copy = STATUS_COPY[nextStatus];
   const subject = `${copy.subject} — ${order.orderNumber}`;
   const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
@@ -282,6 +286,125 @@ export async function emailOrderStatusUpdate(
     bodyHtml,
     ctaLabel: order.userId ? 'View order' : 'Continue shopping',
     ctaUrl: viewUrl,
+  });
+
+  return sendOrderEmail({ to: order.email, subject, text, html });
+}
+
+function royalMailTrackUrl(trackingNumber: string) {
+  const code = encodeURIComponent(trackingNumber.trim());
+  return `https://www.royalmail.com/track-your-item#/tracking-results/${code}`;
+}
+
+function carrierTrackUrl(carrier: string | null | undefined, trackingNumber: string) {
+  const name = (carrier || 'Royal Mail').toLowerCase();
+  if (name.includes('royal')) return royalMailTrackUrl(trackingNumber);
+  // Generic fallback — still useful in email
+  return royalMailTrackUrl(trackingNumber);
+}
+
+async function sendShippedOrderEmail(order: {
+  email: string;
+  orderNumber: string;
+  grandTotal: number;
+  userId: string | null;
+  trackingNumber: string | null;
+  trackingCarrier: string | null;
+  items: Array<{ name: string; quantity: number; lineTotal: number; sku: string }>;
+  shippingAddress: {
+    fullName: string;
+    line1: string;
+    line2: string | null;
+    city: string;
+    county: string | null;
+    postcode: string;
+    country: string;
+    phone: string | null;
+  } | null;
+}) {
+  const carrier = order.trackingCarrier?.trim() || 'Royal Mail';
+  const tracking = order.trackingNumber?.trim() || null;
+  const trackUrl = tracking ? carrierTrackUrl(carrier, tracking) : null;
+
+  const address = order.shippingAddress
+    ? [
+        order.shippingAddress.fullName,
+        order.shippingAddress.line1,
+        order.shippingAddress.line2,
+        [order.shippingAddress.city, order.shippingAddress.county].filter(Boolean).join(', '),
+        order.shippingAddress.postcode,
+        order.shippingAddress.country,
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : '';
+
+  const itemLines = order.items.map((i) => `• ${i.name} × ${i.quantity}`).join('\n');
+
+  const subject = tracking
+    ? `Your order has shipped — tracking ${tracking}`
+    : `Your order has shipped — ${order.orderNumber}`;
+
+  const viewUrl = order.userId ? siteUrl(`/account/orders/${order.orderNumber}`) : siteUrl('/shop');
+
+  const text = [
+    `Good news — your GameMania UK order is on its way.`,
+    ``,
+    `Order: ${order.orderNumber}`,
+    `Carrier: ${carrier}`,
+    tracking ? `Tracking number: ${tracking}` : 'Tracking number: we’ll update you when available.',
+    trackUrl ? `Track parcel: ${trackUrl}` : null,
+    ``,
+    `Items:`,
+    itemLines || '—',
+    address ? `\nDelivering to:\n${address}` : '',
+    ``,
+    `We’ll email you again when your order is delivered.`,
+    ``,
+    `— GameMania UK`,
+    siteUrl('/'),
+  ]
+    .filter((line) => line !== null)
+    .join('\n');
+
+  const bodyHtml = `
+    <p style="margin:0 0 8px;color:${BRAND.muted};">Good news — your order from <strong style="color:${BRAND.ink};">GameMania UK</strong> has been dispatched.</p>
+    ${metaCard([
+      { label: 'Order', value: escapeHtml(order.orderNumber) },
+      { label: 'Status', value: `<span style="color:${BRAND.cyan};">Shipped</span>` },
+      { label: 'Carrier', value: escapeHtml(carrier) },
+      {
+        label: 'Tracking',
+        value: tracking
+          ? `<span style="font-family:monospace;">${escapeHtml(tracking)}</span>`
+          : 'Pending — you’ll get another email when available',
+      },
+    ])}
+    ${
+      trackUrl
+        ? `<p style="margin:8px 0 0;"><a href="${trackUrl}" style="color:${BRAND.cyan};font-weight:700;">Track your parcel on Royal Mail →</a></p>`
+        : ''
+    }
+    <h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Items</h2>
+    <p style="margin:0;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(itemLines || '—')}</p>
+    ${
+      address
+        ? `<h2 style="margin:22px 0 8px;font-size:15px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.cyan};">Delivering to</h2>
+           <p style="margin:0;padding:14px 16px;background:${BRAND.bg};border-radius:12px;white-space:pre-line;color:${BRAND.ink};font-size:14px;line-height:1.5;">${escapeHtml(address)}</p>`
+        : ''
+    }
+  `;
+
+  const html = wrapEmailLayout({
+    preheader: tracking
+      ? `Shipped — tracking ${tracking}`
+      : `Your order ${order.orderNumber} has shipped`,
+    title: 'Your order has shipped',
+    statusBadge: 'Shipped',
+    statusColor: BRAND.cyan,
+    bodyHtml,
+    ctaLabel: trackUrl ? 'Track parcel' : order.userId ? 'View order' : 'Continue shopping',
+    ctaUrl: trackUrl ?? viewUrl,
   });
 
   return sendOrderEmail({ to: order.email, subject, text, html });

@@ -59,36 +59,76 @@ export async function adminListOrders(query: {
   return { items, total, page: query.page, limit: query.limit };
 }
 
-export async function adminUpdateOrderStatus(id: string, status: OrderStatus) {
+export async function adminUpdateOrderStatus(
+  id: string,
+  status: OrderStatus,
+  extras?: { trackingNumber?: string | null; trackingCarrier?: string | null },
+) {
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw new NotFoundError('Order not found');
 
   const previousStatus = order.status;
+  const trackingNumber =
+    extras?.trackingNumber !== undefined
+      ? extras.trackingNumber?.trim() || null
+      : order.trackingNumber;
+  const trackingCarrier =
+    extras?.trackingCarrier !== undefined
+      ? extras.trackingCarrier?.trim() || null
+      : order.trackingCarrier;
+
+  const trackingChanged =
+    (extras?.trackingNumber !== undefined &&
+      (extras.trackingNumber?.trim() || null) !== (order.trackingNumber ?? null)) ||
+    (extras?.trackingCarrier !== undefined &&
+      (extras.trackingCarrier?.trim() || null) !== (order.trackingCarrier ?? null));
+
   const updated = await prisma.order.update({
     where: { id },
-    data: { status },
+    data: {
+      status,
+      ...(extras?.trackingNumber !== undefined ? { trackingNumber } : {}),
+      ...(extras?.trackingCarrier !== undefined
+        ? { trackingCarrier: trackingCarrier ?? 'Royal Mail' }
+        : {}),
+      ...(status === 'SHIPPED' && previousStatus !== 'SHIPPED' ? { shippedAt: new Date() } : {}),
+      ...(status === 'SHIPPED' && !order.shippedAt && trackingNumber
+        ? { shippedAt: new Date() }
+        : {}),
+    },
     include: {
       user: { select: { id: true, email: true, firstName: true, lastName: true } },
       items: true,
       payments: true,
+      shippingAddress: true,
     },
   });
 
-  if (previousStatus !== status) {
+  const shouldEmail =
+    previousStatus !== status ||
+    (status === 'SHIPPED' && trackingChanged && Boolean(trackingNumber));
+
+  if (shouldEmail) {
     const { emailOrderStatusUpdate } = await import('./order-email.service');
-    void emailOrderStatusUpdate(updated.id, status, previousStatus).then((mail) => {
+    void emailOrderStatusUpdate(
+      updated.id,
+      status,
+      previousStatus === status ? null : previousStatus,
+    ).then((mail) => {
       if (!mail.sent) {
         console.error('[admin] order status email failed', updated.orderNumber, mail.error);
       }
     });
 
-    if (updated.userId) {
+    if (updated.userId && previousStatus !== status) {
       const { createNotification } = await import('./notification.service');
       void createNotification(
         updated.userId,
         'ORDER',
         `Order ${status.replace(/_/g, ' ').toLowerCase()}`,
-        `Your order ${updated.orderNumber} is now ${status.replace(/_/g, ' ').toLowerCase()}.`,
+        trackingNumber && status === 'SHIPPED'
+          ? `Your order ${updated.orderNumber} has shipped. Tracking: ${trackingNumber}.`
+          : `Your order ${updated.orderNumber} is now ${status.replace(/_/g, ' ').toLowerCase()}.`,
         `/account/orders/${updated.orderNumber}`,
         { email: false },
       );

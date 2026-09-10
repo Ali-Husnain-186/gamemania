@@ -33,6 +33,14 @@ export const adminUpdateOrderSchema = z.object({
     'REFUNDED',
     'PARTIALLY_REFUNDED',
   ]),
+  trackingNumber: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().trim().min(4).max(64).optional().nullable(),
+  ),
+  trackingCarrier: z.preprocess(
+    (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
+    z.string().trim().min(2).max(80).optional().nullable(),
+  ),
 });
 
 export const orderIdParamsSchema = z.object({

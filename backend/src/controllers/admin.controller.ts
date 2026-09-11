@@ -30,6 +30,7 @@ export async function adminUpdateOrderController(req: Request, res: Response, ne
     const order = await adminService.adminUpdateOrderStatus(req.params.id, req.body.status, {
       trackingNumber: req.body.trackingNumber,
       trackingCarrier: req.body.trackingCarrier,
+      resendEmails: req.body.resendEmails,
     });
     await auditService.writeAuditLog({
       userId: req.user?.id,
@@ -40,6 +41,7 @@ export async function adminUpdateOrderController(req: Request, res: Response, ne
         status: req.body.status,
         trackingNumber: req.body.trackingNumber ?? null,
         trackingCarrier: req.body.trackingCarrier ?? null,
+        resendEmails: Boolean(req.body.resendEmails),
       },
       ipAddress: req.ip,
     });

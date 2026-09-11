@@ -196,6 +196,32 @@ export default function OrdersPage() {
     });
   }
 
+  function resendEmails(order: Order) {
+    if (
+      !window.confirm(
+        `Resend ${order.status} emails for ${order.orderNumber}?\n\nSends to:\n• Customer (${order.email})\n• info@gamemaniaauk.co.uk\n• husnain.code@gmail.com`,
+      )
+    ) {
+      return;
+    }
+    startTransition(async () => {
+      try {
+        await apiPatch(`/admin/orders/${order.id}`, {
+          status: order.status,
+          resendEmails: true,
+          trackingNumber: order.trackingNumber ?? undefined,
+          trackingCarrier: order.trackingCarrier ?? undefined,
+        });
+        notify.success('Emails resent to customer + owners');
+        await load();
+      } catch (err) {
+        const message = err instanceof ApiError ? err.message : 'Resend failed';
+        setError(message);
+        notify.error(message);
+      }
+    });
+  }
+
   function remove(id: string, orderNumber: string) {
     if (!window.confirm(`Delete order ${orderNumber}? This cannot be undone.`)) return;
     startTransition(async () => {
@@ -331,14 +357,24 @@ export default function OrdersPage() {
                             {new Date(o.placedAt || o.createdAt).toLocaleString('en-GB')}
                           </td>
                           <td className="px-3 py-3 text-right">
-                            <button
-                              type="button"
-                              className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
-                              disabled={pending}
-                              onClick={() => remove(o.id, o.orderNumber)}
-                            >
-                              Delete
-                            </button>
+                            <div className="flex flex-col items-end gap-1">
+                              <button
+                                type="button"
+                                className="text-xs text-[var(--admin-accent)] hover:underline disabled:opacity-50"
+                                disabled={pending}
+                                onClick={() => resendEmails(o)}
+                              >
+                                Resend emails
+                              </button>
+                              <button
+                                type="button"
+                                className="text-sm text-[var(--admin-danger)] hover:underline disabled:opacity-50"
+                                disabled={pending}
+                                onClick={() => remove(o.id, o.orderNumber)}
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </td>
                         </tr>
                         {expandedId === o.id ? (

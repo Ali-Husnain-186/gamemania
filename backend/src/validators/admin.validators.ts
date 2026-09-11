@@ -41,6 +41,8 @@ export const adminUpdateOrderSchema = z.object({
     (v) => (typeof v === 'string' && v.trim() === '' ? undefined : v),
     z.string().trim().min(2).max(80).optional().nullable(),
   ),
+  /** Force customer + shop emails even if status did not change */
+  resendEmails: z.boolean().optional(),
 });
 
 export const orderIdParamsSchema = z.object({

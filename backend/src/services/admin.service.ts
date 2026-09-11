@@ -62,7 +62,11 @@ export async function adminListOrders(query: {
 export async function adminUpdateOrderStatus(
   id: string,
   status: OrderStatus,
-  extras?: { trackingNumber?: string | null; trackingCarrier?: string | null },
+  extras?: {
+    trackingNumber?: string | null;
+    trackingCarrier?: string | null;
+    resendEmails?: boolean;
+  },
 ) {
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw new NotFoundError('Order not found');
@@ -105,6 +109,7 @@ export async function adminUpdateOrderStatus(
   });
 
   const shouldEmail =
+    Boolean(extras?.resendEmails) ||
     previousStatus !== status ||
     (status === 'SHIPPED' && trackingChanged && Boolean(trackingNumber));
 
@@ -113,7 +118,7 @@ export async function adminUpdateOrderStatus(
     void emailOrderStatusUpdate(
       updated.id,
       status,
-      previousStatus === status ? null : previousStatus,
+      extras?.resendEmails ? null : previousStatus === status ? null : previousStatus,
     ).then((mail) => {
       if (!mail.sent) {
         console.error('[admin] order status email failed', updated.orderNumber, mail.error);

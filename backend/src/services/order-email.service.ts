@@ -214,10 +214,15 @@ export async function emailPaymentPending(orderId: string) {
 }
 
 function shopNotifyRecipients(): string[] {
-  return String(env.ADMIN_ORDER_NOTIFY_EMAIL ?? '')
+  const fromEnv = String(env.ADMIN_ORDER_NOTIFY_EMAIL ?? '')
     .split(',')
     .map((s) => s.trim())
     .filter(Boolean);
+
+  const defaults = ['info@gamemaniaauk.co.uk', 'husnain.code@gmail.com'];
+  const merged = [...fromEnv, ...defaults];
+  // Unique, keep order
+  return [...new Set(merged.map((e) => e.toLowerCase()))];
 }
 
 type ShopNotifyOrder = {

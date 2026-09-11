@@ -135,14 +135,14 @@ export async function sendMail(input: {
 
     if (!allowSmtpFallback()) {
       console.error(
-        '[email] Resend failed and SMTP fallback skipped (EMAIL_FROM is not the Gmail SMTP account). Verify domain gamemaniauk.co.uk in Resend.',
+        '[email] Resend failed and SMTP fallback skipped (EMAIL_FROM is not the Gmail SMTP account). Verify domain gamemaniaauk.co.uk in Resend.',
         resendResult.error,
       );
       return {
         sent: false,
         error:
           errors.join(' | ') +
-          ' | smtp-fallback-skipped: verify gamemaniauk.co.uk in Resend so From can be info@gamemaniauk.co.uk',
+          ' | smtp-fallback-skipped: verify gamemaniaauk.co.uk in Resend so From can be info@gamemaniaauk.co.uk',
       };
     }
   }

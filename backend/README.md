@@ -44,8 +44,8 @@ Requires local PostgreSQL (see root `.env.example`). See [docs/api/rest-api.md](
 1. Create a free account at [resend.com](https://resend.com)
 2. API Keys → Create → copy `re_...` into `backend/.env` as `RESEND_API_KEY`
 3. For testing, you can use `EMAIL_FROM=GAME MANIA <beth.t@example.com>`
-4. For brand mail: Domains → Add `gamemaniauk.co.uk` (mailbox domain) → add DNS (DKIM/SPF) → Verify → then set:
-   `EMAIL_FROM=GAME MANIA <info@gamemaniauk.co.uk>`
+4. For brand mail: Domains → Add `gamemaniaauk.co.uk` → add DNS (DKIM/SPF) → Verify → then set:
+   `EMAIL_FROM=GAME MANIA <info@gamemaniaauk.co.uk>`
    Do not rely on Gmail SMTP for this From — Gmail rewrites the sender to the Gmail account.
 5. Restart the API
 

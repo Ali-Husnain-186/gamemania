@@ -38,7 +38,7 @@ const envSchema = z.object({
   SMTP_PASS: z.string().optional(),
   // Prefer Resend (free tier). Falls back to SMTP if RESEND_API_KEY is empty.
   RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().default('GAME MANIA <beth.t@example.com>'),
+  EMAIL_FROM: z.string().default('GAME MANIA <info@gamemaniauk.co.uk>'),
   /**
    * Shop owner inbox(es) — copy of every order status email.
    * Comma-separated allowed, e.g. info@…,husnain.code@gmail.com
@@ -89,7 +89,7 @@ const data = parsed.success
       SMTP_USER: process.env.SMTP_USER,
       SMTP_PASS: process.env.SMTP_PASS,
       RESEND_API_KEY: process.env.RESEND_API_KEY,
-      EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <beth.t@example.com>',
+      EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <info@gamemaniauk.co.uk>',
       ADMIN_ORDER_NOTIFY_EMAIL:
         process.env.ADMIN_ORDER_NOTIFY_EMAIL ?? 'info@gamemaniauk.co.uk,husnain.code@gmail.com',
       CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,

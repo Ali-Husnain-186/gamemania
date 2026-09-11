@@ -199,7 +199,7 @@ export default function OrdersPage() {
   function resendEmails(order: Order) {
     if (
       !window.confirm(
-        `Resend ${order.status} emails for ${order.orderNumber}?\n\nSends to:\n• Customer (${order.email})\n• info@gamemaniaauk.co.uk\n• husnain.code@gmail.com`,
+        `Resend ${order.status} emails for ${order.orderNumber}?\n\nSends to:\n• Customer (${order.email})\n• info@gamemaniauk.co.uk\n• husnain.code@gmail.com`,
       )
     ) {
       return;

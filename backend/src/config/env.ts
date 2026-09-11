@@ -46,7 +46,7 @@ const envSchema = z.object({
   ADMIN_ORDER_NOTIFY_EMAIL: z
     .string()
     .min(3)
-    .default('info@gamemaniaauk.co.uk,husnain.code@gmail.com'),
+    .default('info@gamemaniauk.co.uk,husnain.code@gmail.com'),
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
@@ -91,7 +91,7 @@ const data = parsed.success
       RESEND_API_KEY: process.env.RESEND_API_KEY,
       EMAIL_FROM: process.env.EMAIL_FROM ?? 'GAME MANIA <beth.t@example.com>',
       ADMIN_ORDER_NOTIFY_EMAIL:
-        process.env.ADMIN_ORDER_NOTIFY_EMAIL ?? 'info@gamemaniaauk.co.uk,husnain.code@gmail.com',
+        process.env.ADMIN_ORDER_NOTIFY_EMAIL ?? 'info@gamemaniauk.co.uk,husnain.code@gmail.com',
       CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
       CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
       CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,

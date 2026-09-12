@@ -15,7 +15,7 @@ const FEATURED_CARDS = [
   },
   {
     key: 'preorders',
-    title: "Pre-order's and Latest releases",
+    title: 'Pre-orders and Latest releases',
     href: '/shop?preorder=true&sort=release',
     image: '/brand/preorder-latest-releases.jpg',
     alt: 'Wolverine, GTA VI and FC 27 game cases',

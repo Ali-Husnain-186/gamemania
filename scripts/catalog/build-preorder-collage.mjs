@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build homepage collage for Pre-order's and Latest releases card.
+ * Build homepage collage for Pre-orders and Latest releases card.
  * Uses local catalog case/showcase art (Wolverine, GTA VI, FC 27).
  */
 import fs from 'fs';

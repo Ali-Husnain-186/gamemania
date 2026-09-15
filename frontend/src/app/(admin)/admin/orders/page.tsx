@@ -78,6 +78,7 @@ type Order = {
   emailStatus?: {
     ordered: EmailEventStatus;
     shipped: EmailEventStatus | null;
+    current?: EmailEventStatus;
     canResend: boolean;
     resendEvent: string;
   };
@@ -167,8 +168,8 @@ export default function OrdersPage() {
         });
         notify.success(
           status === 'SHIPPED' && extras?.trackingNumber
-            ? 'Shipped — customer emailed with tracking'
-            : 'Order status updated',
+            ? 'Shipped — emails sent to customer + shop'
+            : 'Status updated — emails sent to customer + shop',
         );
         await load();
       } catch (err) {
@@ -259,12 +260,8 @@ export default function OrdersPage() {
   }
 
   function renderEmailColumn(order: Order) {
-    const primary =
-      order.status === 'SHIPPED' || order.status === 'DELIVERED'
-        ? (order.emailStatus?.shipped ?? order.emailStatus?.ordered)
-        : order.emailStatus?.ordered;
-    const label =
-      order.status === 'SHIPPED' || order.status === 'DELIVERED' ? 'Shipped' : 'Ordered';
+    const primary = order.emailStatus?.current ?? order.emailStatus?.ordered;
+    const label = (order.emailStatus?.resendEvent || order.status).replace(/_/g, ' ');
 
     if (!primary) {
       return <span className="text-[10px] text-[var(--admin-muted)]">No log yet</span>;
@@ -309,7 +306,7 @@ export default function OrdersPage() {
     <>
       <PageHeader
         title="Orders"
-        description="Full order details, shipping address, and Royal Mail tracking emails when you mark orders shipped."
+        description="Every status change emails customer + shop owners automatically. Emails column shows delivery status for the current step."
       />
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
       <Panel className="overflow-hidden">

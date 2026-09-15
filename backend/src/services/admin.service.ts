@@ -62,21 +62,17 @@ export async function adminListOrders(query: {
   return {
     items: items.map((order) => {
       const paidSummary = summarizeEmailEvent(order.email, 'PAID', order.emailLogs);
-      const shippedSummary =
-        order.status === 'SHIPPED' || order.status === 'DELIVERED'
-          ? summarizeEmailEvent(order.email, 'SHIPPED', order.emailLogs)
-          : null;
-      const primary =
-        order.status === 'SHIPPED' || order.status === 'DELIVERED'
-          ? (shippedSummary ?? paidSummary)
-          : paidSummary;
+      const shippedSummary = summarizeEmailEvent(order.email, 'SHIPPED', order.emailLogs);
+      const currentSummary = summarizeEmailEvent(order.email, order.status, order.emailLogs);
       return {
         ...order,
         emailStatus: {
           ordered: paidSummary,
-          shipped: shippedSummary,
-          canResend: primary.canResend,
-          resendEvent: primary.event,
+          shipped:
+            order.status === 'SHIPPED' || order.status === 'DELIVERED' ? shippedSummary : null,
+          current: currentSummary,
+          canResend: currentSummary.canResend,
+          resendEvent: currentSummary.event,
         },
       };
     }),
@@ -185,22 +181,24 @@ export async function adminUpdateOrderStatus(
   const { summarizeEmailEvent } = await import('./order-email.service');
   const finalOrder = refreshed ?? updated;
   const paidSummary = summarizeEmailEvent(finalOrder.email, 'PAID', finalOrder.emailLogs);
-  const shippedSummary =
-    finalOrder.status === 'SHIPPED' || finalOrder.status === 'DELIVERED'
-      ? summarizeEmailEvent(finalOrder.email, 'SHIPPED', finalOrder.emailLogs)
-      : null;
-  const primary =
-    finalOrder.status === 'SHIPPED' || finalOrder.status === 'DELIVERED'
-      ? (shippedSummary ?? paidSummary)
-      : paidSummary;
+  const shippedSummary = summarizeEmailEvent(finalOrder.email, 'SHIPPED', finalOrder.emailLogs);
+  const currentSummary = summarizeEmailEvent(
+    finalOrder.email,
+    finalOrder.status,
+    finalOrder.emailLogs,
+  );
 
   return {
     ...finalOrder,
     emailStatus: {
       ordered: paidSummary,
-      shipped: shippedSummary,
-      canResend: primary.canResend,
-      resendEvent: primary.event,
+      shipped:
+        finalOrder.status === 'SHIPPED' || finalOrder.status === 'DELIVERED'
+          ? shippedSummary
+          : null,
+      current: currentSummary,
+      canResend: currentSummary.canResend,
+      resendEvent: currentSummary.event,
     },
     emailResult,
   };

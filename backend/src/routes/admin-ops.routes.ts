@@ -5,6 +5,10 @@ import {
   adminListCustomersController,
   adminListOrdersController,
   adminUpdateOrderController,
+  adminCreateCouponController,
+  adminDeleteCouponController,
+  adminListCouponsController,
+  adminUpdateCouponController,
   dashboardStatsController,
   deleteShippingRuleController,
   getSettingController,
@@ -18,14 +22,16 @@ import {
   adminCustomersQuerySchema,
   adminOrdersQuerySchema,
   adminUpdateOrderSchema,
+  createCouponSchema,
+  couponIdParamsSchema,
   customerIdParamsSchema,
   orderIdParamsSchema,
   settingKeyParamsSchema,
   shippingRuleIdParamsSchema,
   shippingRulesPatchSchema,
+  updateCouponSchema,
   updateSettingSchema,
 } from '../validators/admin.validators';
-
 const router = Router();
 
 router.use(authenticate);
@@ -86,6 +92,27 @@ router.patch(
   validate(settingKeyParamsSchema, 'params'),
   validate(updateSettingSchema),
   updateSettingController,
+);
+
+router.get('/coupons', requirePermissions('coupons:write'), adminListCouponsController);
+router.post(
+  '/coupons',
+  requirePermissions('coupons:write'),
+  validate(createCouponSchema),
+  adminCreateCouponController,
+);
+router.patch(
+  '/coupons/:id',
+  requirePermissions('coupons:write'),
+  validate(couponIdParamsSchema, 'params'),
+  validate(updateCouponSchema),
+  adminUpdateCouponController,
+);
+router.delete(
+  '/coupons/:id',
+  requirePermissions('coupons:write'),
+  validate(couponIdParamsSchema, 'params'),
+  adminDeleteCouponController,
 );
 
 export const adminOpsRouter = router;

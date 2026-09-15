@@ -1,8 +1,23 @@
 import type { OrderStatus } from '@prisma/client';
 import { env } from '../config/env';
 import { prisma } from '../config/prisma';
-import { sendOrderEmail } from './email.service';
+import { sendOrderEmail, type EmailSendResult } from './email.service';
 
+export type OrderEmailRecipientResult = {
+  recipient: string;
+  role: 'CUSTOMER' | 'SHOP';
+  event: string;
+  success: boolean;
+  error?: string;
+  provider?: string;
+};
+
+export type OrderEmailBatchResult = {
+  sent: boolean;
+  error?: string;
+  event: string;
+  recipients: OrderEmailRecipientResult[];
+};
 const BRAND = {
   cyan: '#01A6C2',
   yellow: '#FFD100',
@@ -221,8 +236,154 @@ function shopNotifyRecipients(): string[] {
 
   const defaults = ['info@gamemaniaauk.co.uk', 'husnain.code@gmail.com'];
   const merged = [...fromEnv, ...defaults];
-  // Unique, keep order
   return [...new Set(merged.map((e) => e.toLowerCase()))];
+}
+
+export function requiredShopNotifyRecipients(): string[] {
+  return shopNotifyRecipients();
+}
+
+/** Latest success/fail per recipient for an event (from newest logs). */
+export function summarizeEmailEvent(
+  orderEmail: string,
+  event: string,
+  logs: Array<{
+    recipient: string;
+    role: 'CUSTOMER' | 'SHOP';
+    event: string;
+    success: boolean;
+    error: string | null;
+    provider: string | null;
+    createdAt: Date;
+  }>,
+) {
+  const required = [
+    { recipient: orderEmail.toLowerCase(), role: 'CUSTOMER' as const },
+    ...requiredShopNotifyRecipients().map((recipient) => ({
+      recipient,
+      role: 'SHOP' as const,
+    })),
+  ];
+
+  const eventLogs = logs
+    .filter((l) => l.event === event)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+  const latestByRecipient = new Map<string, (typeof eventLogs)[number]>();
+  for (const log of eventLogs) {
+    const key = log.recipient.toLowerCase();
+    if (!latestByRecipient.has(key)) latestByRecipient.set(key, log);
+  }
+
+  const recipients = required.map((req) => {
+    const log = latestByRecipient.get(req.recipient.toLowerCase());
+    if (!log) {
+      return {
+        recipient: req.recipient,
+        role: req.role,
+        event,
+        success: false,
+        status: 'missing' as const,
+        error: 'Not sent yet',
+        provider: null as string | null,
+        sentAt: null as string | null,
+      };
+    }
+    return {
+      recipient: req.recipient,
+      role: req.role,
+      event,
+      success: log.success,
+      status: log.success ? ('sent' as const) : ('failed' as const),
+      error: log.success ? null : (log.error ?? 'Send failed'),
+      provider: log.provider,
+      sentAt: log.createdAt.toISOString(),
+    };
+  });
+
+  const allSent = recipients.every((r) => r.success);
+  const canResend = !allSent;
+
+  return { event, recipients, allSent, canResend };
+}
+
+async function logOrderEmail(input: {
+  orderId: string;
+  recipient: string;
+  role: 'CUSTOMER' | 'SHOP';
+  event: string;
+  result: EmailSendResult;
+}): Promise<OrderEmailRecipientResult> {
+  const row = {
+    recipient: input.recipient.toLowerCase(),
+    role: input.role,
+    event: input.event,
+    success: input.result.sent,
+    error: input.result.sent ? null : (input.result.error ?? 'Send failed'),
+    provider: input.result.provider,
+  };
+
+  try {
+    await prisma.orderEmailLog.create({
+      data: {
+        orderId: input.orderId,
+        ...row,
+      },
+    });
+  } catch (err) {
+    console.error('[order-email] failed to persist email log', input.orderId, err);
+  }
+
+  return {
+    recipient: row.recipient,
+    role: row.role,
+    event: row.event,
+    success: row.success,
+    error: row.error ?? undefined,
+    provider: row.provider ?? undefined,
+  };
+}
+
+async function sendAndLog(input: {
+  orderId: string;
+  to: string;
+  role: 'CUSTOMER' | 'SHOP';
+  event: string;
+  subject: string;
+  text: string;
+  html: string;
+}): Promise<OrderEmailRecipientResult> {
+  const result = await sendOrderEmail({
+    to: input.to,
+    subject: input.subject,
+    text: input.text,
+    html: input.html,
+  });
+  if (!result.sent) {
+    console.error('[order-email] send failed', input.event, input.to, result.error);
+  }
+  return logOrderEmail({
+    orderId: input.orderId,
+    recipient: input.to,
+    role: input.role,
+    event: input.event,
+    result,
+  });
+}
+
+function batchFromRecipients(
+  event: string,
+  recipients: OrderEmailRecipientResult[],
+): OrderEmailBatchResult {
+  const failed = recipients.filter((r) => !r.success);
+  return {
+    sent: failed.length === 0 && recipients.length > 0,
+    error: failed.length
+      ? failed.map((f) => `${f.recipient}: ${f.error ?? 'failed'}`).join(' | ')
+      : undefined,
+    event,
+    recipients,
+  };
 }
 
 type ShopNotifyOrder = {
@@ -249,13 +410,14 @@ type ShopNotifyOrder = {
 };
 
 /** Copy every order-status email to the shop inbox (info@…). */
-function notifyShopInbox(input: {
+async function notifyShopInbox(input: {
+  orderId: string;
   status: OrderStatus;
   order: ShopNotifyOrder;
   customerSubject: string;
-}) {
+}): Promise<OrderEmailRecipientResult[]> {
   const recipients = shopNotifyRecipients();
-  if (!recipients.length) return;
+  if (!recipients.length) return [];
 
   const o = input.order;
   const accent = statusAccent(input.status);
@@ -341,13 +503,21 @@ function notifyShopInbox(input: {
     ctaUrl: siteUrl('/admin/orders'),
   });
 
+  const results: OrderEmailRecipientResult[] = [];
   for (const to of recipients) {
-    void sendOrderEmail({ to, subject, text, html }).then((mail) => {
-      if (!mail.sent) {
-        console.error('[order-email] shop notify failed', o.orderNumber, to, mail.error);
-      }
-    });
+    results.push(
+      await sendAndLog({
+        orderId: input.orderId,
+        to,
+        role: 'SHOP',
+        event: input.status,
+        subject,
+        text,
+        html,
+      }),
+    );
   }
+  return results;
 }
 
 /**
@@ -359,7 +529,7 @@ export async function emailOrderStatusUpdate(
   orderId: string,
   status?: OrderStatus,
   previousStatus?: OrderStatus | null,
-) {
+): Promise<OrderEmailBatchResult> {
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {
@@ -367,11 +537,13 @@ export async function emailOrderStatusUpdate(
       shippingAddress: true,
     },
   });
-  if (!order?.email) return { sent: false as const, error: 'No order email' };
+  if (!order?.email) {
+    return { sent: false, error: 'No order email', event: status ?? 'UNKNOWN', recipients: [] };
+  }
 
   const nextStatus = status ?? order.status;
   if (previousStatus && previousStatus === nextStatus) {
-    return { sent: false as const, error: 'Status unchanged' };
+    return { sent: false, error: 'Status unchanged', event: nextStatus, recipients: [] };
   }
 
   if (nextStatus === 'PAID') {
@@ -448,9 +620,22 @@ export async function emailOrderStatusUpdate(
     ctaUrl: viewUrl,
   });
 
-  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
-  notifyShopInbox({ status: nextStatus, order, customerSubject: subject });
-  return customerResult;
+  const customer = await sendAndLog({
+    orderId: order.id,
+    to: order.email,
+    role: 'CUSTOMER',
+    event: nextStatus,
+    subject,
+    text,
+    html,
+  });
+  const shop = await notifyShopInbox({
+    orderId: order.id,
+    status: nextStatus,
+    order,
+    customerSubject: subject,
+  });
+  return batchFromRecipients(nextStatus, [customer, ...shop]);
 }
 
 function royalMailTrackUrl(trackingNumber: string) {
@@ -466,6 +651,7 @@ function carrierTrackUrl(carrier: string | null | undefined, trackingNumber: str
 }
 
 async function sendShippedOrderEmail(order: {
+  id: string;
   email: string;
   orderNumber: string;
   grandTotal: number;
@@ -569,12 +755,26 @@ async function sendShippedOrderEmail(order: {
     ctaUrl: trackUrl ?? viewUrl,
   });
 
-  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
-  notifyShopInbox({ status: 'SHIPPED', order, customerSubject: subject });
-  return customerResult;
+  const customer = await sendAndLog({
+    orderId: order.id,
+    to: order.email,
+    role: 'CUSTOMER',
+    event: 'SHIPPED',
+    subject,
+    text,
+    html,
+  });
+  const shop = await notifyShopInbox({
+    orderId: order.id,
+    status: 'SHIPPED',
+    order,
+    customerSubject: subject,
+  });
+  return batchFromRecipients('SHIPPED', [customer, ...shop]);
 }
 
 async function sendPaidOrderEmail(order: {
+  id: string;
   email: string;
   orderNumber: string;
   grandTotal: number;
@@ -679,7 +879,20 @@ async function sendPaidOrderEmail(order: {
     ctaUrl: viewUrl,
   });
 
-  const customerResult = await sendOrderEmail({ to: order.email, subject, text, html });
-  notifyShopInbox({ status: 'PAID', order, customerSubject: subject });
-  return customerResult;
+  const customer = await sendAndLog({
+    orderId: order.id,
+    to: order.email,
+    role: 'CUSTOMER',
+    event: 'PAID',
+    subject,
+    text,
+    html,
+  });
+  const shop = await notifyShopInbox({
+    orderId: order.id,
+    status: 'PAID',
+    order,
+    customerSubject: subject,
+  });
+  return batchFromRecipients('PAID', [customer, ...shop]);
 }

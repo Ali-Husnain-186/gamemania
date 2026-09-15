@@ -84,7 +84,29 @@ export const updateSettingSchema = z.object({
   group: z.string().optional(),
 });
 
+export const couponIdParamsSchema = z.object({
+  id: z.string().cuid(),
+});
+
+const couponBodyBase = z.object({
+  code: z.string().trim().min(2).max(40),
+  type: z.enum(['PERCENTAGE', 'FIXED_AMOUNT', 'FREE_SHIPPING']),
+  value: z.number().int().min(0),
+  minOrderAmount: z.number().int().min(0).nullable().optional(),
+  maxDiscount: z.number().int().min(0).nullable().optional(),
+  usageLimit: z.number().int().min(1).nullable().optional(),
+  perUserLimit: z.number().int().min(0).optional(),
+  startsAt: z.string().nullable().optional(),
+  endsAt: z.string().nullable().optional(),
+  isActive: z.boolean().optional(),
+});
+
+export const createCouponSchema = couponBodyBase;
+export const updateCouponSchema = couponBodyBase.partial();
+
 export type AdminOrdersQuery = z.infer<typeof adminOrdersQuerySchema>;
 export type AdminCustomersQuery = z.infer<typeof adminCustomersQuerySchema>;
 export type ShippingRulesPatchInput = z.infer<typeof shippingRulesPatchSchema>;
 export type UpdateSettingInput = z.infer<typeof updateSettingSchema>;
+export type CreateCouponInput = z.infer<typeof createCouponSchema>;
+export type UpdateCouponInput = z.infer<typeof updateCouponSchema>;

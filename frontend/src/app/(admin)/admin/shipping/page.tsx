@@ -83,7 +83,7 @@ export default function ShippingPage() {
     <>
       <PageHeader
         title="Shipping"
-        description="UK rates and free-shipping threshold (amounts in pence)."
+        description="UK purchase rates and free-shipping threshold (amounts in pence). Trade-in-only carts always use fixed £1.00 postage in checkout."
         actions={
           <button
             type="button"

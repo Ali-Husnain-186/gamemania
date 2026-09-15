@@ -14,7 +14,7 @@ import { cancelUnpaidOrder } from './order-cancel.service';
 import { emailOrderPaid } from './order-email.service';
 import { createAddress } from './address.service';
 import { hashPassword } from '../utils/password';
-
+import { TRADE_IN_ONLY_SHIPPING_PENCE } from '../config/constants';
 export type CheckoutOptions = {
   couponCode?: string;
   useStoreCredit?: boolean;
@@ -42,6 +42,7 @@ export type CheckoutPreview = {
   discountPence: number;
   freeShipping: boolean;
   shippingPence: number;
+  tradeInOnlyShipping: boolean;
   storeCreditApplied: number;
   pointsRedeemed: number;
   pointsValuePence: number;
@@ -156,8 +157,21 @@ export async function computeCheckout(
   }
 
   const subtotalAfterCoupon = Math.max(0, cart.subtotalPence - discountPence);
-  const shippingQuote = await quoteShipping(subtotalAfterCoupon, country);
-  const shippingPence = freeShipping ? 0 : shippingQuote.ratePence;
+  const tradeInOnly = cart.items.length > 0 && cart.items.every((item) => Boolean(item.isTradeIn));
+
+  let shippingQuote = await quoteShipping(subtotalAfterCoupon, country);
+  let shippingPence = freeShipping ? 0 : shippingQuote.ratePence;
+
+  if (tradeInOnly && !freeShipping) {
+    shippingPence = TRADE_IN_ONLY_SHIPPING_PENCE;
+    shippingQuote = {
+      ...shippingQuote,
+      ratePence: TRADE_IN_ONLY_SHIPPING_PENCE,
+      freeShipping: false,
+      ruleId: null,
+      ruleName: 'Trade-in postage',
+    };
+  }
 
   const maxPointsValue = Math.floor(subtotalAfterCoupon * 0.5);
   const requestedPoints = options.pointsToRedeem ?? 0;
@@ -188,6 +202,7 @@ export async function computeCheckout(
     discountPence,
     freeShipping,
     shippingPence,
+    tradeInOnlyShipping: tradeInOnly && !freeShipping,
     storeCreditApplied,
     pointsRedeemed,
     pointsValuePence,

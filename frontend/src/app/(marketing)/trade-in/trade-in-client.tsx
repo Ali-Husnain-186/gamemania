@@ -4,12 +4,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { apiGet, apiPost, getAccessToken } from '@/lib/api';
 import { formatGBP } from '@/lib/format';
 import { notify } from '@/lib/toast';
 import { ErrorState } from '@/components/shared/error-state';
 import { BrandLoader } from '@/components/ui/brand-loader';
+import { DEFAULT_PROMO_BANNER, normalizePromoBanner } from '@/features/home/promo-banner-content';
 
 type TradeOption = {
   id: string;
@@ -73,6 +74,8 @@ export function TradeInClient() {
   const [modelId, setModelId] = useState('');
   const [optionId, setOptionId] = useState('');
   const [payoutMethod, setPayoutMethod] = useState<'CASH' | 'STORE_CREDIT'>('STORE_CREDIT');
+  const [promoCode, setPromoCode] = useState(DEFAULT_PROMO_BANNER.code);
+  const [promoTitle, setPromoTitle] = useState('10% off');
   const [manualCategory, setManualCategory] = useState('Laptop');
   const [manualDescription, setManualDescription] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
@@ -80,6 +83,19 @@ export function TradeInClient() {
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [statusMsg, setStatusMsg] = useState<string | null>(null);
   const [requestRef, setRequestRef] = useState<string | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const row = await apiGet<{ value: unknown }>('/settings/promo.banner');
+        const promo = normalizePromoBanner(row.value);
+        setPromoCode(promo.code);
+        setPromoTitle(promo.title);
+      } catch {
+        /* keep defaults */
+      }
+    })();
+  }, []);
 
   const treeQuery = useQuery({
     queryKey: ['trade-consoles'],
@@ -569,9 +585,9 @@ export function TradeInClient() {
           <p className="mt-2 text-sm text-[var(--gm-muted)]">
             Scan the flyer QR → shop online → unlock benefits. Use{' '}
             <span className="rounded bg-[var(--gm-magenta)] px-2 py-0.5 font-bold text-white">
-              GAMEMANIA10
+              {promoCode}
             </span>{' '}
-            for 10% off.
+            for {promoTitle}.
           </p>
         </div>
       </section>

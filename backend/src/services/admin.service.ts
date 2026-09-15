@@ -51,12 +51,39 @@ export async function adminListOrders(query: {
         payments: { select: { id: true, provider: true, status: true, amount: true } },
         shippingAddress: true,
         billingAddress: true,
+        emailLogs: { orderBy: { createdAt: 'desc' }, take: 40 },
       },
     }),
     prisma.order.count({ where }),
   ]);
 
-  return { items, total, page: query.page, limit: query.limit };
+  const { summarizeEmailEvent } = await import('./order-email.service');
+
+  return {
+    items: items.map((order) => {
+      const paidSummary = summarizeEmailEvent(order.email, 'PAID', order.emailLogs);
+      const shippedSummary =
+        order.status === 'SHIPPED' || order.status === 'DELIVERED'
+          ? summarizeEmailEvent(order.email, 'SHIPPED', order.emailLogs)
+          : null;
+      const primary =
+        order.status === 'SHIPPED' || order.status === 'DELIVERED'
+          ? (shippedSummary ?? paidSummary)
+          : paidSummary;
+      return {
+        ...order,
+        emailStatus: {
+          ordered: paidSummary,
+          shipped: shippedSummary,
+          canResend: primary.canResend,
+          resendEvent: primary.event,
+        },
+      };
+    }),
+    total,
+    page: query.page,
+    limit: query.limit,
+  };
 }
 
 export async function adminUpdateOrderStatus(
@@ -105,6 +132,7 @@ export async function adminUpdateOrderStatus(
       items: true,
       payments: true,
       shippingAddress: true,
+      emailLogs: { orderBy: { createdAt: 'desc' }, take: 40 },
     },
   });
 
@@ -113,17 +141,20 @@ export async function adminUpdateOrderStatus(
     previousStatus !== status ||
     (status === 'SHIPPED' && trackingChanged && Boolean(trackingNumber));
 
+  let emailResult: Awaited<
+    ReturnType<(typeof import('./order-email.service'))['emailOrderStatusUpdate']>
+  > | null = null;
+
   if (shouldEmail) {
     const { emailOrderStatusUpdate } = await import('./order-email.service');
-    void emailOrderStatusUpdate(
+    emailResult = await emailOrderStatusUpdate(
       updated.id,
       status,
       extras?.resendEmails ? null : previousStatus === status ? null : previousStatus,
-    ).then((mail) => {
-      if (!mail.sent) {
-        console.error('[admin] order status email failed', updated.orderNumber, mail.error);
-      }
-    });
+    );
+    if (!emailResult.sent) {
+      console.error('[admin] order status email failed', updated.orderNumber, emailResult.error);
+    }
 
     if (updated.userId && previousStatus !== status) {
       const { createNotification } = await import('./notification.service');
@@ -140,7 +171,39 @@ export async function adminUpdateOrderStatus(
     }
   }
 
-  return updated;
+  const refreshed = await prisma.order.findUnique({
+    where: { id },
+    include: {
+      user: { select: { id: true, email: true, firstName: true, lastName: true } },
+      items: true,
+      payments: true,
+      shippingAddress: true,
+      emailLogs: { orderBy: { createdAt: 'desc' }, take: 40 },
+    },
+  });
+
+  const { summarizeEmailEvent } = await import('./order-email.service');
+  const finalOrder = refreshed ?? updated;
+  const paidSummary = summarizeEmailEvent(finalOrder.email, 'PAID', finalOrder.emailLogs);
+  const shippedSummary =
+    finalOrder.status === 'SHIPPED' || finalOrder.status === 'DELIVERED'
+      ? summarizeEmailEvent(finalOrder.email, 'SHIPPED', finalOrder.emailLogs)
+      : null;
+  const primary =
+    finalOrder.status === 'SHIPPED' || finalOrder.status === 'DELIVERED'
+      ? (shippedSummary ?? paidSummary)
+      : paidSummary;
+
+  return {
+    ...finalOrder,
+    emailStatus: {
+      ordered: paidSummary,
+      shipped: shippedSummary,
+      canResend: primary.canResend,
+      resendEvent: primary.event,
+    },
+    emailResult,
+  };
 }
 
 export async function adminDeleteOrder(id: string) {

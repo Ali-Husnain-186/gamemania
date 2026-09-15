@@ -2,6 +2,12 @@ import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import { env } from '../config/env';
 
+export type EmailSendResult = {
+  sent: boolean;
+  error?: string;
+  provider: 'resend' | 'smtp' | 'none';
+};
+
 function resendConfigured(): boolean {
   return Boolean(env.RESEND_API_KEY?.trim());
 }
@@ -28,7 +34,6 @@ function allowSmtpFallback(): boolean {
   const smtpUser = String(env.SMTP_USER ?? '')
     .trim()
     .toLowerCase();
-  // Only fall back when From is the same mailbox as SMTP (or same domain for aliases).
   return fromAddr === smtpUser || emailDomain(fromAddr) === emailDomain(smtpUser);
 }
 
@@ -55,7 +60,6 @@ export function getEmailProvider(): 'resend' | 'smtp' | 'none' {
 }
 
 function smtpFromAddress(): string {
-  // Resend test sender won't work over SMTP; use the Gmail account when present.
   if (env.EMAIL_FROM.includes('beth.t@example.com') && env.SMTP_USER) {
     return `GameMania UK <${env.SMTP_USER}>`;
   }
@@ -67,7 +71,7 @@ async function sendViaResend(input: {
   subject: string;
   text: string;
   html?: string;
-}): Promise<{ sent: boolean; error?: string }> {
+}): Promise<EmailSendResult> {
   const resend = new Resend(env.RESEND_API_KEY!);
   const { error } = await resend.emails.send({
     from: env.EMAIL_FROM,
@@ -80,7 +84,7 @@ async function sendViaResend(input: {
   if (error) {
     const message = error.message || 'Resend send failed';
     console.error('[email:resend]', message, { from: env.EMAIL_FROM, to: input.to });
-    return { sent: false, error: message };
+    return { sent: false, error: message, provider: 'resend' };
   }
 
   console.info('[email:resend] sent', {
@@ -88,7 +92,7 @@ async function sendViaResend(input: {
     to: input.to,
     subject: input.subject,
   });
-  return { sent: true };
+  return { sent: true, provider: 'resend' };
 }
 
 async function sendViaSmtp(input: {
@@ -96,7 +100,7 @@ async function sendViaSmtp(input: {
   subject: string;
   text: string;
   html?: string;
-}): Promise<{ sent: boolean; error?: string }> {
+}): Promise<EmailSendResult> {
   const transporter = getTransporter();
   const from = smtpFromAddress();
   await transporter.sendMail({
@@ -107,7 +111,7 @@ async function sendViaSmtp(input: {
     html: input.html ?? `<p>${input.text.replace(/\n/g, '<br/>')}</p>`,
   });
   console.info('[email:smtp] sent', { from, to: input.to, subject: input.subject });
-  return { sent: true };
+  return { sent: true, provider: 'smtp' };
 }
 
 export async function sendMail(input: {
@@ -115,7 +119,7 @@ export async function sendMail(input: {
   subject: string;
   text: string;
   html?: string;
-}): Promise<{ sent: boolean; error?: string }> {
+}): Promise<EmailSendResult> {
   if (!isEmailEnabled()) {
     if (!env.isProd) {
       console.info(`[email:skip] To=${input.to} Subject=${input.subject}`);
@@ -123,6 +127,7 @@ export async function sendMail(input: {
     return {
       sent: false,
       error: 'Email not configured (set RESEND_API_KEY or SMTP_USER/SMTP_PASS)',
+      provider: 'none',
     };
   }
 
@@ -143,6 +148,7 @@ export async function sendMail(input: {
         error:
           errors.join(' | ') +
           ' | smtp-fallback-skipped: verify gamemaniaauk.co.uk in Resend so From can be info@gamemaniaauk.co.uk',
+        provider: 'resend',
       };
     }
   }
@@ -157,7 +163,11 @@ export async function sendMail(input: {
     }
   }
 
-  return { sent: false, error: errors.join(' | ') || 'Email send failed' };
+  return {
+    sent: false,
+    error: errors.join(' | ') || 'Email send failed',
+    provider: getEmailProvider(),
+  };
 }
 
 /** Customer-facing order email (uses order email, works for guests). */

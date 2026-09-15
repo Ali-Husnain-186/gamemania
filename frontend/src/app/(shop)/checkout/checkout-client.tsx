@@ -24,6 +24,7 @@ type Preview = {
   subtotalPence: number;
   discountPence: number;
   shippingPence: number;
+  tradeInOnlyShipping?: boolean;
   storeCreditApplied: number;
   pointsValuePence: number;
   grandTotalPence: number;
@@ -82,6 +83,7 @@ export function CheckoutClient() {
   const { user, isAuthenticated } = useAuth();
   const [pending, startTransition] = useTransition();
   const [couponCode, setCouponCode] = useState('');
+  const [couponPlaceholder, setCouponPlaceholder] = useState('COUPON');
   const [email, setEmail] = useState('');
   const [useStoreCredit, setUseStoreCredit] = useState(true);
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -102,6 +104,18 @@ export function CheckoutClient() {
       setShipping((s) => (s.fullName ? s : { ...s, fullName: name }));
     }
   }, [user?.email, user?.firstName, user?.lastName]);
+
+  useEffect(() => {
+    void (async () => {
+      try {
+        const row = await apiGet<{ value: unknown }>('/settings/promo.banner');
+        const value = row.value as { code?: string } | null;
+        if (value?.code) setCouponPlaceholder(String(value.code).toUpperCase());
+      } catch {
+        /* keep default */
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -556,7 +570,7 @@ export function CheckoutClient() {
               className="mt-1 w-full rounded-xl border border-[var(--gm-border)] bg-[var(--gm-bg-elevated)] px-3 py-2.5 uppercase"
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-              placeholder="GAMEMANIA10"
+              placeholder={couponPlaceholder}
             />
           </label>
 
@@ -619,11 +633,16 @@ export function CheckoutClient() {
                   </div>
                 ) : null}
                 <div className="flex justify-between">
-                  <dt>Shipping</dt>
+                  <dt>{preview.tradeInOnlyShipping ? 'Trade-in postage' : 'Shipping'}</dt>
                   <dd>
                     {preview.freeShipping ? 'Free' : formatGbpFromPence(preview.shippingPence)}
                   </dd>
                 </div>
+                {preview.tradeInOnlyShipping ? (
+                  <p className="pt-1 text-[11px] text-[var(--gm-cyan)]">
+                    Trade-in only carts use £1.00 postage. Buying items use standard UK rates.
+                  </p>
+                ) : null}
                 <div className="flex justify-between text-lg font-bold text-[var(--gm-fg)]">
                   <dt>Total</dt>
                   <dd className="text-[var(--gm-magenta)]">

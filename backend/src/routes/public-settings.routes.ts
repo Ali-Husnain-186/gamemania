@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ok } from '../utils/apiResponse';
 import * as adminService from '../services/admin.service';
 
-const PUBLIC_SETTING_KEYS = new Set(['social.links', 'store.name', 'home.hero']);
+const PUBLIC_SETTING_KEYS = new Set(['social.links', 'store.name', 'home.hero', 'promo.banner']);
 
 const router = Router();
 
@@ -21,7 +21,8 @@ router.get('/:key', async (req, res, next) => {
     } catch {
       ok(res, {
         key,
-        value: key === 'social.links' ? [] : key === 'home.hero' ? null : null,
+        value:
+          key === 'social.links' ? [] : key === 'home.hero' || key === 'promo.banner' ? null : null,
       });
     }
   } catch (err) {

@@ -176,3 +176,64 @@ export async function updateSettingController(req: Request, res: Response, next:
     next(err);
   }
 }
+
+export async function adminListCouponsController(_req: Request, res: Response, next: NextFunction) {
+  try {
+    const { adminListCoupons } = await import('../services/admin-coupon.service');
+    ok(res, await adminListCoupons());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminCreateCouponController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { adminCreateCoupon } = await import('../services/admin-coupon.service');
+    const coupon = await adminCreateCoupon(req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'coupon.create',
+      entityType: 'Coupon',
+      entityId: coupon.id,
+      metadata: { code: coupon.code },
+      ipAddress: req.ip,
+    });
+    ok(res, coupon, 201);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminUpdateCouponController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { adminUpdateCoupon } = await import('../services/admin-coupon.service');
+    const coupon = await adminUpdateCoupon(req.params.id, req.body);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'coupon.update',
+      entityType: 'Coupon',
+      entityId: coupon.id,
+      ipAddress: req.ip,
+    });
+    ok(res, coupon);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function adminDeleteCouponController(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { adminDeleteCoupon } = await import('../services/admin-coupon.service');
+    const result = await adminDeleteCoupon(req.params.id);
+    await auditService.writeAuditLog({
+      userId: req.user?.id,
+      action: 'coupon.delete',
+      entityType: 'Coupon',
+      entityId: req.params.id,
+      ipAddress: req.ip,
+    });
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}

@@ -11,6 +11,11 @@ import {
   type HomeHeroContent,
   type HeroSlide,
 } from '@/features/home/home-hero-content';
+import {
+  DEFAULT_PROMO_BANNER,
+  normalizePromoBanner,
+  type PromoBannerContent,
+} from '@/features/home/promo-banner-content';
 
 const KEYS = [
   { key: 'store.name', label: 'Store name' },
@@ -40,6 +45,7 @@ export default function SettingsPage() {
   const [values, setValues] = useState<Record<string, string>>({});
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [hero, setHero] = useState<HomeHeroContent>(DEFAULT_HOME_HERO);
+  const [promo, setPromo] = useState<PromoBannerContent>(DEFAULT_PROMO_BANNER);
   const [heroUploading, setHeroUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -78,6 +84,15 @@ export default function SettingsPage() {
           setHero(normalizeHomeHero(heroRow.value));
         } catch {
           setHero(DEFAULT_HOME_HERO);
+        }
+
+        try {
+          const promoRow = await apiGet<{ key: string; value: unknown }>(
+            '/admin/settings/promo.banner',
+          );
+          setPromo(normalizePromoBanner(promoRow.value));
+        } catch {
+          setPromo(DEFAULT_PROMO_BANNER);
         }
       } catch (err) {
         setError(err instanceof ApiError ? err.message : 'Failed to load settings');
@@ -134,8 +149,30 @@ export default function SettingsPage() {
     });
   }
 
+  function savePromo() {
+    startTransition(async () => {
+      try {
+        setMessage(null);
+        setError(null);
+        const payload = normalizePromoBanner(promo);
+        await apiPatch('/admin/settings/promo.banner', {
+          value: payload,
+          group: 'promo',
+        });
+        setPromo(payload);
+        setMessage('Saved promo banner');
+      } catch (err) {
+        setError(err instanceof ApiError ? err.message : 'Save promo failed');
+      }
+    });
+  }
+
   function setHeroField<K extends keyof HomeHeroContent>(key: K, value: HomeHeroContent[K]) {
     setHero((h) => ({ ...h, [key]: value }));
+  }
+
+  function setPromoField<K extends keyof PromoBannerContent>(key: K, value: PromoBannerContent[K]) {
+    setPromo((p) => ({ ...p, [key]: value }));
   }
 
   async function onHeroImagePick(file?: File | null) {
@@ -172,11 +209,87 @@ export default function SettingsPage() {
     <>
       <PageHeader
         title="Settings"
-        description="Store configuration, homepage hero copy, and social media links."
+        description="Store configuration, promo banner, homepage hero copy, and social media links."
       />
       {error ? <p className="mb-4 text-sm text-red-300">{error}</p> : null}
       {message ? <p className="mb-4 text-sm text-emerald-300">{message}</p> : null}
       <div className="space-y-4">
+        <Panel className="p-5">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium">Promo banner</p>
+              <p className="text-xs text-[var(--admin-muted)]">
+                Homepage strip + suggested coupon code. Use {'{code}'} in blurb to insert the code.
+              </p>
+            </div>
+            <button
+              type="button"
+              disabled={pending}
+              onClick={savePromo}
+              className="rounded-md bg-[var(--admin-accent)] px-3 py-2 text-sm font-medium text-black disabled:opacity-50"
+            >
+              Save promo
+            </button>
+          </div>
+          <label className="mb-3 flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={promo.enabled}
+              onChange={(e) => setPromoField('enabled', e.target.checked)}
+            />
+            Show promo banner
+          </label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-xs text-[var(--admin-muted)]">
+              Eyebrow
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                value={promo.eyebrow}
+                onChange={(e) => setPromoField('eyebrow', e.target.value)}
+              />
+            </label>
+            <label className="block text-xs text-[var(--admin-muted)]">
+              Coupon code
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm uppercase"
+                value={promo.code}
+                onChange={(e) => setPromoField('code', e.target.value.toUpperCase())}
+              />
+            </label>
+            <label className="block text-xs text-[var(--admin-muted)] sm:col-span-2">
+              Title
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                value={promo.title}
+                onChange={(e) => setPromoField('title', e.target.value)}
+              />
+            </label>
+            <label className="block text-xs text-[var(--admin-muted)] sm:col-span-2">
+              Blurb
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                value={promo.blurb}
+                onChange={(e) => setPromoField('blurb', e.target.value)}
+              />
+            </label>
+            <label className="block text-xs text-[var(--admin-muted)]">
+              CTA label
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                value={promo.ctaLabel}
+                onChange={(e) => setPromoField('ctaLabel', e.target.value)}
+              />
+            </label>
+            <label className="block text-xs text-[var(--admin-muted)]">
+              CTA link
+              <input
+                className="mt-1 w-full rounded-md border border-[var(--admin-border)] bg-black/20 px-3 py-2 text-sm"
+                value={promo.ctaHref}
+                onChange={(e) => setPromoField('ctaHref', e.target.value)}
+              />
+            </label>
+          </div>
+        </Panel>
         {KEYS.map(({ key, label }) => (
           <Panel key={key} className="flex flex-wrap items-end gap-3 p-5">
             <label className="min-w-[240px] flex-1 text-xs text-[var(--admin-muted)]">

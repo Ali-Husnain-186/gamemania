@@ -34,6 +34,24 @@ type Payment = {
   amount: number;
 };
 
+type EmailRecipientStatus = {
+  recipient: string;
+  role: 'CUSTOMER' | 'SHOP';
+  event: string;
+  success: boolean;
+  status: 'sent' | 'failed' | 'missing';
+  error?: string | null;
+  provider?: string | null;
+  sentAt?: string | null;
+};
+
+type EmailEventStatus = {
+  event: string;
+  recipients: EmailRecipientStatus[];
+  allSent: boolean;
+  canResend: boolean;
+};
+
 type Order = {
   id: string;
   orderNumber: string;
@@ -57,6 +75,12 @@ type Order = {
   payments?: Payment[];
   shippingAddress?: Address | null;
   billingAddress?: Address | null;
+  emailStatus?: {
+    ordered: EmailEventStatus;
+    shipped: EmailEventStatus | null;
+    canResend: boolean;
+    resendEvent: string;
+  };
 };
 
 const STATUSES = [
@@ -197,22 +221,34 @@ export default function OrdersPage() {
   }
 
   function resendEmails(order: Order) {
+    if (!order.emailStatus?.canResend) {
+      notify.error('All required emails already sent for this status');
+      return;
+    }
+    const eventLabel = order.emailStatus.resendEvent;
     if (
       !window.confirm(
-        `Resend ${order.status} emails for ${order.orderNumber}?\n\nSends to:\n• Customer (${order.email})\n• info@gamemaniaauk.co.uk\n• husnain.code@gmail.com`,
+        `Resend ${eventLabel} emails for ${order.orderNumber}?\n\nSends to:\n• Customer (${order.email})\n• info@gamemaniaauk.co.uk\n• husnain.code@gmail.com`,
       )
     ) {
       return;
     }
     startTransition(async () => {
       try {
-        await apiPatch(`/admin/orders/${order.id}`, {
+        const updated = await apiPatch<{
+          emailResult?: { sent: boolean; error?: string };
+          emailStatus?: Order['emailStatus'];
+        }>(`/admin/orders/${order.id}`, {
           status: order.status,
           resendEmails: true,
           trackingNumber: order.trackingNumber ?? undefined,
           trackingCarrier: order.trackingCarrier ?? undefined,
         });
-        notify.success('Emails resent to customer + owners');
+        if (updated.emailResult && !updated.emailResult.sent) {
+          notify.error(updated.emailResult.error || 'Some emails failed — check Emails column');
+        } else {
+          notify.success('Emails resent — check Emails column for status');
+        }
         await load();
       } catch (err) {
         const message = err instanceof ApiError ? err.message : 'Resend failed';
@@ -220,6 +256,38 @@ export default function OrdersPage() {
         notify.error(message);
       }
     });
+  }
+
+  function renderEmailColumn(order: Order) {
+    const primary =
+      order.status === 'SHIPPED' || order.status === 'DELIVERED'
+        ? (order.emailStatus?.shipped ?? order.emailStatus?.ordered)
+        : order.emailStatus?.ordered;
+    const label =
+      order.status === 'SHIPPED' || order.status === 'DELIVERED' ? 'Shipped' : 'Ordered';
+
+    if (!primary) {
+      return <span className="text-[10px] text-[var(--admin-muted)]">No log yet</span>;
+    }
+
+    return (
+      <div className="space-y-1 text-[10px]">
+        <p className="font-semibold uppercase tracking-wide text-[var(--admin-muted)]">{label}</p>
+        {primary.recipients.map((r) => (
+          <div key={`${r.role}-${r.recipient}`} className="leading-snug">
+            <span className={r.success ? 'text-emerald-300' : 'text-red-300'}>
+              {r.success ? 'Sent' : r.status === 'missing' ? 'Missing' : 'Fail'}
+            </span>{' '}
+            <span className="break-all text-[var(--admin-muted)]">{r.recipient}</span>
+            {!r.success && r.error ? (
+              <div className="max-w-[180px] truncate text-red-300/80" title={r.error}>
+                {r.error}
+              </div>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    );
   }
 
   function remove(id: string, orderNumber: string) {
@@ -256,6 +324,7 @@ export default function OrdersPage() {
                 <tr className="border-b border-[var(--admin-border)] text-xs uppercase tracking-wider text-[var(--admin-muted)]">
                   <th className="px-3 py-3 font-medium">Order</th>
                   <th className="px-3 py-3 font-medium">Email</th>
+                  <th className="px-3 py-3 font-medium">Emails</th>
                   <th className="px-3 py-3 font-medium">Customer</th>
                   <th className="px-3 py-3 font-medium">Shipping address</th>
                   <th className="px-3 py-3 font-medium">Phone</th>
@@ -271,7 +340,7 @@ export default function OrdersPage() {
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan={12} className="px-4 py-10 text-center text-[var(--admin-muted)]">
+                    <td colSpan={13} className="px-4 py-10 text-center text-[var(--admin-muted)]">
                       No orders yet
                     </td>
                   </tr>
@@ -303,6 +372,7 @@ export default function OrdersPage() {
                             </button>
                           </td>
                           <td className="break-all px-3 py-3 text-xs">{o.email}</td>
+                          <td className="max-w-[200px] px-3 py-3">{renderEmailColumn(o)}</td>
                           <td className="px-3 py-3 text-xs">
                             {shipName || name || o.user?.email || '—'}
                           </td>
@@ -360,8 +430,13 @@ export default function OrdersPage() {
                             <div className="flex flex-col items-end gap-1">
                               <button
                                 type="button"
-                                className="text-xs text-[var(--admin-accent)] hover:underline disabled:opacity-50"
-                                disabled={pending}
+                                className="text-xs text-[var(--admin-accent)] hover:underline disabled:cursor-not-allowed disabled:opacity-40"
+                                disabled={pending || !o.emailStatus?.canResend}
+                                title={
+                                  o.emailStatus?.canResend
+                                    ? 'Resend failed or missing emails'
+                                    : 'All required emails already sent'
+                                }
                                 onClick={() => resendEmails(o)}
                               >
                                 Resend emails
@@ -379,7 +454,7 @@ export default function OrdersPage() {
                         </tr>
                         {expandedId === o.id ? (
                           <tr className="border-b border-[var(--admin-border)]/70 bg-black/20">
-                            <td colSpan={12} className="px-4 py-4">
+                            <td colSpan={13} className="px-4 py-4">
                               <div className="grid gap-4 md:grid-cols-4">
                                 <div>
                                   <p className="mb-1 text-[10px] font-bold uppercase tracking-wide text-[var(--admin-muted)]">

@@ -361,10 +361,34 @@ model Order {
   payments  Payment[]
   invoice   Invoice?
 
+  emailLogs OrderEmailLog[]
+
   @@index([userId])
   @@index([status])
   @@index([createdAt])
   @@map("orders")
+}
+
+enum OrderEmailRole {
+  CUSTOMER
+  SHOP
+}
+
+/** One row per recipient per send attempt (PAID / SHIPPED / other status). */
+model OrderEmailLog {
+  id        String         @id @default(cuid())
+  orderId   String
+  order     Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  recipient String
+  role      OrderEmailRole
+  event     String // e.g. PAID, SHIPPED, PROCESSING
+  success   Boolean
+  error     String?
+  provider  String? // resend | smtp | none
+  createdAt DateTime       @default(now())
+
+  @@index([orderId, event, createdAt])
+  @@map("order_email_logs")
 }
 
 model OrderItem {

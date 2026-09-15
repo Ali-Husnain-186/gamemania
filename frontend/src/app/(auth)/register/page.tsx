@@ -4,6 +4,7 @@ import { BrandLoader } from '@/components/ui/brand-loader';
 import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import { RedirectIfAuthenticated } from '@/features/auth/components/require-auth';
+import { PromoCodeHint } from '@/features/home/components/promo-code-hint';
 
 export const metadata: Metadata = {
   title: 'Create account',
@@ -28,9 +29,7 @@ export default function RegisterPage() {
             <AuthSwitchLink href="/login">Sign in</AuthSwitchLink>
           </Suspense>
         </p>
-        <p className="mt-4 text-center text-xs font-bold uppercase tracking-wider text-[var(--gm-cyan)]">
-          Code GAMEMANIA10 · 10% off online
-        </p>
+        <PromoCodeHint className="mt-4 text-center text-xs font-bold uppercase tracking-wider text-[var(--gm-cyan)]" />
       </main>
     </RedirectIfAuthenticated>
   );

@@ -18,6 +18,7 @@ import {
   Award,
   Menu,
   X,
+  TicketPercent,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BrandWordmark } from '@/components/brand/brand-wordmark';
@@ -33,6 +34,7 @@ const NAV = [
   { href: '/admin/trade-ins', label: 'Trade-ins', icon: RefreshCw },
   { href: '/admin/reviews', label: 'Reviews', icon: MessageSquare },
   { href: '/admin/cms', label: 'CMS', icon: FileText },
+  { href: '/admin/coupons', label: 'Coupons', icon: TicketPercent },
   { href: '/admin/shipping', label: 'Shipping', icon: Truck },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ] as const;

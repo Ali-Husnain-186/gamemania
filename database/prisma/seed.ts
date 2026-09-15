@@ -247,23 +247,23 @@ async function main() {
     });
   }
 
-  // Shipping: under £60 → £3.95; £60+ → free
+  // Shipping: under £60 → £2.99; £60+ → free. Trade-in-only carts use fixed £1 in checkout.
   await prisma.shippingRule.deleteMany({});
   await prisma.shippingRule.createMany({
     data: [
       {
         name: 'Standard UK under £60',
-        description: 'Flat rate for orders under the free threshold',
+        description: 'Flat rate for purchase orders under the free threshold',
         minOrderAmount: 0,
         maxOrderAmount: 5999,
-        rate: 395,
+        rate: 299,
         country: 'GB',
         isActive: true,
         priority: 10,
       },
       {
         name: 'Free UK shipping £60+',
-        description: 'Free shipping for orders £60 and above',
+        description: 'Free shipping for purchase orders £60 and above',
         minOrderAmount: 6000,
         maxOrderAmount: null,
         rate: 0,
@@ -289,6 +289,25 @@ async function main() {
     update: { value: 1 },
     create: { key: 'loyalty.points_per_pound', value: 1, group: 'loyalty' },
   });
+
+  const existingPromo = await prisma.setting.findUnique({ where: { key: 'promo.banner' } });
+  if (!existingPromo) {
+    await prisma.setting.create({
+      data: {
+        key: 'promo.banner',
+        group: 'promo',
+        value: {
+          enabled: true,
+          eyebrow: 'Limited offer',
+          title: '10% OFF Your First Order',
+          code: 'GAMEMANIA10',
+          blurb: 'Use code {code} at checkout.',
+          ctaLabel: 'Shop the Sale',
+          ctaHref: '/shop',
+        },
+      },
+    });
+  }
 
   // Homepage hero (editable in Admin → Settings). Preserve existing admin edits on re-seed.
   const existingHero = await prisma.setting.findUnique({ where: { key: 'home.hero' } });

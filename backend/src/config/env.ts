@@ -28,7 +28,7 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   GOOGLE_CALLBACK_URL: z.string().optional(),
   SHIPPING_FREE_THRESHOLD_PENCE: z.coerce.number().default(6000),
-  SHIPPING_FLAT_RATE_PENCE: z.coerce.number().default(395),
+  SHIPPING_FLAT_RATE_PENCE: z.coerce.number().default(299),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   // Gmail SMTP (no custom domain needed). Use a Google App Password.
@@ -81,7 +81,7 @@ const data = parsed.success
       GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
       GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
       SHIPPING_FREE_THRESHOLD_PENCE: 6000,
-      SHIPPING_FLAT_RATE_PENCE: 395,
+      SHIPPING_FLAT_RATE_PENCE: 299,
       STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
       STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
       SMTP_HOST: process.env.SMTP_HOST ?? 'smtp.gmail.com',
